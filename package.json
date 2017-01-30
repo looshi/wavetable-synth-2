@@ -1,0 +1,32 @@
+{
+  "name": "wavetable-synth",
+  "version": "0.0.1",
+  "repository": "https://github.com/looshi/wavetable-synth-2",
+  "description": "WaveTable Synth built with web audio api.",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "dev": "webpack-dev-server --hot",
+    "build:dev": "webpack",
+    "build": "webpack -p",
+    "start": "http-server --silent -c-1",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Looshi and Jordan",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "4.14.1",
+    "react": "15.3.0",
+    "react-dom": "15.3.0"
+  },
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "css-loader": "^0.26.1",
+    "html-webpack-plugin": "^2.26.0",
+    "http-server": "^0.9.0",
+    "rimraf": "^2.5.4",
+    "webpack": "^2.2.0",
+    "webpack-dev-server": "^2.2.0",
+    "webpack-validator": "2.3.0"
+  }
+}
