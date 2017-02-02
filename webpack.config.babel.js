@@ -11,7 +11,11 @@ module.exports = function() {
       filename: 'bundle.js',
       publicPath: '/dist/',
     },
-    devtool: 'source-map', // 'eval' // None of these options work.
+
+    // 'eval' Eval will display the babel transpiled code.
+    // 'source-map' will display the original source based on the source map.
+    devtool: 'source-map',
+
     module: {
       loaders: [
         {test: /\.js$/, loaders: ['babel-loader'], exclude: /node_modules/},
