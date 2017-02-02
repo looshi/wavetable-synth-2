@@ -1,2 +1,8 @@
+require('../css/index.css');
 
-  console.log('daves');
+
+setTimeout( function() {
+
+  console.log('dave birds rule so do cats');
+
+}, 2000);

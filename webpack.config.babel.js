@@ -12,6 +12,12 @@ module.exports = function() {
       publicPath: '/dist/',
     },
     devtool: 'source-map', // 'eval' // None of these options work.
+    module: {
+      loaders: [
+        {test: /\.js$/, loaders: ['babel-loader'], exclude: /node_modules/},
+        {test: /\.css$/, loaders: ['style-loader', 'css-loader']},
+      ],
+    },
   };
   return webpackValidator(config);
 }
