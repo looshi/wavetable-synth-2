@@ -5,7 +5,7 @@ const resolve = require('path').resolve;
 module.exports = function() {
   let config = {
     context: resolve('src'),
-    entry: './bootstrap.js',
+    entry: './index.js',
     output: {
       path: resolve('dist'),
       filename: 'bundle.js',
@@ -18,7 +18,7 @@ module.exports = function() {
 
     module: {
       loaders: [
-        {test: /\.js$/, loaders: ['babel-loader'], exclude: /node_modules/},
+        {test: /\.js/, loaders: ['babel-loader'], exclude: /node_modules/},
         {test: /\.css$/, loaders: ['style-loader', 'css-loader']},
       ],
     },
