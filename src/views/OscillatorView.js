@@ -3,8 +3,9 @@ WaveFormView
 Displays a waveform line inside a box.
 */
 import React from 'react';
+import WaveFileLoader from './WaveFileLoader.js'
 
-class WaveFormView extends React.Component {
+class OscillatorView extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -32,26 +33,38 @@ class WaveFormView extends React.Component {
    render() {
      return (
        <div>
+         <h5>File A {this.props.fileA}</h5>
+         <h5>File B {this.props.fileB}</h5>
+         <WaveFileLoader
+           id = {this.props.id}
+           files = {this.props.files}
+           />
          <h4>Oscillator</h4>
          <canvas ref='canvas'
-          width={this.props.width}
-          height={this.props.width}/>
+          width = {this.props.width}
+          height = {this.props.height}/>
         </div>
       );
     }
 }
-WaveFormView.propTypes = {
+OscillatorView.propTypes = {
   waveData: React.PropTypes.array,
   width: React.PropTypes.number,
   height: React.PropTypes.number,
 };
-WaveFormView.defaultProps = {
+OscillatorView.defaultProps = {
   waveData: [],
   width: 300,
   height: 200,
 };
 
-export default WaveFormView;
+// Container components can be described by these two functions :
+function mapStateToProps(state){
+  return {
+    state: state,
+  };
+}
+export default OscillatorView;
 
 /*
 Draws the raw waveform data on the canvas.
