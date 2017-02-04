@@ -19,25 +19,43 @@ class WaveLine extends React.Component {
     this.drawWaveForm();
   }
   drawWaveForm() {
-    const context = this.refs.canvas.getContext('2d');
-    context.clearRect(0, 0, this.props.width, this.props.height);
-
     let {channelData, width, height} = this.props;
+    const context = this.refs.canvas.getContext('2d');
+    context.clearRect(0, 0, width, height);
+
+
     let sampledWaveData = [];
     let step = 1;
 
-    if (channelData.length > width) {
-      step = Math.floor(channelData.length / width);
+    // Reduce the width to add some padding left and right.
+    let padWidth = width * .75;
+    let padHeight = height * .75;
+
+    if (channelData.length > padWidth) {
+      step = Math.ceil(channelData.length / padWidth);
+    }
+
+    // Clamp the pixels so they don't go beyond upper or lower bounds.
+    function clamp(val) {
+      if (val > padHeight) return padHeight - 1;
+      if (val < 0) return 1;
+      return val;
     }
 
     // Sample only the points we should draw out of the waveData.
     var pixelValue = 0;
-    for (let i = 0; i < channelData.length - step; i = i + step) {
-      pixelValue = Math.floor((channelData[i] * 50) + 50);
-      sampledWaveData.push(pixelValue);
+    var index = 0;
+    for (let i = 0; i < padWidth; i++) {
+
+      pixelValue = Math.floor((channelData[index] * -padHeight/2) + padHeight/2);
+      pixelValue = clamp(pixelValue);
+      index = index + step;
+
+      sampledWaveData.push( pixelValue  );
     }
     let rgba = [0, 71, 180, 255];
-    drawPixels(sampledWaveData, width, height, context, rgba);
+
+    drawPixels(sampledWaveData, padWidth, padHeight, context, rgba);
    }
 
    render() {
@@ -47,9 +65,9 @@ class WaveLine extends React.Component {
      }
      return (
        <div className='box' style={boxStyle}>
-         <canvas ref='canvas'
-          width = {this.props.width}
-          height = {this.props.height}/>
+         <canvas ref='canvas' className='waveline-canvas'
+          width = {this.props.width * .75}
+          height = {this.props.height * .75}/>
         </div>
       );
     }
@@ -73,11 +91,15 @@ function drawPixels(pixels, width, height, context, rgba) {
   context.lineWidth = 4;
   context.strokeStyle = '#0047B4';
 
-  pixels.forEach(function(pixel, index) {
-   context.moveTo(index, pixel);
-   if(pixels[index+1]){
-     context.lineTo(index, pixels[index+1]);
-   }
-  });
+  for(var i=0; i<pixels.length; i++){
+    if(pixels[i-1]) {
+      context.moveTo(i-1, pixels[i-1]);
+    }
+
+    if(pixels[i + 1]) {
+      context.lineTo(i, pixels[i+1]);
+    }
+  }
+
   context.stroke();
 }

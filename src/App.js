@@ -22,6 +22,7 @@ class App extends React.Component {
                 name = {oscillator.name}
                 fileA = {oscillator.fileA}
                 fileB = {oscillator.fileB}
+                algorithm = {oscillator.algorithm}
                 audioBufferA = {oscillator.audioBufferA}
                 audioBufferB = {oscillator.audioBufferB}
                 channelDataA = {oscillator.channelDataA}

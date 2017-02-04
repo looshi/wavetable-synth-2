@@ -11,19 +11,31 @@ class AlgorithmSwitch extends React.Component {
   constructor(props) {
     super(props);
   }
-  onAlgorithmChanged(event){
+  onAlgorithmChanged(event) {
     const {id, dispatch} = this.props;
     const algo = event.target.getAttribute('data-algo');
-    let action = Actions.oscAlgorithmChanged(id, algo)
+    if (!algo) {
+      return;
+    }
+    let action = Actions.oscAlgorithmChanged(id, algo);
     dispatch(action);
   }
+  buttonClassName(type, selected) {
+    let className = 'toggle-button algorithm-button';
+    if(type === selected) {
+      className += ' selected';
+    }
+    return className;
+  }
   render() {
+    let selected = this.props.algorithm;
     return (
-      <div onClick={this.onAlgorithmChanged.bind(this)} >
-        <button data-algo={'plus'}>+</button>
-        <button data-algo={'minus'}>-</button>
-        <button data-algo={'divide'}>/</button>
-        <button data-algo={'multiply'}>*</button>
+      <div onClick={this.onAlgorithmChanged.bind(this)} className='algorithm-switch'>
+        <div className='combine-prompt'>combine</div>
+        <div data-algo={'plus'} className={this.buttonClassName('plus', selected)}>+</div>
+        <div data-algo={'minus'} className={this.buttonClassName('minus', selected)}>-</div>
+        <div data-algo={'divide'} className={this.buttonClassName('divide', selected)}>/</div>
+        <div data-algo={'multiply'} className={this.buttonClassName('multiply', selected)}>*</div>
       </div>
     );
   }
