@@ -13,7 +13,7 @@ class WaveFileLoader extends React.Component {
     super(props);
   }
   onFileSelected(e) {
-    const {id, side} = this.props;
+    const {id, side, audioContext, dispatch} = this.props;
     let action = Actions.waveFileLoadStarted(id, side, e.target.value);
     this.props.dispatch(action);
 
@@ -22,11 +22,17 @@ class WaveFileLoader extends React.Component {
     const self = this;
     axios.get(filePath, { responseType: 'arraybuffer' })
       .then(function (response) {
-        let action = Actions.waveFileLoadCompleted(id, side, response.data);
-        self.props.dispatch(action);
+
+        // Extract the data to draw each waveform.
+        audioContext.decodeAudioData(response.data).then(function(buffer) {
+          const channelData = buffer.getChannelData(0);
+          let action = Actions.waveFileLoadCompleted(id, side, buffer, channelData);
+          dispatch(action);
+        });
+
       })
       .catch(function (error) {
-        console.log('Error loading wav', error);
+        console.warn('Error loading wav', error);
       });
   }
 

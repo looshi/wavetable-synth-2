@@ -17,7 +17,6 @@ class OscillatorView extends React.Component {
   componentDidUpdate() {
   }
   render() {
-    console.log('this.props', this.props);
    return (
      <div className='oscillator'>
        <h1>Oscillator {this.props.name}</h1>
@@ -26,29 +25,35 @@ class OscillatorView extends React.Component {
            <WaveLine
              width = {140}
              height = {135}
-             audioContext = {this.props.audioContext}
-             waveData = {this.props.waveTableA} />
+             channelData = {this.props.channelDataA} />
 
            <WaveFileLoader
              id = {this.props.id}
              side = {'A'}
              selectedFile = {this.props.fileA}
+             audioContext = {this.props.audioContext}
              files = {this.props.files} />
          </div>
          <div className='wavetable-box'>
            <WaveLine
              width = {140}
              height = {135}
-             audioContext = {this.props.audioContext}
-             waveData= {this.props.waveTableB} />
+             channelData= {this.props.channelDataB} />
 
            <WaveFileLoader
              id = {this.props.id}
              side = {'B'}
              selectedFile = {this.props.fileB}
+             audioContext = {this.props.audioContext}
              files = {this.props.files} />
            </div>
-         </div>
+           <div className='wavetable-computed'>
+             <WaveLine
+               width = {300}
+               height = {135}
+               channelData= {this.props.computedChannelData} />
+          </div>
+        </div>
       </div>
     );
   }

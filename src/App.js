@@ -22,8 +22,11 @@ class App extends React.Component {
                 name = {oscillator.name}
                 fileA = {oscillator.fileA}
                 fileB = {oscillator.fileB}
-                waveTableA = {oscillator.waveTableA}
-                waveTableB = {oscillator.waveTableB}
+                audioBufferA = {oscillator.audioBufferA}
+                audioBufferB = {oscillator.audioBufferB}
+                channelDataA = {oscillator.channelDataA}
+                channelDataB = {oscillator.channelDataB}
+                computedChannelData = {oscillator.computedChannelData}
                 detune = {oscillator.detune}
                 pitch = {oscillator.pitch}
                 audioContext = {audioContext}

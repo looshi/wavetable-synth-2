@@ -7,8 +7,12 @@ function initOscillator(name){
     id: Math.random().toString(),
     fileA: 'none',
     fileB: 'none',
-    waveTableA: new ArrayBuffer(0),
-    waveTableB: new ArrayBuffer(0),
+    audioBufferA: null,
+    audioBufferB: null,
+    channelDataA: [],
+    channelDataB: [],
+    computedChannelData: [],
+    algorithm: null,
     volume: 100,
     detune: 0,
     pitch: 440,
@@ -42,11 +46,23 @@ function OscillatorsReducer(state, action) {
     case 'WAVE_FLE_LOAD_COMPLETED':
       state.Oscillators = state.Oscillators.map(function(osc){
         if(osc.id === action.id) {
+
+          // Update the A or B channel data and audio buffer on load.
           if(action.side === 'A'){
-            osc.waveTableA = action.data;
+            osc.audioBufferA = action.audioBuffer;
+            osc.channelDataA = action.channelData;
           } else if(action.side === 'B'){
-            osc.waveTableB = action.data;
+            osc.audioBufferB = action.audioBuffer;
+            osc.channelDataB = action.channelData;
           }
+
+          // Update the computed waveform based on the current algorithm.
+          if(osc.channelDataA.length && osc.channelDataB.length){
+            osc.computedChannelData =  osc.channelDataB.map(function(data, index) {
+              return osc.channelDataA[index] - osc.channelDataB[index];
+            });
+          }
+
         }
         return osc;
       });

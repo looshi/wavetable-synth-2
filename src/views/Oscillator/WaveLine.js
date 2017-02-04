@@ -6,7 +6,6 @@ import React from 'react';
 
 class WaveLine extends React.Component {
   constructor(props) {
-    console.log('waveline', props);
     super(props);
   }
   componentDidMount() {
@@ -17,41 +16,30 @@ class WaveLine extends React.Component {
     return true;
   }
   componentDidUpdate() {
-    console.log('waveline update', this.props);
     this.drawWaveForm();
   }
   drawWaveForm() {
     const context = this.refs.canvas.getContext('2d');
     context.clearRect(0, 0, this.props.width, this.props.height);
 
-    let {waveData, width, height} = this.props;
-    let step = 5;
+    let {channelData, width, height} = this.props;
     let sampledWaveData = [];
+    let step = 1;
 
-    // These are mono, get the 'left' channel data.
-    // Couldn't figure out how to do this without using decodeAudioData,
-    // e.g. something like this : var dataView = new Int32Array(waveData); -- ?
-    this.props.audioContext.decodeAudioData(waveData).then(function(audioBuffer) {
-      const channelData = audioBuffer.getChannelData(0);
+    if (channelData.length > width) {
+      step = Math.floor(channelData.length / width);
+    }
 
-      // Sample only the points we should draw out of the waveData.
-      var pixelValue = 0;
-      for (let i = 0; i < channelData.length - step; i = i + step) {
-        pixelValue = Math.floor(channelData[i] * 50 + 50);
-        //if (i%2 == 0) {
-          sampledWaveData.push(pixelValue);
-        //}
-
-      }
-
-      console.log('drawing', sampledWaveData);
-
-      let rgba = [0, 71, 180, 255];
-      drawPixels(sampledWaveData, width, height, context, rgba);
-
-    });
-
+    // Sample only the points we should draw out of the waveData.
+    var pixelValue = 0;
+    for (let i = 0; i < channelData.length - step; i = i + step) {
+      pixelValue = Math.floor((channelData[i] * 50) + 50);
+      sampledWaveData.push(pixelValue);
+    }
+    let rgba = [0, 71, 180, 255];
+    drawPixels(sampledWaveData, width, height, context, rgba);
    }
+
    render() {
      const boxStyle = {
        width: this.props.width,
