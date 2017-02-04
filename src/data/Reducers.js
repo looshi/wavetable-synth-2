@@ -1,22 +1,24 @@
 import { combineReducers } from 'redux'
 
 // Oscillator.
-function initOscillator(){
+function initOscillator(name){
   return {
+    name,
     id: Math.random().toString(),
     fileA: 'none',
     fileB: 'none',
+    waveTableA: new ArrayBuffer(0),
+    waveTableB: new ArrayBuffer(0),
     volume: 100,
     detune: 0,
     pitch: 440,
-    waveData: [5,6,7,8,9,10,9,8,7,6,5,4,3,2,1],
   }
 }
 let initialState = {
   Oscillators: [
-    initOscillator(),
-    initOscillator(),
-    initOscillator(),
+    initOscillator('1'),
+    // initOscillator('2'),
+    // initOscillator('3'),
   ],
 }
 
@@ -25,18 +27,30 @@ function OscillatorsReducer(state, action) {
 
   switch (action.type) {
     case 'WAVE_FLE_LOAD_STARTED':
-      console.log('state', state, action);
       state.Oscillators = state.Oscillators.map(function(osc){
-        if(osc.id === action.id){
-          osc.fileA = 'loading';
+        if(osc.id === action.id) {
+          if(action.side === 'A'){
+            osc.fileA = action.file;
+          } else if(action.side === 'B'){
+            osc.fileB = action.file;
+          }
         }
         return osc;
       });
       return Object.assign({}, state);
 
     case 'WAVE_FLE_LOAD_COMPLETED':
-      console.log('load done', action);
-      return 'dave';
+      state.Oscillators = state.Oscillators.map(function(osc){
+        if(osc.id === action.id) {
+          if(action.side === 'A'){
+            osc.waveTableA = action.data;
+          } else if(action.side === 'B'){
+            osc.waveTableB = action.data;
+          }
+        }
+        return osc;
+      });
+      return Object.assign({}, state);
 
     default:
       return state;
@@ -48,8 +62,3 @@ const Reducers = combineReducers({
 });
 
 export default Reducers;
-
-
-// function merge(objectA, objectB) {
-//   return _.extend({}, objectA, objectB);
-// }

@@ -3,17 +3,33 @@ Dropdown, shows a list of files.
 On select, loads the file.
 */
 import React from 'react';
+import axios from 'axios';
 import {connect} from 'react-redux';
-import Actions from '../data/Actions.js';
+import Actions from '../../data/Actions.js';
+const baseUrl = 'http://davedave.us/wavetable-synth/wavs/';
 
 class WaveFileLoader extends React.Component {
   constructor(props) {
     super(props);
   }
   onFileSelected(e) {
-    let action = Actions.waveFileLoadStarted(this.props.id, e.target.value);
+    const {id, side} = this.props;
+    let action = Actions.waveFileLoadStarted(id, side, e.target.value);
     this.props.dispatch(action);
+
+    // Load the .wav file from the server.
+    const filePath = baseUrl + e.target.value;
+    const self = this;
+    axios.get(filePath, { responseType: 'arraybuffer' })
+      .then(function (response) {
+        let action = Actions.waveFileLoadCompleted(id, side, response.data);
+        self.props.dispatch(action);
+      })
+      .catch(function (error) {
+        console.log('Error loading wav', error);
+      });
   }
+
   render() {
    return (
      <div>
@@ -51,7 +67,10 @@ function mapDispatchToProps(dispatch){
   }
 }
 
-// export default connect(null, mapDispatchToProps)(WaveFileLoader);
 // By default, invoking connect with no arguments will inject dispatch as
 // a prop to the component.
 export default connect()(WaveFileLoader);
+
+function loadFile(file) {
+
+}

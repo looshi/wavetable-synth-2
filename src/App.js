@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import OscillatorView from './views/OscillatorView.js';
+import OscillatorView from './views/Oscillator/OscillatorView.js';
 import WaveFiles from './data/WaveFiles.js'
 import {connect} from 'react-redux';
 import { createStore } from 'redux';
 import Reducers from './data/Reducers.js';
 let store = createStore(Reducers);
+const audioContext = new AudioContext();
 
 class App extends React.Component {
 
@@ -18,11 +19,14 @@ class App extends React.Component {
               <OscillatorView
                 key = {oscillator.id}
                 id = {oscillator.id}
+                name = {oscillator.name}
                 fileA = {oscillator.fileA}
                 fileB = {oscillator.fileB}
+                waveTableA = {oscillator.waveTableA}
+                waveTableB = {oscillator.waveTableB}
                 detune = {oscillator.detune}
                 pitch = {oscillator.pitch}
-                waveData = {oscillator.waveData}
+                audioContext = {audioContext}
                 files = {WaveFiles} />
             );
           })

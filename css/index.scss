@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css?family=Oswald');
+
+$blue: #0047B4;
+
+body {
+  background-color: white;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 400;
+  color: $blue;
+}
+
+h1 {
+  font-size: 30px;
+  letter-spacing: 0;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+
+.oscillator {
+  display: inline-block;
+  width: 300px;
+  margin: 0 20px 0 0;
+}
+
+.box {
+  border: 4px solid $blue;
+  box-sizing: border-box;
+}
+
+.wavetable-box {
+  display: inline-block;
+  width: 140px;
+  &:first-child {
+    margin: 0 20px 0 0;
+  }
+  select {
+    width: 136px;
+    margin: 2px 2px 0;
+  }
+}
