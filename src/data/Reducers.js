@@ -12,7 +12,7 @@ function initOscillator(name){
     channelDataA: [],
     channelDataB: [],
     computedChannelData: [],
-    algorithm: null,
+    algorithm: 'plus',
     volume: 100,
     detune: 0,
     pitch: 440,
@@ -24,6 +24,27 @@ let initialState = {
     // initOscillator('2'),
     // initOscillator('3'),
   ],
+}
+
+
+// Update the computed waveform based on the current algorithm.
+function computeWaveform(channelDataA, channelDataB, algorithm) {
+  if (!channelDataA || !channelDataB || !algorithm){
+    return [];
+  }
+
+  return channelDataB.map(function(data, index) {
+    if(algorithm === 'plus'){
+      return channelDataA[index] + channelDataB[index];
+    } else if(algorithm === 'minus'){
+      return channelDataA[index] - channelDataB[index];
+    } else if(algorithm === 'divide'){
+      return channelDataA[index] / channelDataB[index];
+    } else if(algorithm === 'multiply'){
+      return channelDataA[index] * channelDataB[index];
+    }
+  });
+
 }
 
 function OscillatorsReducer(state, action) {
@@ -46,7 +67,6 @@ function OscillatorsReducer(state, action) {
     case 'WAVE_FLE_LOAD_COMPLETED':
       state.Oscillators = state.Oscillators.map(function(osc){
         if(osc.id === action.id) {
-
           // Update the A or B channel data and audio buffer on load.
           if(action.side === 'A'){
             osc.audioBufferA = action.audioBuffer;
@@ -55,15 +75,18 @@ function OscillatorsReducer(state, action) {
             osc.audioBufferB = action.audioBuffer;
             osc.channelDataB = action.channelData;
           }
-
-          // Update the computed waveform based on the current algorithm.
-          if(osc.channelDataA.length && osc.channelDataB.length){
-            osc.computedChannelData =  osc.channelDataB.map(function(data, index) {
-              return osc.channelDataA[index] - osc.channelDataB[index];
-            });
-          }
-
+          osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm);
         }
+        return osc;
+      });
+      return Object.assign({}, state);
+
+    case 'OSC_ALGORITHM_CHANGED':
+      state.Oscillators = state.Oscillators.map(function(osc){
+        if(osc.id === action.id) {
+          osc.algorithm = action.algorithm;
+        }
+        osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm);
         return osc;
       });
       return Object.assign({}, state);

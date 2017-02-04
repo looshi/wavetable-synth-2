@@ -60,23 +60,6 @@ WaveFileLoader.defaultProps = {
   files: [],
 };
 
-
-function mapDispatchToProps(dispatch){
-  return {
-    eventHandlerName: function(args) {
-      dispatch({
-        type: 'EVENT_NAME',
-        arg1: 'value',
-        arg2: 'value'
-      });
-    }
-  }
-}
-
 // By default, invoking connect with no arguments will inject dispatch as
 // a prop to the component.
 export default connect()(WaveFileLoader);
-
-function loadFile(file) {
-
-}

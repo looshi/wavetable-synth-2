@@ -21,4 +21,13 @@ Actions.waveFileLoadCompleted = function waveFileLoadCompleted(id, side, audioBu
   };
 };
 
+// A wave file associated with one of the wave tables has been loaded.
+Actions.oscAlgorithmChanged = function oscAlgorithmChanged(id, algorithm) {
+  return {
+    type: 'OSC_ALGORITHM_CHANGED',
+    id,
+    algorithm,
+  };
+};
+
 export default Actions;

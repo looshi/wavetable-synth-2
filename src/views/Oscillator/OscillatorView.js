@@ -5,8 +5,9 @@ Contains two file loaders, the row of algorithm operators, and three WaveLine
 graphics.
 */
 import React from 'react';
-import WaveFileLoader from './WaveFileLoader.js'
-import WaveLine from './WaveLine.js'
+import WaveFileLoader from './WaveFileLoader.js';
+import WaveLine from './WaveLine.js';
+import AlgorithmSwitch from './AlgorithmSwitch.js';
 
 class OscillatorView extends React.Component {
   constructor(props) {
@@ -46,6 +47,11 @@ class OscillatorView extends React.Component {
              selectedFile = {this.props.fileB}
              audioContext = {this.props.audioContext}
              files = {this.props.files} />
+           </div>
+           <div className = 'algorithm-switch-horizontal'>
+             <AlgorithmSwitch
+               id = {this.props.id}
+               algorithm = {this.props.algorithm} />
            </div>
            <div className='wavetable-computed'>
              <WaveLine
