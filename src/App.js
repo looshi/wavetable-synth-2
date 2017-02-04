@@ -29,7 +29,8 @@ class App extends React.Component {
                 channelDataB = {oscillator.channelDataB}
                 computedChannelData = {oscillator.computedChannelData}
                 detune = {oscillator.detune}
-                pitch = {oscillator.pitch}
+                octave = {oscillator.octave}
+                amount = {oscillator.amount}
                 audioContext = {audioContext}
                 files = {WaveFiles} />
             );

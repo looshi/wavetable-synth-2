@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Oswald');
 
 $blue: #0047B4;
+$light-gray: #B9BDD7;
 
 body {
   background-color: white;
@@ -69,4 +70,25 @@ h1 {
   font-size: 16px;
   display: inline-block;
   margin-right: 18px;
+}
+
+/* sliders */
+.oscillator-sliders {
+  margin: 16px 0 0 0;
+}
+.horizontal-slider {
+  margin: 6px 0 0 0;
+  .slider-label {
+    display: inline-block;
+    width: 80px;
+  }
+  .slider-value {
+    display: inline-block;
+    text-align: right;
+    width: 34px;
+  }
+  input {
+    display: inline-block;
+    width: 180px;
+  }
 }

@@ -13,16 +13,16 @@ function initOscillator(name){
     channelDataB: [],
     computedChannelData: [],
     algorithm: 'plus',
-    volume: 100,
+    amount: 75,
     detune: 0,
-    pitch: 440,
+    octave: 0,
   }
 }
 let initialState = {
   Oscillators: [
     initOscillator('1'),
-    // initOscillator('2'),
-    // initOscillator('3'),
+    initOscillator('2'),
+    initOscillator('3'),
   ],
 }
 
@@ -87,6 +87,16 @@ function OscillatorsReducer(state, action) {
           osc.algorithm = action.algorithm;
         }
         osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm);
+        return osc;
+      });
+      return Object.assign({}, state);
+
+    case 'OSC_SLIDER_CHANGED':
+      state.Oscillators = state.Oscillators.map(function(osc) {
+        if(osc.id === action.id) {
+          osc[action.propertyName] = action.value;
+          console.log('osc reducer',action.propertyName, osc[action.propertyName], action[action.propertyName]);
+        }
         return osc;
       });
       return Object.assign({}, state);

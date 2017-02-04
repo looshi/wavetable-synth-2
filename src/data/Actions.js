@@ -1,6 +1,6 @@
 let Actions = {};
 
-// A wave file associated with one of the wave tables has started loading.
+// An oscillator started to load a wave file.
 Actions.waveFileLoadStarted = function waveFileLoadStarted(id, side, file) {
   return {
     type: 'WAVE_FLE_LOAD_STARTED',
@@ -10,7 +10,7 @@ Actions.waveFileLoadStarted = function waveFileLoadStarted(id, side, file) {
   };
 };
 
-// A wave file associated with one of the wave tables has been loaded.
+// An oscillator wave file has been loaded.
 Actions.waveFileLoadCompleted = function waveFileLoadCompleted(id, side, audioBuffer, channelData) {
   return {
     type: 'WAVE_FLE_LOAD_COMPLETED',
@@ -21,7 +21,7 @@ Actions.waveFileLoadCompleted = function waveFileLoadCompleted(id, side, audioBu
   };
 };
 
-// A wave file associated with one of the wave tables has been loaded.
+// An oscillator algorithm has changed.
 Actions.oscAlgorithmChanged = function oscAlgorithmChanged(id, algorithm) {
   return {
     type: 'OSC_ALGORITHM_CHANGED',
@@ -29,5 +29,16 @@ Actions.oscAlgorithmChanged = function oscAlgorithmChanged(id, algorithm) {
     algorithm,
   };
 };
+
+// An oscillator detune has changed.
+Actions.oscSliderChanged = function oscSliderChanged(id, value, propertyName) {
+  return {
+    type: 'OSC_SLIDER_CHANGED',
+    id,
+    value,
+    propertyName,
+  };
+};
+
 
 export default Actions;
