@@ -88,7 +88,7 @@ export default WaveLine;
 function drawPixels(pixels, width, height, context, rgba) {
   const canvasData = context.getImageData(0, 0, width, height);
   context.beginPath();
-  context.lineWidth = 4;
+  context.lineWidth = 2;
   context.strokeStyle = '#0047B4';
 
   for(var i=0; i<pixels.length; i++){

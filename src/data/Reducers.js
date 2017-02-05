@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux'
 
 // Oscillator.
-function initOscillator(name){
+function initOscillator(name) {
   return {
     name,
     id: Math.random().toString(),
-    fileA: 'none',
-    fileB: 'none',
+    fileA: 'AKWF_bsaw_0005.wav',
+    fileB: 'AKWF_cheeze_0001.wav',
     audioBufferA: null,
     audioBufferB: null,
     channelDataA: [],
@@ -18,14 +18,31 @@ function initOscillator(name){
     octave: 0,
   }
 }
+
 let initialState = {
+  Master: {
+    volume: 10,
+  },
   Oscillators: [
     initOscillator('1'),
-    initOscillator('2'),
-    initOscillator('3'),
+    // initOscillator('2'),
+    // initOscillator('3'),
   ],
 }
 
+function MasterReducer(state, action) {
+  state = state || initialState;
+
+  switch (action.type) {
+    case 'SLIDER_CHANGED':
+      if(action.id === 'master'){
+        state.Master.volume = action.value;
+        return Object.assign({}, state);
+      }
+    default:
+      return state;
+  }
+}
 
 // Update the computed waveform based on the current algorithm.
 function computeWaveform(channelDataA, channelDataB, algorithm) {
@@ -91,11 +108,10 @@ function OscillatorsReducer(state, action) {
       });
       return Object.assign({}, state);
 
-    case 'OSC_SLIDER_CHANGED':
+    case 'SLIDER_CHANGED':
       state.Oscillators = state.Oscillators.map(function(osc) {
         if(osc.id === action.id) {
           osc[action.propertyName] = action.value;
-          console.log('osc reducer',action.propertyName, osc[action.propertyName], action[action.propertyName]);
         }
         return osc;
       });
@@ -107,6 +123,7 @@ function OscillatorsReducer(state, action) {
 }
 
 const Reducers = combineReducers({
+  MasterReducer,
   OscillatorsReducer,
 });
 

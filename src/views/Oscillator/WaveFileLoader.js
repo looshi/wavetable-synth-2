@@ -11,14 +11,19 @@ const baseUrl = 'http://davedave.us/wavetable-synth/wavs/';
 class WaveFileLoader extends React.Component {
   constructor(props) {
     super(props);
+    const {id, side, audioContext, dispatch} = this.props;
+    this.loadWaveFile(this.props.selectedFile);
   }
   onFileSelected(e) {
     const {id, side, audioContext, dispatch} = this.props;
     let action = Actions.waveFileLoadStarted(id, side, e.target.value);
-    this.props.dispatch(action);
+    dispatch(action);
+    this.loadWaveFile(e.target.value);
+  }
 
-    // Load the .wav file from the server.
-    const filePath = baseUrl + e.target.value;
+  loadWaveFile(fileName) {
+    const {id, side, audioContext, dispatch} = this.props;
+    const filePath = baseUrl + fileName;
     const self = this;
     axios.get(filePath, { responseType: 'arraybuffer' })
       .then(function (response) {

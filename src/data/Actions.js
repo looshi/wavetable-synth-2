@@ -31,14 +31,13 @@ Actions.oscAlgorithmChanged = function oscAlgorithmChanged(id, algorithm) {
 };
 
 // An oscillator detune has changed.
-Actions.oscSliderChanged = function oscSliderChanged(id, value, propertyName) {
+Actions.sliderChanged = function sliderChanged(id, value, propertyName) {
   return {
-    type: 'OSC_SLIDER_CHANGED',
+    type: 'SLIDER_CHANGED',
     id,
     value,
     propertyName,
   };
 };
-
 
 export default Actions;

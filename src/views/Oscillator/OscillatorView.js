@@ -1,8 +1,8 @@
 /*
 OscillatorView
-Container for each oscillator view.
-Contains two file loaders, the row of algorithm operators, and three WaveLine
-graphics.
+UI controls for a single oscillator.
+Combines two waveforms and calculates a new waveform based on the selected
+operator.
 */
 import React from 'react';
 import WaveFileLoader from './WaveFileLoader.js';

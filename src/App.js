@@ -5,6 +5,9 @@ import WaveFiles from './data/WaveFiles.js'
 import {connect} from 'react-redux';
 import { createStore } from 'redux';
 import Reducers from './data/Reducers.js';
+import Synth from './audio/Synth.js';
+import HorizontalSlider from './views/Components/HorizontalSlider.js';
+
 let store = createStore(Reducers);
 const audioContext = new AudioContext();
 
@@ -13,6 +16,13 @@ class App extends React.Component {
   render() {
     return (
       <div>
+        <HorizontalSlider
+          id = "master"
+          name = "master gain"
+          min = {0}
+          max = {100}
+          step = {1}
+          value = {this.props.Master.volume} />
         {
           this.props.Oscillators.map( (oscillator) => {
             return (
@@ -36,6 +46,12 @@ class App extends React.Component {
             );
           })
         }
+
+        <Synth
+          audioContext = {audioContext}
+          Master = {this.props.Master}
+          Oscillators = {this.props.Oscillators} />
+
       </div>
     );
   }
@@ -44,6 +60,7 @@ class App extends React.Component {
 // Container components can be described by these two functions :
 function mapStateToProps(reducers){
   return {
+    Master: reducers.MasterReducer.Master,
     Oscillators: reducers.OscillatorsReducer.Oscillators,
   };
 }
