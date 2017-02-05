@@ -9,9 +9,9 @@ import {connect} from 'react-redux';
 class OscillatorAudio extends React.Component {
   constructor(props) {
     super(props);
-    const {audioContext, masterGain} = this.props;
+    const {audioContext, output} = this.props;
     this.gainNode = audioContext.createGain();
-    this.gainNode.connect(masterGain);
+    this.gainNode.connect(output);
   }
 
   arrayEqual(a, b) {

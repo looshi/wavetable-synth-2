@@ -1,12 +1,12 @@
 /*
-HorizontalSlider
-Label, slider, and number value.
+VerticalSlider
+Label, slider.
 */
 import React from 'react';
 import {connect} from 'react-redux';
 import Actions from '../../data/Actions.js';
 
-class HorizontalSlider extends React.Component {
+class VerticalSlider extends React.Component {
   constructor(props, context) {
     super(props, context);
   }
@@ -19,19 +19,20 @@ class HorizontalSlider extends React.Component {
 
   render() {
     return (
-      <div className = 'horizontal-slider'>
-        <div className = 'slider-label'>{this.props.name}</div>
+      <div className = 'vertical-slider'>
+
         <input
           type = 'range'
+          orient = 'vertical'
           min = {this.props.min}
           max = {this.props.max}
           defaultValue = {this.props.value}
           onChange = {this.handleChange.bind(this)} />
 
-        <div className='slider-value'>{this.props.value}</div>
+        <div className='slider-label'>{this.props.name}</div>
       </div>
     );
   }
 }
 
-export default connect()(HorizontalSlider);
+export default connect()(VerticalSlider);

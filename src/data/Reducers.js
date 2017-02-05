@@ -28,6 +28,10 @@ let initialState = {
     initOscillator('2'),
     initOscillator('3'),
   ],
+  Filter: {
+    freq: 2000,
+    res: 100,
+  }
 }
 
 function MasterReducer(state, action) {
@@ -39,6 +43,22 @@ function MasterReducer(state, action) {
         state.Master.volume = action.value;
         return Object.assign({}, state);
       }
+    default:
+      return state;
+  }
+}
+
+function FilterReducer(state, action) {
+  state = state || initialState;
+
+  switch (action.type) {
+    case 'SLIDER_CHANGED':
+      if (action.id === 'filter-freq') {
+        state.Filter.freq = action.value;
+      } else if (action.id === 'filter-res') {
+        state.Filter.res = action.value;
+      }
+      return Object.assign({}, state);
     default:
       return state;
   }
@@ -124,6 +144,7 @@ function OscillatorsReducer(state, action) {
 
 const Reducers = combineReducers({
   MasterReducer,
+  FilterReducer,
   OscillatorsReducer,
 });
 

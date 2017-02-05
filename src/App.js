@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import OscillatorView from './views/Oscillator/OscillatorView.js';
+import FilterView from './views/Filter/FilterView.js';
 import WaveFiles from './data/WaveFiles.js'
 import {connect} from 'react-redux';
 import { createStore } from 'redux';
@@ -47,9 +48,12 @@ class App extends React.Component {
           })
         }
 
+        <FilterView />
+
         <Synth
           audioContext = {audioContext}
           Master = {this.props.Master}
+          Filter = {this.props.Filter}
           Oscillators = {this.props.Oscillators} />
 
       </div>
@@ -60,6 +64,7 @@ class App extends React.Component {
 // Container components can be described by these two functions :
 function mapStateToProps(reducers){
   return {
+    Filter: reducers.FilterReducer.Filter,
     Master: reducers.MasterReducer.Master,
     Oscillators: reducers.OscillatorsReducer.Oscillators,
   };

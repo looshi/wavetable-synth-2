@@ -92,3 +92,20 @@ h1 {
     width: 180px;
   }
 }
+
+.vertical-slider {
+  display: inline-block;
+  width: 26px;
+  text-align: center;
+  padding: 12px;
+}
+
+/* vertical slider */
+input[type=range][orient=vertical]{
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 8px;
+    height: 115px;
+    padding: 0 5px;
+    margin: 0 auto;
+}
