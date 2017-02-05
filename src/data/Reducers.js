@@ -25,8 +25,8 @@ let initialState = {
   },
   Oscillators: [
     initOscillator('1'),
-    // initOscillator('2'),
-    // initOscillator('3'),
+    initOscillator('2'),
+    initOscillator('3'),
   ],
 }
 

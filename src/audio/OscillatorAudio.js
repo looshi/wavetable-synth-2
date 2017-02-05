@@ -26,11 +26,12 @@ class OscillatorAudio extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const {audioContext, computedChannelData} = this.props;
 
-    const hasChanged = !this.arrayEqual(prevProps.computedChannelData, computedChannelData);
-    // If computed data has changed. TODO : only update if has changed.
-    if(computedChannelData.length > 0 && hasChanged) {
-
-      console.log('updating osc');
+    // Only update the computed waveform if it actually changed.
+    let hasWaveDataChanged = true;
+    if(prevProps.computedChannelData.length) {
+      hasWaveDataChanged = !this.arrayEqual(prevProps.computedChannelData, computedChannelData);
+    }
+    if(hasWaveDataChanged && computedChannelData.length) {
 
       // Stop and disconnect the current oscillator.
       if (this.wavSource && this.wavSource._started) {
@@ -46,13 +47,20 @@ class OscillatorAudio extends React.Component {
       // Set the computed data to this oscillator, and start it.
       this.wavSource.buffer = this.audioBuffer;
       this.wavSource.loop = true;
-      this.wavSource.detune.value = 440;
       this.wavSource.start();
       this.wavSource._started = true;
       this.wavSource.connect(this.gainNode);
     }
 
+    // Update oscillator volume, octave, and detune.
+    const {detune, octave, amount} = this.props;
+    if (this.wavSource) {
+      this.wavSource.detune.value = detune;
+       // 100 cents * 12 notes = 1 octave.
+      this.wavSource.detune.value += octave * 100 * 12;
+    }
 
+    this.gainNode.gain.value = amount / 100;
 
 
   }
