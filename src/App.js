@@ -8,6 +8,7 @@ import { createStore } from 'redux';
 import Reducers from './data/Reducers.js';
 import Synth from './audio/Synth.js';
 import HorizontalSlider from './views/Components/HorizontalSlider.js';
+import Keyboard from './views/Keyboard/Keyboard.js';
 
 let store = createStore(Reducers);
 const audioContext = new AudioContext();
@@ -51,10 +52,14 @@ class App extends React.Component {
         <FilterView />
 
         <Synth
+          store = {store}
           audioContext = {audioContext}
           Master = {this.props.Master}
           Filter = {this.props.Filter}
           Oscillators = {this.props.Oscillators} />
+
+        <Keyboard
+          store = {store}/>
 
       </div>
     );

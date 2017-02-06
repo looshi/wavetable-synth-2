@@ -10,26 +10,44 @@ import OscillatorAudio from './OscillatorAudio.js';
 class Synth extends React.Component {
   constructor(props, context) {
     super(props, context);
-    let {audioContext} = this.props;
+    let {audioContext, store} = this.props;
+
     this.masterGain = audioContext.createGain();
 
-    this.masterGain.gain.value = 1;
 
     this.biquadFilter = audioContext.createBiquadFilter();
-    this.biquadFilter.type = 'lowpass';
-    this.biquadFilter.frequency.value = 300;
-    this.biquadFilter.gain.value = 200;
+    // this.biquadFilter.type = 'lowpass';
+    // this.biquadFilter.frequency.value = 300;
+    // this.biquadFilter.gain.value = 200;
     this.biquadFilter.connect(this.masterGain);
 
+    console.log('Synth constructor');
+
+
+
+    console.log('Synth mounted');
     this.masterGain.connect(audioContext.destination);
 
+    store.subscribe( () => {
+
+    });
+
   }
+
+  // componentDidMount() {
+  //   let {audioContext, store} = this.props;
+  //
+  // }
 
   componentDidUpdate(prevProps, prevState) {
     this.masterGain.gain.value = this.props.Master.volume / 100;
 
     this.biquadFilter.frequency.value = this.props.Filter.freq;
     this.biquadFilter.Q.value = this.props.Filter.res;
+
+    let {store} = this.props;
+    store.dispatch({type:'synth updated.'});
+
   }
 
   render() {

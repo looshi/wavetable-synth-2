@@ -21,7 +21,7 @@ function initOscillator(name) {
 
 let initialState = {
   Master: {
-    volume: 10,
+    volume: 1,
   },
   Oscillators: [
     initOscillator('1'),
