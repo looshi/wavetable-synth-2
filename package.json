@@ -35,6 +35,8 @@
     "node-sass": "^4.5.0",
     "rimraf": "^2.5.4",
     "sass-loader": "^4.1.1",
+    "standard": "^8.6.0",
+    "standard-loader": "^5.0.0",
     "style-loader": "^0.13.1",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.2.0",

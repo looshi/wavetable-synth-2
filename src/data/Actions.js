@@ -1,43 +1,43 @@
-let Actions = {};
+let Actions = {}
 
 // An oscillator started to load a wave file.
-Actions.waveFileLoadStarted = function waveFileLoadStarted(id, side, file) {
+Actions.waveFileLoadStarted = function waveFileLoadStarted (id, side, file) {
   return {
     type: 'WAVE_FLE_LOAD_STARTED',
     id,
     side,    // This will be either 'A' or 'B'.
-    file,    // The filename selected.
-  };
-};
+    file    // The filename selected.
+  }
+}
 
 // An oscillator wave file has been loaded.
-Actions.waveFileLoadCompleted = function waveFileLoadCompleted(id, side, audioBuffer, channelData) {
+Actions.waveFileLoadCompleted = function waveFileLoadCompleted (id, side, audioBuffer, channelData) {
   return {
     type: 'WAVE_FLE_LOAD_COMPLETED',
     id,
     side,           // This will be either 'A' or 'B'.
     audioBuffer,    // The AudioBuffer object.
-    channelData,    // Compressed array of wave data for use in graphics.
-  };
-};
+    channelData    // Compressed array of wave data for use in graphics.
+  }
+}
 
 // An oscillator algorithm has changed.
-Actions.oscAlgorithmChanged = function oscAlgorithmChanged(id, algorithm) {
+Actions.oscAlgorithmChanged = function oscAlgorithmChanged (id, algorithm) {
   return {
     type: 'OSC_ALGORITHM_CHANGED',
     id,
-    algorithm,
-  };
-};
+    algorithm
+  }
+}
 
 // An oscillator detune has changed.
-Actions.sliderChanged = function sliderChanged(id, value, propertyName) {
+Actions.sliderChanged = function sliderChanged (id, value, propertyName) {
   return {
     type: 'SLIDER_CHANGED',
     id,
     value,
-    propertyName,
-  };
-};
+    propertyName
+  }
+}
 
-export default Actions;
+export default Actions

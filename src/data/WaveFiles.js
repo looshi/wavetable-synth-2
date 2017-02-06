@@ -16,6 +16,6 @@ const WaveFiles = [
   'AKWF_stereo_0001.wav',
   'AKWF_symetric_0001.wav',
   'AKWF_tannerin_0001.wav',
-  'AKWF_violin_0001.wav',
-];
-export default WaveFiles;
+  'AKWF_violin_0001.wav'
+]
+export default WaveFiles
