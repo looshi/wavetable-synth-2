@@ -33,7 +33,7 @@ function initOscillator (name) {
     amount: 75,
     detune: 0,
     octave: 0,
-    note: 12 // A at 440hz.
+    note: null // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
   }
 }
 

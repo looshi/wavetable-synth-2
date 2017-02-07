@@ -9,9 +9,11 @@ import Reducers from './data/Reducers.js'
 import Synth from './audio/Synth.js'
 import HorizontalSlider from './views/Components/HorizontalSlider.js'
 import Keyboard from './views/Keyboard/Keyboard.js'
+import EventEmitter from 'event-emitter'
 
 let store = createStore(Reducers)
 const audioContext = new AudioContext()
+const eventEmitter = new EventEmitter()
 
 class App extends React.Component {
 
@@ -27,6 +29,7 @@ class App extends React.Component {
           value={this.props.Master.volume} />
 
         <Keyboard
+          eventEmitter={eventEmitter}
           Keyboard={this.props.Keyboard} />
 
         {
@@ -58,6 +61,7 @@ class App extends React.Component {
 
         <Synth
           store={store}
+          eventEmitter={eventEmitter}
           audioContext={audioContext}
           Master={this.props.Master}
           Filter={this.props.Filter}
