@@ -20,44 +20,46 @@ class App extends React.Component {
   render () {
     return (
       <div>
-        <HorizontalSlider
-          id='master'
-          name='master gain'
-          min={0}
-          max={100}
-          step={1}
-          value={this.props.Master.volume} />
+        <div className='scroll-container'>
+          <HorizontalSlider
+            id='master'
+            name='master gain'
+            min={0}
+            max={100}
+            step={1}
+            value={this.props.Master.volume} />
+
+          {
+            this.props.Oscillators.map((oscillator) => {
+              return (
+                <OscillatorView
+                  key={oscillator.id}
+                  id={oscillator.id}
+                  name={oscillator.name}
+                  fileA={oscillator.fileA}
+                  fileB={oscillator.fileB}
+                  algorithm={oscillator.algorithm}
+                  audioBufferA={oscillator.audioBufferA}
+                  audioBufferB={oscillator.audioBufferB}
+                  channelDataA={oscillator.channelDataA}
+                  channelDataB={oscillator.channelDataB}
+                  computedChannelData={oscillator.computedChannelData}
+                  note={oscillator.note}
+                  detune={oscillator.detune}
+                  octave={oscillator.octave}
+                  amount={oscillator.amount}
+                  audioContext={audioContext}
+                  files={WaveFiles} />
+              )
+            })
+          }
+
+          <FilterView />
+        </div>
 
         <Keyboard
           eventEmitter={eventEmitter}
           Keyboard={this.props.Keyboard} />
-
-        {
-          this.props.Oscillators.map((oscillator) => {
-            return (
-              <OscillatorView
-                key={oscillator.id}
-                id={oscillator.id}
-                name={oscillator.name}
-                fileA={oscillator.fileA}
-                fileB={oscillator.fileB}
-                algorithm={oscillator.algorithm}
-                audioBufferA={oscillator.audioBufferA}
-                audioBufferB={oscillator.audioBufferB}
-                channelDataA={oscillator.channelDataA}
-                channelDataB={oscillator.channelDataB}
-                computedChannelData={oscillator.computedChannelData}
-                note={oscillator.note}
-                detune={oscillator.detune}
-                octave={oscillator.octave}
-                amount={oscillator.amount}
-                audioContext={audioContext}
-                files={WaveFiles} />
-            )
-          })
-        }
-
-        <FilterView />
 
         <Synth
           store={store}

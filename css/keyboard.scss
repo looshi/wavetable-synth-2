@@ -1,0 +1,63 @@
+$blue: #0047B4;
+$light-gray: #B9BDD7;
+
+.keyboard-container {
+  position: fixed;
+  bottom: 0;
+  background: #fff;
+  width: 100%;
+  margin: 20px 40px;
+  width: 933px;
+}
+.keyboard {
+  border: 4px solid $blue;
+  width: 940px;
+  .white-keys {
+    display: flex;
+    width: 936px;
+    .key {
+      flex: 1 0 auto;
+      background: #fff;
+      width: 14px;
+      height: 60px;
+      border-right: 1px solid #000;
+      border-radius: 0px 0px 2px 2px;
+    }
+  }
+  .black-keys {
+    display: flex;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    height: 1px;
+
+    .key {
+      -webkit-box-shadow: -1px 1px 2px 1px rgba(0,0,0,0.25);
+      -moz-box-shadow: -1px 1px 2px 1px rgba(0,0,0,0.25);
+      box-shadow: -1px 1px 2px 1px rgba(0,0,0,0.25);
+      flex: 1 0 auto;
+      background: $blue;
+      width: 14px;
+      height: 37px;
+      border-radius: 0px 0px 4px 4px;
+    }
+    .spacer {
+      background: red;
+      visibility: hidden;
+      width: 7px;
+      height: 1px;
+    }
+  }
+
+  .key {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    &:active {
+      background-color: #FA7900 !important;
+    }
+  }
+}

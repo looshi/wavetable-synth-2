@@ -20,23 +20,78 @@ class Keyboard extends React.Component {
     this.props.eventEmitter.emit('NOTE_OFF', key)
   }
 
-  render () {
-    return (
-      <div className='key'>
-        {
-          Object.keys(this.props.Keyboard).map((key) => {
-            return (
-              <div key={key} className='key'>
-                <button
-                  data-key={key}
-                  onMouseDown={this.handleKeyDown.bind(this)}
-                  onMouseUp={this.handleKeyUp.bind(this)}>
-                  {key}
-                </button>
-              </div>
-            )
-          })
+  // Populates black and white key arrays with midi note number data.
+  drawKeys () {
+    let blackKeys = [1, 3, 6, 8, 10]
+    let keys = {
+      black: [],
+      white: []
+    }
+
+    for (var octave = 0; octave < 5; octave++) {
+      for (var i = 0; i <= 11; i++) {
+        var key = {
+          midi: i + (12 * octave) + 36,
+          note: i
         }
+        if (blackKeys.indexOf(i) !== -1) {
+          keys.black.push(key)
+        } else {
+          keys.white.push(key)
+          // Spacers are invisible keys which space out visible black keys.
+          let spacer = {
+            isSpacer: true
+          }
+          keys.black.push(spacer)
+        }
+      }
+    }
+    return keys
+  }
+
+  blackKeyClassName (key) {
+    let className = 'key black-key'
+    if (key.isSpacer) className += ' spacer'
+    return className
+  }
+
+  render () {
+    let {black, white} = this.drawKeys()
+
+    return (
+      <div className='keyboard-container'>
+        <div className='keyboard'>
+          <div className='white-keys'>
+            {
+              white.map((key) => {
+                return (
+                  <div
+                    key={Math.random()}
+                    data-key={key.note}
+                    onMouseDown={this.handleKeyDown.bind(this)}
+                    onMouseUp={this.handleKeyUp.bind(this)}
+                    className='key'
+                    data-midi={key.midi} />
+                )
+              })
+            }
+          </div>
+          <div className='black-keys'>
+            {
+              black.map((key) => {
+                return (
+                  <div
+                    key={Math.random()}
+                    data-key={key.note}
+                    onMouseDown={this.handleKeyDown.bind(this)}
+                    onMouseUp={this.handleKeyUp.bind(this)}
+                    className={this.blackKeyClassName(key)}
+                    data-midi={key.midi} />
+                )
+              })
+            }
+          </div>
+        </div>
       </div>
     )
   }

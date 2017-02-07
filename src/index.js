@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 
 import '../css/index.scss'
+import '../css/keyboard.scss'
 import App from './App.js'
 import Reducers from './data/Reducers.js'
 

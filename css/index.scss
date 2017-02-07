@@ -8,7 +8,13 @@ body {
   font-family: 'Oswald', sans-serif;
   font-weight: 400;
   color: $blue;
+
+}
+
+.scroll-container {
   padding: 20px 40px;
+  overflow: auto;
+  height: calc(100% - 80px);
 }
 
 h1 {
@@ -108,10 +114,4 @@ input[type=range][orient=vertical]{
     height: 115px;
     padding: 0 5px;
     margin: 0 auto;
-}
-
-
-/* Keyboard */
-.key {
-  display: inline-block;
 }
