@@ -25,6 +25,10 @@ class App extends React.Component {
           max={100}
           step={1}
           value={this.props.Master.volume} />
+
+        <Keyboard
+          Keyboard={this.props.Keyboard} />
+
         {
           this.props.Oscillators.map((oscillator) => {
             return (
@@ -40,6 +44,7 @@ class App extends React.Component {
                 channelDataA={oscillator.channelDataA}
                 channelDataB={oscillator.channelDataB}
                 computedChannelData={oscillator.computedChannelData}
+                note={oscillator.note}
                 detune={oscillator.detune}
                 octave={oscillator.octave}
                 amount={oscillator.amount}
@@ -58,9 +63,6 @@ class App extends React.Component {
           Filter={this.props.Filter}
           Oscillators={this.props.Oscillators} />
 
-        <Keyboard
-          store={store} />
-
       </div>
     )
   }
@@ -69,8 +71,9 @@ class App extends React.Component {
 // Container components can be described by these two functions :
 function mapStateToProps (reducers) {
   return {
-    Filter: reducers.FilterReducer.Filter,
     Master: reducers.MasterReducer.Master,
+    Filter: reducers.FilterReducer.Filter,
+    Keyboard: reducers.KeyboardReducer.Keyboard,
     Oscillators: reducers.OscillatorsReducer.Oscillators
   }
 }

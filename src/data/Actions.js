@@ -40,4 +40,13 @@ Actions.sliderChanged = function sliderChanged (id, value, propertyName) {
   }
 }
 
+// Keyboard note on.
+Actions.noteOn = function noteOn (note) {
+  return { type: 'NOTE_ON', note }
+}
+// Keyboard note off.
+Actions.noteOff = function noteOff (note) {
+  return { type: 'NOTE_OFF', note }
+}
+
 export default Actions

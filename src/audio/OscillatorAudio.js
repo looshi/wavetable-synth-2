@@ -12,7 +12,6 @@ class OscillatorAudio extends React.Component {
     const {audioContext, output} = this.props
     this.gainNode = audioContext.createGain()
     this.gainNode.connect(output)
-    console.log('OscillatorAudio constructor', output)
   }
 
   arraysChanged (a, b) {
@@ -62,10 +61,14 @@ class OscillatorAudio extends React.Component {
     }
 
     // Update oscillator volume, octave, and detune.
-    const {detune, octave, amount} = this.props
+    const {detune, octave, amount, note} = this.props
+
     if (this.wavSource) {
+      // Local osc detune value.
       this.wavSource.detune.value = detune
-       // 100 cents * 12 notes = 1 octave.
+      // Master pitch note (note value * 100 cents per note).
+      this.wavSource.detune.value += note * 100
+       // Local osc octave value  (100 cents * 12 notes = 1 octave).
       this.wavSource.detune.value += octave * 100 * 12
     }
 

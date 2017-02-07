@@ -1,5 +1,22 @@
 import { combineReducers } from 'redux'
 
+// Master.
+let Master = {
+  volume: 1
+}
+
+// Filter.
+let Filter = {
+  freq: 2000,
+  res: 20
+}
+
+// Keyboard, notes are represented as object keys, { 22: 'on', 23: 'off' ... }.
+let Keyboard = {}
+for (let i = 1; i <= 88; i++) {
+  Keyboard[i] = 'off'
+}
+
 // Oscillator.
 function initOscillator (name) {
   return {
@@ -15,23 +32,20 @@ function initOscillator (name) {
     algorithm: 'plus',
     amount: 75,
     detune: 0,
-    octave: 0
+    octave: 0,
+    note: 12 // A at 440hz.
   }
 }
 
 let initialState = {
-  Master: {
-    volume: 1
-  },
+  Master,
+  Filter,
+  Keyboard,
   Oscillators: [
     initOscillator('1'),
     initOscillator('2'),
     initOscillator('3')
-  ],
-  Filter: {
-    freq: 2000,
-    res: 20
-  }
+  ]
 }
 
 function MasterReducer (state, action) {
@@ -45,6 +59,21 @@ function MasterReducer (state, action) {
       } else {
         return state
       }
+    default:
+      return state
+  }
+}
+
+function KeyboardReducer (state, action) {
+  state = state || initialState
+
+  switch (action.type) {
+    case 'NOTE_ON':
+      state.Keyboard[action.note] = 'on'
+      return Object.assign({}, state)
+    case 'NOTE_OFF':
+      state.Keyboard[action.note] = 'off'
+      return Object.assign({}, state)
     default:
       return state
   }
@@ -119,6 +148,7 @@ function OscillatorsReducer (state, action) {
       })
       return Object.assign({}, state)
 
+    // The +, -, /, * selected operator was changed.
     case 'OSC_ALGORITHM_CHANGED':
       state.Oscillators = state.Oscillators.map(function (osc) {
         if (osc.id === action.id) {
@@ -129,6 +159,15 @@ function OscillatorsReducer (state, action) {
       })
       return Object.assign({}, state)
 
+    // A key was pressed on the keyboard, updates each oscillators' pitch.
+    case 'NOTE_ON':
+      state.Oscillators = state.Oscillators.map(function (osc) {
+        osc.note = action.note
+        return osc
+      })
+      return Object.assign({}, state)
+
+    // Updates local osc values, detune, octave, and amt.
     case 'SLIDER_CHANGED':
       state.Oscillators = state.Oscillators.map(function (osc) {
         if (osc.id === action.id) {
@@ -146,6 +185,7 @@ function OscillatorsReducer (state, action) {
 const Reducers = combineReducers({
   MasterReducer,
   FilterReducer,
+  KeyboardReducer,
   OscillatorsReducer
 })
 
