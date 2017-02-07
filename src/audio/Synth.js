@@ -29,10 +29,32 @@ class Synth extends React.Component {
     // Note On / Off events are handled manually here.
     eventEmitter.on('NOTE_ON', (note) => {
       this.ampEnvelopeOn()
+      this.filterEnvelopeOn()
     })
     eventEmitter.on('NOTE_OFF', (note) => {
       this.ampEnvelopeOff()
+      this.filterEnvelopeOff()
     })
+  }
+
+  filterEnvelopeOn () {
+    let now = this.props.audioContext.currentTime
+    let {frequency} = this.biquadFilter
+    let {attack, decay, sustain} = this.props.Filter
+    frequency.cancelScheduledValues(0)
+    frequency.setValueAtTime(60, now)
+    frequency.linearRampToValueAtTime(this.props.Filter.freq, now + attack)
+    frequency.linearRampToValueAtTime(sustain, now + attack + decay)
+  }
+
+  filterEnvelopeOff () {
+    this.biquadFilter.frequency.cancelScheduledValues(0)
+    let now = this.props.audioContext.currentTime
+    let {frequency} = this.biquadFilter
+    let {release} = this.props.Filter
+    frequency.cancelScheduledValues(0)
+    frequency.setValueAtTime(frequency.value, now)
+    frequency.linearRampToValueAtTime(60, now + release)
   }
 
   ampEnvelopeOn () {

@@ -2,13 +2,17 @@ import { combineReducers } from 'redux'
 
 // Master.
 let Master = {
-  volume: 1
+  volume: 50
 }
 
 // Filter.
 let Filter = {
   freq: 2000,
-  res: 20
+  res: 20,
+  attack: 0.01,
+  decay: 0.5,
+  sustain: 0.3,
+  release: 0.2
 }
 
 // Amp.
@@ -117,6 +121,14 @@ function FilterReducer (state, action) {
         state.Filter.freq = action.value
       } else if (action.id === 'filter-res') {
         state.Filter.res = action.value
+      } else if (action.id === 'filter-attack') {
+        state.Filter.attack = action.value / 100
+      } else if (action.id === 'filter-decay') {
+        state.Filter.decay = action.value / 100
+      } else if (action.id === 'filter-sustain') {
+        state.Filter.sustain = action.value / 100
+      } else if (action.id === 'filter-release') {
+        state.Filter.release = action.value / 100
       }
       return Object.assign({}, state)
     default:
