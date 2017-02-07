@@ -27,12 +27,13 @@ class Keyboard extends React.Component {
       black: [],
       white: []
     }
-
+    let note = 0
     for (var octave = 0; octave < 5; octave++) {
       for (var i = 0; i <= 11; i++) {
+        note = note + 1
         var key = {
           midi: i + (12 * octave) + 36,
-          note: i
+          note: note
         }
         if (blackKeys.indexOf(i) !== -1) {
           keys.black.push(key)

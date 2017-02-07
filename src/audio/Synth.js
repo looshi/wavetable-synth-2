@@ -28,30 +28,33 @@ class Synth extends React.Component {
 
     // Note On / Off events are handled manually here.
     eventEmitter.on('NOTE_ON', (note) => {
-      this.ampEnvelopeOn(0.001, 0.2, 0.5)
+      this.ampEnvelopeOn()
     })
     eventEmitter.on('NOTE_OFF', (note) => {
-      this.ampEnvelopeOff(0.2)
+      this.ampEnvelopeOff()
     })
   }
 
-  ampEnvelopeOn (attack, decay, sustain) {
+  ampEnvelopeOn () {
     let now = this.props.audioContext.currentTime
     let {gain} = this.vcaGain
-    // Prevent clicking by fading out very fast, then fading back up.
+    let {attack, decay, sustain} = this.props.Amp
+    // // Prevent clicking by fading out very fast, then fading back up.
     let clickOffset = 0.001
+    gain.cancelScheduledValues(0)
     gain.setValueAtTime(gain.value, now)
     gain.linearRampToValueAtTime(0, now + clickOffset)
     clickOffset += 0.001
-    gain.cancelScheduledValues(now + clickOffset)
     gain.setValueAtTime(0, now + clickOffset)
-    gain.linearRampToValueAtTime(1, now + clickOffset + attack)
-    gain.linearRampToValueAtTime(sustain, now + clickOffset + attack + decay)
+    gain.linearRampToValueAtTime(1, now + attack + clickOffset)
+    gain.linearRampToValueAtTime(sustain, now + attack + decay + clickOffset)
   }
 
-  ampEnvelopeOff (release) {
+  ampEnvelopeOff () {
     let now = this.props.audioContext.currentTime
     let {gain} = this.vcaGain
+    let {release} = this.props.Amp
+    gain.cancelScheduledValues(0)
     gain.setValueAtTime(gain.value, now)
     gain.linearRampToValueAtTime(0, now + release)
   }

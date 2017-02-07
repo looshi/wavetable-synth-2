@@ -9,7 +9,7 @@ class FilterView extends React.Component {
 
   render () {
     return (
-      <div className='filter'>
+      <div className='module'>
         <h1>Filter</h1>
         <div className='box'>
           <div className='filter-sliders'>
@@ -19,14 +19,14 @@ class FilterView extends React.Component {
               min={60}
               max={20000}
               step={10}
-              value={this.props.detune} />
+              value={this.props.freq} />
             <VerticalSlider
               id='filter-res'
               name='res'
               min={0}
               max={100}
               step={1}
-              value={this.props.octave} />
+              value={this.props.res} />
           </div>
         </div>
       </div>

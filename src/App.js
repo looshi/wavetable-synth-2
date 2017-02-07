@@ -2,6 +2,7 @@
 import React from 'react'
 import OscillatorView from './views/Oscillator/OscillatorView.js'
 import FilterView from './views/Filter/FilterView.js'
+import AmpView from './views/Filter/AmpView.js'
 import WaveFiles from './data/WaveFiles.js'
 import {connect} from 'react-redux'
 import { createStore } from 'redux'
@@ -54,7 +55,14 @@ class App extends React.Component {
             })
           }
 
-          <FilterView />
+          <div>
+            <FilterView />
+            <AmpView attack={this.props.Amp.attack * 100}
+              decay={this.props.Amp.decay * 100}
+              sustain={this.props.Amp.sustain * 100}
+              release={this.props.Amp.release * 100} />
+          </div>
+          <div className='scroll-footer'>&nbsp;</div>
         </div>
 
         <Keyboard
@@ -67,6 +75,7 @@ class App extends React.Component {
           audioContext={audioContext}
           Master={this.props.Master}
           Filter={this.props.Filter}
+          Amp={this.props.Amp}
           Oscillators={this.props.Oscillators} />
 
       </div>
@@ -74,11 +83,11 @@ class App extends React.Component {
   }
 }
 
-// Container components can be described by these two functions :
 function mapStateToProps (reducers) {
   return {
     Master: reducers.MasterReducer.Master,
     Filter: reducers.FilterReducer.Filter,
+    Amp: reducers.AmpReducer.Amp,
     Keyboard: reducers.KeyboardReducer.Keyboard,
     Oscillators: reducers.OscillatorsReducer.Oscillators
   }

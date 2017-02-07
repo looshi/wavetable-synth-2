@@ -12,9 +12,13 @@ body {
 }
 
 .scroll-container {
-  padding: 20px 40px;
+  padding: 0 80px;
+  margin-bottom: 40px;
   overflow: auto;
   height: calc(100% - 80px);
+}
+.scroll-footer {
+  height: 20px;
 }
 
 h1 {
@@ -34,6 +38,12 @@ h1 {
 .box {
   border: 4px solid $blue;
   box-sizing: border-box;
+}
+
+.module {
+  display:inline-block;
+  width: 300px;
+  margin-right: 20px;
 }
 
 .wavetable-box {

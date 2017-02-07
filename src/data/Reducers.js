@@ -11,6 +11,14 @@ let Filter = {
   res: 20
 }
 
+// Amp.
+let Amp = {
+  attack: 0.01,
+  decay: 0.5,
+  sustain: 0.3,
+  release: 0.2
+}
+
 // Keyboard, notes are represented as object keys, { 22: 'on', 23: 'off' ... }.
 let Keyboard = {}
 for (let i = 1; i <= 88; i++) {
@@ -40,6 +48,7 @@ function initOscillator (name) {
 let initialState = {
   Master,
   Filter,
+  Amp,
   Keyboard,
   Oscillators: [
     initOscillator('1'),
@@ -73,6 +82,26 @@ function KeyboardReducer (state, action) {
       return Object.assign({}, state)
     case 'NOTE_OFF':
       state.Keyboard[action.note] = 'off'
+      return Object.assign({}, state)
+    default:
+      return state
+  }
+}
+
+function AmpReducer (state, action) {
+  state = state || initialState
+
+  switch (action.type) {
+    case 'SLIDER_CHANGED':
+      if (action.id === 'amp-attack') {
+        state.Amp.attack = action.value / 100
+      } else if (action.id === 'amp-decay') {
+        state.Amp.decay = action.value / 100
+      } else if (action.id === 'amp-sustain') {
+        state.Amp.sustain = action.value / 100
+      } else if (action.id === 'amp-release') {
+        state.Amp.release = action.value / 100
+      }
       return Object.assign({}, state)
     default:
       return state
@@ -185,6 +214,7 @@ function OscillatorsReducer (state, action) {
 const Reducers = combineReducers({
   MasterReducer,
   FilterReducer,
+  AmpReducer,
   KeyboardReducer,
   OscillatorsReducer
 })
