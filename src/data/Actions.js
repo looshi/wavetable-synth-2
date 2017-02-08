@@ -31,13 +31,21 @@ Actions.oscAlgorithmChanged = function oscAlgorithmChanged (id, algorithm) {
 }
 
 // An oscillator detune has changed.
-Actions.sliderChanged = function sliderChanged (id, value, propertyName) {
+Actions.sliderChanged = function sliderChanged (id, value, name) {
   return {
     type: 'SLIDER_CHANGED',
     id,
     value,
-    propertyName
+    name
   }
+}
+
+// LFO shape changed.
+Actions.lfoShapeChanged = function sliderChanged (id, shape) {
+  return { type: 'LFO_SHAPE_CHANGED', id, shape }
+}
+Actions.lfoDestinationChanged = function sliderChanged (id, destination) {
+  return { type: 'LFO_DESTINATION_CHANGED', id, destination }
 }
 
 // Keyboard note on.

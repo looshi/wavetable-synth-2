@@ -2,16 +2,17 @@ import { combineReducers } from 'redux'
 
 // Master.
 let Master = {
-  volume: 50
+  volume: 25
 }
 
 // Filter.
+// sustain is Hz value. attack, decay, release are time in seconds.
 let Filter = {
   freq: 2000,
   res: 20,
   attack: 0.01,
   decay: 0.5,
-  sustain: 0.3,
+  sustain: 400,
   release: 0.2
 }
 
@@ -27,6 +28,25 @@ let Amp = {
 let Keyboard = {}
 for (let i = 1; i <= 88; i++) {
   Keyboard[i] = 'off'
+}
+
+// LFOs
+function initLFO (name) {
+  return {
+    name,
+    id: Math.random().toString(),
+    shape: 'triangle',
+    amount: 50,
+    rate: 50,
+    destination: 'none',
+    destinations: [
+      'amp amount',
+      'filter amount',
+      'filter frequency',
+      'filter resonance',
+      'envelope amount'
+    ]
+  }
 }
 
 // Oscillator.
@@ -58,6 +78,11 @@ let initialState = {
     initOscillator('1'),
     initOscillator('2'),
     initOscillator('3')
+  ],
+  LFOs: [
+    initLFO('1'),
+    initLFO('2'),
+    initLFO('3')
   ]
 }
 
@@ -97,13 +122,13 @@ function AmpReducer (state, action) {
 
   switch (action.type) {
     case 'SLIDER_CHANGED':
-      if (action.id === 'amp-attack') {
+      if (action.name === 'amp-attack') {
         state.Amp.attack = action.value / 100
-      } else if (action.id === 'amp-decay') {
+      } else if (action.name === 'amp-decay') {
         state.Amp.decay = action.value / 100
-      } else if (action.id === 'amp-sustain') {
+      } else if (action.name === 'amp-sustain') {
         state.Amp.sustain = action.value / 100
-      } else if (action.id === 'amp-release') {
+      } else if (action.name === 'amp-release') {
         state.Amp.release = action.value / 100
       }
       return Object.assign({}, state)
@@ -117,19 +142,56 @@ function FilterReducer (state, action) {
 
   switch (action.type) {
     case 'SLIDER_CHANGED':
-      if (action.id === 'filter-freq') {
+      if (action.name === 'filter-freq') {
         state.Filter.freq = action.value
-      } else if (action.id === 'filter-res') {
+      } else if (action.name === 'filter-res') {
         state.Filter.res = action.value
-      } else if (action.id === 'filter-attack') {
+      } else if (action.name === 'filter-attack') {
         state.Filter.attack = action.value / 100
-      } else if (action.id === 'filter-decay') {
+      } else if (action.name === 'filter-decay') {
         state.Filter.decay = action.value / 100
-      } else if (action.id === 'filter-sustain') {
-        state.Filter.sustain = action.value / 100
-      } else if (action.id === 'filter-release') {
+      } else if (action.name === 'filter-sustain') {
+        state.Filter.sustain = action.value
+      } else if (action.name === 'filter-release') {
         state.Filter.release = action.value / 100
       }
+      return Object.assign({}, state)
+    default:
+      return state
+  }
+}
+
+function LFOsReducer (state, action) {
+  state = state || initialState
+
+  switch (action.type) {
+    case 'LFO_SHAPE_CHANGED':
+      state.LFOs = state.LFOs.map(function (lfo) {
+        if (lfo.id === action.id) {
+          lfo.shape = action.shape
+        }
+        return lfo
+      })
+      return Object.assign({}, state)
+    case 'LFO_DESTINATION_CHANGED':
+      state.LFOs = state.LFOs.map(function (lfo) {
+        if (lfo.id === action.id) {
+          lfo.destination = action.destination
+        }
+        return lfo
+      })
+      return Object.assign({}, state)
+    case 'SLIDER_CHANGED':
+      state.LFOs = state.LFOs.map(function (lfo) {
+        if (lfo.id === action.id) {
+          if (action.name === 'lfo-amount') {
+            lfo.amount = action.value
+          } else if (action.name === 'lfo-rate') {
+            lfo.rate = action.value
+          }
+        }
+        return lfo
+      })
       return Object.assign({}, state)
     default:
       return state
@@ -212,7 +274,7 @@ function OscillatorsReducer (state, action) {
     case 'SLIDER_CHANGED':
       state.Oscillators = state.Oscillators.map(function (osc) {
         if (osc.id === action.id) {
-          osc[action.propertyName] = action.value
+          osc[action.name] = action.value
         }
         return osc
       })
@@ -228,6 +290,7 @@ const Reducers = combineReducers({
   FilterReducer,
   AmpReducer,
   KeyboardReducer,
+  LFOsReducer,
   OscillatorsReducer
 })
 

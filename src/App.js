@@ -3,6 +3,7 @@ import React from 'react'
 import OscillatorView from './views/Oscillator/OscillatorView.js'
 import FilterView from './views/Filter/FilterView.js'
 import AmpView from './views/Filter/AmpView.js'
+import LFOView from './views/LFO/LFOView.js'
 import WaveFiles from './data/WaveFiles.js'
 import {connect} from 'react-redux'
 import { createStore } from 'redux'
@@ -57,10 +58,28 @@ class App extends React.Component {
 
           <div>
             <FilterView />
-            <AmpView attack={this.props.Amp.attack * 100}
+            <AmpView
+              attack={this.props.Amp.attack * 100}
               decay={this.props.Amp.decay * 100}
               sustain={this.props.Amp.sustain * 100}
               release={this.props.Amp.release * 100} />
+          </div>
+          <div>
+            {
+              this.props.LFOs.map((LFO) => {
+                return (
+                  <LFOView
+                    key={LFO.id}
+                    id={LFO.id}
+                    name={LFO.name}
+                    shape={LFO.shape}
+                    amount={LFO.amount}
+                    rate={LFO.rate}
+                    destination={LFO.destination}
+                    destinations={LFO.destinations} />
+                )
+              })
+            }
           </div>
           <div className='scroll-footer'>&nbsp;</div>
         </div>
@@ -88,21 +107,10 @@ function mapStateToProps (reducers) {
     Master: reducers.MasterReducer.Master,
     Filter: reducers.FilterReducer.Filter,
     Amp: reducers.AmpReducer.Amp,
+    LFOs: reducers.LFOsReducer.LFOs,
     Keyboard: reducers.KeyboardReducer.Keyboard,
     Oscillators: reducers.OscillatorsReducer.Oscillators
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    eventHandlerName: function (args) {
-      dispatch({
-        type: 'EVENT_NAME',
-        arg1: 'value',
-        arg2: 'value'
-      })
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(mapStateToProps, null)(App)

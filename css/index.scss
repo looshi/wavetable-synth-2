@@ -125,3 +125,25 @@ input[type=range][orient=vertical]{
     padding: 0 5px;
     margin: 0 auto;
 }
+
+// LFOs
+.lfo {
+  select {
+    width: 100%;
+  }
+  .shape-switch{
+    width: 100px;
+    display: inline-block;
+    vertical-align: top;
+    margin: 25px 32px;
+    .wave-label {
+      text-align: center;
+    }
+  }
+  .sliders {
+    display: inline-block;
+  }
+  .toggle-button {
+    margin: 8px;
+  }
+}

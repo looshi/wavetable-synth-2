@@ -14,29 +14,29 @@ class AmpView extends React.Component {
         <div className='box'>
           <div className='filter-sliders'>
             <VerticalSlider
-              id='amp-attack'
-              name='a'
+              name='amp-attack'
+              label='a'
               min={1}
               max={100}
               step={1}
               value={this.props.attack} />
             <VerticalSlider
-              id='amp-decay'
-              name='d'
+              name='amp-decay'
+              label='d'
               min={0}
               max={100}
               step={1}
               value={this.props.decay} />
             <VerticalSlider
-              id='amp-sustain'
-              name='s'
+              name='amp-sustain'
+              label='s'
               min={0}
               max={100}
               step={1}
               value={this.props.sustain} />
             <VerticalSlider
-              id='amp-release'
-              name='r'
+              name='amp-release'
+              label='r'
               min={0}
               max={100}
               step={1}

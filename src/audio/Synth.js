@@ -45,6 +45,7 @@ class Synth extends React.Component {
     frequency.setValueAtTime(60, now)
     frequency.linearRampToValueAtTime(this.props.Filter.freq, now + attack)
     frequency.linearRampToValueAtTime(sustain, now + attack + decay)
+    console.log('filter', sustain, now + attack + decay)
   }
 
   filterEnvelopeOff () {

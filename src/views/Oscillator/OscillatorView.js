@@ -59,6 +59,7 @@ class OscillatorView extends React.Component {
             <HorizontalSlider
               id={this.props.id}
               name='detune'
+              label='detune'
               min={-12}
               max={12}
               step={1}
@@ -66,6 +67,7 @@ class OscillatorView extends React.Component {
             <HorizontalSlider
               id={this.props.id}
               name='octave'
+              label='octave'
               min={-3}
               max={3}
               step={1}
@@ -73,6 +75,7 @@ class OscillatorView extends React.Component {
             <HorizontalSlider
               id={this.props.id}
               name='amount'
+              label='amount'
               min={0}
               max={100}
               step={1}

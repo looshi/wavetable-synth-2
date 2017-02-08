@@ -17,7 +17,7 @@ class HorizontalSlider extends React.Component {
   render () {
     return (
       <div className='horizontal-slider'>
-        <div className='slider-label'>{this.props.name}</div>
+        <div className='slider-label'>{this.props.label}</div>
         <input
           type='range'
           min={this.props.min}

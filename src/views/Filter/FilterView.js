@@ -14,43 +14,43 @@ class FilterView extends React.Component {
         <div className='box'>
           <div className='filter-sliders'>
             <VerticalSlider
-              id='filter-freq'
-              name='freq'
+              name='filter-freq'
+              label='freq'
               min={60}
               max={20000}
               step={10}
               value={this.props.freq} />
             <VerticalSlider
-              id='filter-res'
-              name='res'
+              name='filter-res'
+              label='res'
               min={0}
               max={100}
               step={1}
               value={this.props.res} />
             <VerticalSlider
-              id='filter-attack'
-              name='a'
+              name='filter-attack'
+              label='a'
               min={1}
               max={100}
               step={1}
               value={this.props.attack} />
             <VerticalSlider
-              id='filter-decay'
-              name='d'
+              name='filter-decay'
+              label='d'
               min={0}
               max={100}
               step={1}
               value={this.props.decay} />
             <VerticalSlider
-              id='filter-sustain'
-              name='s'
-              min={0}
-              max={100}
-              step={1}
+              name='filter-sustain'
+              label='s'
+              min={60}
+              max={20000}
+              step={10}
               value={this.props.sustain} />
             <VerticalSlider
-              id='filter-release'
-              name='r'
+              name='filter-release'
+              label='r'
               min={0}
               max={100}
               step={1}

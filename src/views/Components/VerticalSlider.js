@@ -26,7 +26,7 @@ class VerticalSlider extends React.Component {
           defaultValue={this.props.value}
           onChange={this.handleChange.bind(this)} />
 
-        <div className='slider-label'>{this.props.name}</div>
+        <div className='slider-label'>{this.props.label}</div>
       </div>
     )
   }
