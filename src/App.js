@@ -26,6 +26,7 @@ class App extends React.Component {
           <HorizontalSlider
             id='master'
             name='master gain'
+            label='master gain'
             min={0}
             max={100}
             step={1}

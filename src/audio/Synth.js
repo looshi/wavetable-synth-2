@@ -45,7 +45,6 @@ class Synth extends React.Component {
     frequency.setValueAtTime(60, now)
     frequency.linearRampToValueAtTime(this.props.Filter.freq, now + attack)
     frequency.linearRampToValueAtTime(sustain, now + attack + decay)
-    console.log('filter', sustain, now + attack + decay)
   }
 
   filterEnvelopeOff () {
@@ -108,7 +107,11 @@ class Synth extends React.Component {
                 amount={oscillator.amount}
                 note={oscillator.note}
                 audioContext={this.props.audioContext}
-                output={this.biquadFilter} />
+                output={this.biquadFilter}
+                lfoOn={oscillator.lfoOn}
+                lfoRate={oscillator.lfoRate}
+                lfoAmount={oscillator.lfoAmount}
+                lfoType={oscillator.lfoType} />
             )
           })
         }

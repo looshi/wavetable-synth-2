@@ -44,8 +44,8 @@ Actions.sliderChanged = function sliderChanged (id, value, name) {
 Actions.lfoShapeChanged = function sliderChanged (id, shape) {
   return { type: 'LFO_SHAPE_CHANGED', id, shape }
 }
-Actions.lfoDestinationChanged = function sliderChanged (id, destination) {
-  return { type: 'LFO_DESTINATION_CHANGED', id, destination }
+Actions.lfoDestinationChanged = function sliderChanged (id, oldDestination, newDestination) {
+  return { type: 'LFO_DESTINATION_CHANGED', id, oldDestination, newDestination }
 }
 
 // Keyboard note on.

@@ -2,12 +2,14 @@ import { combineReducers } from 'redux'
 
 // Master.
 let Master = {
+  id: 'master',
   volume: 25
 }
 
 // Filter.
 // sustain is Hz value. attack, decay, release are time in seconds.
 let Filter = {
+  id: 'filter',
   freq: 2000,
   res: 20,
   attack: 0.01,
@@ -18,6 +20,7 @@ let Filter = {
 
 // Amp.
 let Amp = {
+  id: 'amp',
   attack: 0.01,
   decay: 0.5,
   sustain: 0.3,
@@ -30,30 +33,11 @@ for (let i = 1; i <= 88; i++) {
   Keyboard[i] = 'off'
 }
 
-// LFOs
-function initLFO (name) {
-  return {
-    name,
-    id: Math.random().toString(),
-    shape: 'triangle',
-    amount: 50,
-    rate: 50,
-    destination: 'none',
-    destinations: [
-      'amp amount',
-      'filter amount',
-      'filter frequency',
-      'filter resonance',
-      'envelope amount'
-    ]
-  }
-}
-
 // Oscillator.
-function initOscillator (name) {
+function initOscillator (name, id) {
   return {
     name,
-    id: Math.random().toString(),
+    id,
     fileA: 'AKWF_bsaw_0005.wav',
     fileB: 'AKWF_cheeze_0001.wav',
     audioBufferA: null,
@@ -65,7 +49,33 @@ function initOscillator (name) {
     amount: 75,
     detune: 0,
     octave: 0,
-    note: null // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
+    note: null, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
+    lfoOn: false,
+    lfoAmount: 0,
+    lfoRate: 0,
+    lfoType: 'sine'
+  }
+}
+
+// LFOs
+function initLFO (name, id) {
+  return {
+    name,
+    id,
+    shape: 'triangle',
+    amount: 50,
+    rate: 50,
+    destination: {id: '-1', label: 'none', active: true},
+    destinations: [
+      {id: '-1', label: 'none', active: true},
+      {id: '0', label: 'amp amount', moduleId: 'amp', property: 'gain', active: false},
+      {id: '1', label: 'filter frequency', moduleId: 'filter', property: 'freq', active: false},
+      {id: '2', label: 'filter resonance', moduleId: 'filter', property: 'res', active: false},
+      {id: '3', label: 'filter frequency', moduleId: 'filter', property: 'frequency', active: false},
+      {id: '4', label: 'osc 1 pitch', moduleId: 'osc1', property: 'detune', active: false},
+      {id: '5', label: 'osc 2 pitch', moduleId: 'osc2', property: 'detune', active: false},
+      {id: '6', label: 'osc 3 pitch', moduleId: 'osc3', property: 'detune', active: false}
+    ]
   }
 }
 
@@ -75,14 +85,14 @@ let initialState = {
   Amp,
   Keyboard,
   Oscillators: [
-    initOscillator('1'),
-    initOscillator('2'),
-    initOscillator('3')
+    initOscillator('1', 'osc1'),
+    initOscillator('2', 'osc2'),
+    initOscillator('3', 'osc3')
   ],
   LFOs: [
-    initLFO('1'),
-    initLFO('2'),
-    initLFO('3')
+    initLFO('1', 'lfo1'),
+    initLFO('2', 'lfo2'),
+    initLFO('3', 'lfo3')
   ]
 }
 
@@ -173,10 +183,24 @@ function LFOsReducer (state, action) {
         return lfo
       })
       return Object.assign({}, state)
+
     case 'LFO_DESTINATION_CHANGED':
+      // Mark new destination as active:true to disable it in LFO dropdowns.
+      // Mark previous destination as active:false to enable it in dropdown.
       state.LFOs = state.LFOs.map(function (lfo) {
+        lfo.destination.active = false
+        let destinations = [...lfo.destinations]
+        destinations.forEach((dest) => {
+          if (dest.id === action.oldDestination.id) {
+            dest.active = false
+          } else if (dest.id === action.newDestination.id && dest.id !== '-1') {
+            dest.active = true
+          }
+        })
+        lfo.destinations = destinations
+
         if (lfo.id === action.id) {
-          lfo.destination = action.destination
+          lfo.destination = action.newDestination
         }
         return lfo
       })
@@ -275,6 +299,23 @@ function OscillatorsReducer (state, action) {
       state.Oscillators = state.Oscillators.map(function (osc) {
         if (osc.id === action.id) {
           osc[action.name] = action.value
+        }
+        return osc
+      })
+      return Object.assign({}, state)
+
+    // Turn on the LFO if an oscillator was selected as a destination.
+    case 'LFO_DESTINATION_CHANGED':
+      state.Oscillators = state.Oscillators.map(function (osc) {
+        // Turn off LFO.
+        if (osc.id === action.oldDestination.moduleId) {
+          osc.lfoOn = false
+          console.log('turn off lfo for osc', osc.name)
+        }
+        // Turn on LFO.
+        if (osc.id === action.newDestination.moduleId) {
+          console.log('turn on lfo for osc', osc.name, action.newDestination.property)
+          osc.lfoOn = true
         }
         return osc
       })

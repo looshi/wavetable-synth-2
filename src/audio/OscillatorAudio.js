@@ -12,6 +12,11 @@ class OscillatorAudio extends React.Component {
     const {audioContext, output} = this.props
     this.gainNode = audioContext.createGain()
     this.gainNode.connect(output)
+    this.lfo = audioContext.createOscillator()
+    this.type = 'sine'
+    this.lfo.start()
+    this.lfoGain = audioContext.createGain()
+    this.lfo.connect(this.lfoGain)
   }
 
   arraysChanged (a, b) {
@@ -60,19 +65,31 @@ class OscillatorAudio extends React.Component {
       this.wavSource.connect(this.gainNode)
     }
 
-    // Update oscillator volume, octave, and detune.
-    const {detune, octave, amount, note} = this.props
-
     if (this.wavSource) {
+      // Update oscillator volume, octave, and detune.
+      const {detune, octave, amount, note} = this.props
       // Local osc detune value.
       this.wavSource.detune.value = detune
       // Master pitch note (note value * 100 cents per note).
       this.wavSource.detune.value += note * 100
        // Local osc octave value  (100 cents * 12 notes = 1 octave).
       this.wavSource.detune.value += octave * 100 * 12
-    }
 
-    this.gainNode.gain.value = amount / 100
+      // Update local pitch lfo.
+      const {lfoRate, lfoAmount, lfoType, lfoOn} = this.props
+
+      if (lfoOn) {
+        this.lfo.type = lfoType
+        this.lfo.frequency.value = lfoRate
+        this.lfoGain.gain.value = lfoAmount
+        this.lfoGain.connect(this.wavSource.detune)
+      } else {
+        this.lfoGain.disconnect()
+      }
+
+      // Update local gain
+      this.gainNode.gain.value = amount / 100
+    }
   }
 
   render () { return null }

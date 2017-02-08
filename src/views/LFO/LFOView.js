@@ -10,9 +10,10 @@ import Actions from '../../data/Actions.js'
 class LFOView extends React.Component {
 
   onDestinationChanged (event) {
-    const {id, dispatch} = this.props
-    const destination = event.target.value
-    let action = Actions.lfoDestinationChanged(id, destination)
+    const {id, dispatch, destinations} = this.props
+    const newDestination = destinations.find((dest) => dest.id === event.target.value)
+    const oldDestination = this.props.destination
+    let action = Actions.lfoDestinationChanged(id, oldDestination, newDestination)
     dispatch(action)
   }
 
@@ -69,7 +70,7 @@ class LFOView extends React.Component {
         </div>
         <select
           onChange={this.onDestinationChanged.bind(this)}
-          value={this.props.destination} >
+          value={this.props.destination.id} >
           <option
             key='none'
             value='none'
@@ -78,11 +79,14 @@ class LFOView extends React.Component {
           </option>
           {
             this.props.destinations.map((destination) => {
+              let options = {
+                key: destination.id,
+                value: destination.id
+              }
+              if (destination.active) options.disabled = 'disabled'
               return (
-                <option
-                  key={destination}
-                  value={destination}>
-                  {destination}
+                <option {...options}>
+                  {destination.label}
                 </option>
               )
             })
