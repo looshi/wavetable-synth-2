@@ -40,10 +40,14 @@ class Synth extends React.Component {
   filterEnvelopeOn () {
     let now = this.props.audioContext.currentTime
     let {frequency} = this.biquadFilter
-    let {attack, decay, sustain} = this.props.Filter
+    let {attack, decay, sustain, freq} = this.props.Filter
+    attack = this.clampToMinMax(0.001, 1, attack / 100)
+    decay = decay / 100
+    sustain = this.clampToMinMax(60, 20000, sustain * 200)
+    freq = this.clampToMinMax(60, 20000, freq * 200)
     frequency.cancelScheduledValues(0)
     frequency.setValueAtTime(60, now)
-    frequency.linearRampToValueAtTime(this.props.Filter.freq, now + attack)
+    frequency.linearRampToValueAtTime(freq, now + attack)
     frequency.linearRampToValueAtTime(sustain, now + attack + decay)
   }
 
@@ -52,6 +56,7 @@ class Synth extends React.Component {
     let now = this.props.audioContext.currentTime
     let {frequency} = this.biquadFilter
     let {release} = this.props.Filter
+    release = release / 100
     frequency.cancelScheduledValues(0)
     frequency.setValueAtTime(frequency.value, now)
     frequency.linearRampToValueAtTime(60, now + release)
@@ -61,6 +66,9 @@ class Synth extends React.Component {
     let now = this.props.audioContext.currentTime
     let {gain} = this.vcaGain
     let {attack, decay, sustain} = this.props.Amp
+    attack = this.clampToMinMax(0.001, 1, attack / 100)
+    decay = decay / 100
+    sustain = sustain / 100
     // // Prevent clicking by fading out very fast, then fading back up.
     let clickOffset = 0.001
     gain.cancelScheduledValues(0)
@@ -76,9 +84,17 @@ class Synth extends React.Component {
     let now = this.props.audioContext.currentTime
     let {gain} = this.vcaGain
     let {release} = this.props.Amp
+    release = this.clampToMinMax(0.001, 1, release / 100)
     gain.cancelScheduledValues(0)
     gain.setValueAtTime(gain.value, now)
     gain.linearRampToValueAtTime(0, now + release)
+  }
+
+  // Helper function to keep a value within a range.
+  clampToMinMax (min, max, val) {
+    if (val < min) return min
+    if (val > max) return max
+    return val
   }
 
   componentDidUpdate (prevProps, prevState) {

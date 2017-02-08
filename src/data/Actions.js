@@ -40,6 +40,16 @@ Actions.sliderChanged = function sliderChanged (id, value, name) {
   }
 }
 
+// A Filter value has changed.
+Actions.filterSliderChanged = function filterSliderChanged (id, value, name) {
+  return { type: 'FILTER_SLIDER_CHANGED', id, value, name }
+}
+
+// An Amp value has changed.
+Actions.ampSliderChanged = function ampSliderChanged (id, value, name) {
+  return { type: 'AMP_SLIDER_CHANGED', id, value, name }
+}
+
 // LFO shape changed.
 Actions.lfoShapeChanged = function sliderChanged (id, shape, destination) {
   return { type: 'LFO_SHAPE_CHANGED', id, shape, destination }

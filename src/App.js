@@ -58,12 +58,21 @@ class App extends React.Component {
           }
 
           <div>
-            <FilterView />
+            <FilterView
+              id={this.props.Filter.id}
+              freq={this.props.Filter.freq}
+              res={this.props.Filter.res}
+              attack={this.props.Filter.attack}
+              decay={this.props.Filter.decay}
+              sustain={this.props.Filter.sustain}
+              release={this.props.Filter.release}
+              />
             <AmpView
-              attack={this.props.Amp.attack * 100}
-              decay={this.props.Amp.decay * 100}
-              sustain={this.props.Amp.sustain * 100}
-              release={this.props.Amp.release * 100} />
+              id={this.props.Amp.id}
+              attack={this.props.Amp.attack}
+              decay={this.props.Amp.decay}
+              sustain={this.props.Amp.sustain}
+              release={this.props.Amp.release} />
           </div>
           <div>
             {

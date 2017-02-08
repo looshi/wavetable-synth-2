@@ -11,11 +11,14 @@ class VerticalSlider extends React.Component {
     return (
       <div className='vertical-slider'>
 
+        <div className='slider-amount'>{this.props.value}</div>
+
         <input
           type='range'
           orient='vertical'
           min={this.props.min}
           max={this.props.max}
+          data-name={this.props.name}
           defaultValue={this.props.value}
           onChange={this.props.onChange} />
 

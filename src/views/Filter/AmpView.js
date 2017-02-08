@@ -3,9 +3,18 @@ AmpView
 ADSR faders for amplitude.
 */
 import React from 'react'
+import {connect} from 'react-redux'
 import VerticalSlider from '../Components/VerticalSlider.js'
+import Actions from '../../data/Actions.js'
 
 class AmpView extends React.Component {
+
+  onSliderChange (event) {
+    const {id} = this.props
+    const name = event.target.getAttribute('data-name')
+    const action = Actions.ampSliderChanged(id, event.target.value, name)
+    this.props.dispatch(action)
+  }
 
   render () {
     return (
@@ -16,9 +25,10 @@ class AmpView extends React.Component {
             <VerticalSlider
               name='amp-attack'
               label='a'
-              min={1}
+              min={0}
               max={100}
               step={1}
+              onChange={this.onSliderChange.bind(this)}
               value={this.props.attack} />
             <VerticalSlider
               name='amp-decay'
@@ -26,6 +36,7 @@ class AmpView extends React.Component {
               min={0}
               max={100}
               step={1}
+              onChange={this.onSliderChange.bind(this)}
               value={this.props.decay} />
             <VerticalSlider
               name='amp-sustain'
@@ -33,6 +44,7 @@ class AmpView extends React.Component {
               min={0}
               max={100}
               step={1}
+              onChange={this.onSliderChange.bind(this)}
               value={this.props.sustain} />
             <VerticalSlider
               name='amp-release'
@@ -40,6 +52,7 @@ class AmpView extends React.Component {
               min={0}
               max={100}
               step={1}
+              onChange={this.onSliderChange.bind(this)}
               value={this.props.release} />
           </div>
         </div>
@@ -48,4 +61,4 @@ class AmpView extends React.Component {
   }
 }
 
-export default AmpView
+export default connect()(AmpView)

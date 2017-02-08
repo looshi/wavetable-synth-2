@@ -10,21 +10,21 @@ let Master = {
 // sustain is Hz value. attack, decay, release are time in seconds.
 let Filter = {
   id: 'filter',
-  freq: 2000,
+  freq: 50,
   res: 20,
-  attack: 0.01,
-  decay: 0.5,
-  sustain: 400,
-  release: 0.2
+  attack: 1,
+  decay: 5,
+  sustain: 50,
+  release: 2
 }
 
 // Amp.
 let Amp = {
   id: 'amp',
-  attack: 0.01,
-  decay: 0.5,
-  sustain: 0.3,
-  release: 0.2
+  attack: 12,
+  decay: 50,
+  sustain: 30,
+  release: 20
 }
 
 // Keyboard, notes are represented as object keys, { 22: 'on', 23: 'off' ... }.
@@ -131,16 +131,18 @@ function AmpReducer (state, action) {
   state = state || initialState
 
   switch (action.type) {
-    case 'SLIDER_CHANGED':
+    case 'AMP_SLIDER_CHANGED':
+      let Amp = Object.assign({}, state.Amp)
       if (action.name === 'amp-attack') {
-        state.Amp.attack = action.value / 100
+        Amp.attack = action.value
       } else if (action.name === 'amp-decay') {
-        state.Amp.decay = action.value / 100
+        Amp.decay = action.value
       } else if (action.name === 'amp-sustain') {
-        state.Amp.sustain = action.value / 100
+        Amp.sustain = action.value
       } else if (action.name === 'amp-release') {
-        state.Amp.release = action.value / 100
+        Amp.release = action.value
       }
+      state.Amp = Amp
       return Object.assign({}, state)
     default:
       return state
@@ -151,20 +153,23 @@ function FilterReducer (state, action) {
   state = state || initialState
 
   switch (action.type) {
-    case 'SLIDER_CHANGED':
+    case 'FILTER_SLIDER_CHANGED':
+    console.log('filter slider changed', action)
+      let Filter = Object.assign({}, state.Filter)
       if (action.name === 'filter-freq') {
-        state.Filter.freq = action.value
+        Filter.freq = action.value
       } else if (action.name === 'filter-res') {
-        state.Filter.res = action.value
+        Filter.res = action.value
       } else if (action.name === 'filter-attack') {
-        state.Filter.attack = action.value / 100
+        Filter.attack = action.value
       } else if (action.name === 'filter-decay') {
-        state.Filter.decay = action.value / 100
+        Filter.decay = action.value
       } else if (action.name === 'filter-sustain') {
-        state.Filter.sustain = action.value
+        Filter.sustain = action.value
       } else if (action.name === 'filter-release') {
-        state.Filter.release = action.value / 100
+        Filter.release = action.value
       }
+      state.Filter = Filter
       return Object.assign({}, state)
     default:
       return state
