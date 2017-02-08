@@ -111,7 +111,7 @@ class Synth extends React.Component {
                 lfoOn={oscillator.lfoOn}
                 lfoRate={oscillator.lfoRate}
                 lfoAmount={oscillator.lfoAmount}
-                lfoType={oscillator.lfoType} />
+                lfoShape={oscillator.lfoShape} />
             )
           })
         }

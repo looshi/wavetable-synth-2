@@ -41,11 +41,17 @@ Actions.sliderChanged = function sliderChanged (id, value, name) {
 }
 
 // LFO shape changed.
-Actions.lfoShapeChanged = function sliderChanged (id, shape) {
-  return { type: 'LFO_SHAPE_CHANGED', id, shape }
+Actions.lfoShapeChanged = function sliderChanged (id, shape, destination) {
+  return { type: 'LFO_SHAPE_CHANGED', id, shape, destination }
 }
 Actions.lfoDestinationChanged = function sliderChanged (id, oldDestination, newDestination) {
   return { type: 'LFO_DESTINATION_CHANGED', id, oldDestination, newDestination }
+}
+Actions.lfoAmountChanged = function lfoAmountChanged (id, amount, destination) {
+  return { type: 'LFO_AMOUNT_CHANGED', id, amount, destination }
+}
+Actions.lfoRateChanged = function sliderChanged (id, rate, destination) {
+  return { type: 'LFO_RATE_CHANGED', id, rate, destination }
 }
 
 // Keyboard note on.

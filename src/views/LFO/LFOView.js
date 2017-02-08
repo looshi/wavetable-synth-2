@@ -18,10 +18,22 @@ class LFOView extends React.Component {
   }
 
   onShapeChanged (event) {
-    const {id, dispatch} = this.props
+    const {id, destination} = this.props
     const shape = event.target.getAttribute('data-shape')
-    let action = Actions.lfoShapeChanged(id, shape)
-    dispatch(action)
+    let action = Actions.lfoShapeChanged(id, shape, destination)
+    this.props.dispatch(action)
+  }
+
+  onAmountChanged (e) {
+    const {id, destination} = this.props
+    let action = Actions.lfoAmountChanged(id, e.target.value, destination)
+    this.props.dispatch(action)
+  }
+
+  onRateChanged (e) {
+    const {id, destination} = this.props
+    let action = Actions.lfoRateChanged(id, e.target.value, destination)
+    this.props.dispatch(action)
   }
 
   buttonClassName (type, selected) {
@@ -45,7 +57,7 @@ class LFOView extends React.Component {
           <div onClick={this.onShapeChanged.bind(this)} className='shape-switch'>
             <div data-shape={'sine'} className={this.buttonClassName('sine', selected)}>~</div>
             <div data-shape={'triangle'} className={this.buttonClassName('triangle', selected)}>&#94;</div>
-            <div data-shape={'saw'} className={this.buttonClassName('saw', selected)}>/\/\</div>
+            <div data-shape={'sawtooth'} className={this.buttonClassName('sawtooth', selected)}>/\/\</div>
             <div data-shape={'square'} className={this.buttonClassName('square', selected)}>|-|</div>
             <div className='wave-label'>shape</div>
           </div>
@@ -57,6 +69,7 @@ class LFOView extends React.Component {
               min={0}
               max={100}
               step={1}
+              onChange={this.onAmountChanged.bind(this)}
               value={this.props.amount} />
             <VerticalSlider
               id={this.props.id}
@@ -65,6 +78,7 @@ class LFOView extends React.Component {
               min={1}
               max={100}
               step={1}
+              onChange={this.onRateChanged.bind(this)}
               value={this.props.rate} />
           </div>
         </div>

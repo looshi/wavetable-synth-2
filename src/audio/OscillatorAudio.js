@@ -76,12 +76,12 @@ class OscillatorAudio extends React.Component {
       this.wavSource.detune.value += octave * 100 * 12
 
       // Update local pitch lfo.
-      const {lfoRate, lfoAmount, lfoType, lfoOn} = this.props
+      const {lfoRate, lfoAmount, lfoShape, lfoOn} = this.props
 
       if (lfoOn) {
-        this.lfo.type = lfoType
+        this.lfo.type = lfoShape
         this.lfo.frequency.value = lfoRate
-        this.lfoGain.gain.value = lfoAmount
+        this.lfoGain.gain.value = lfoAmount * 48 // 0 to 4800 cents = 4 octaves
         this.lfoGain.connect(this.wavSource.detune)
       } else {
         this.lfoGain.disconnect()

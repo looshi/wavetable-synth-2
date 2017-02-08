@@ -53,7 +53,7 @@ function initOscillator (name, id) {
     lfoOn: false,
     lfoAmount: 0,
     lfoRate: 0,
-    lfoType: 'sine'
+    lfoShape: 'sine'
   }
 }
 
@@ -184,6 +184,16 @@ function LFOsReducer (state, action) {
       })
       return Object.assign({}, state)
 
+    case 'LFO_RATE_CHANGED':
+      let lfo = state.LFOs.find((l) => l.id === action.id)
+      lfo.rate = action.rate
+      return Object.assign({}, state)
+
+    case 'LFO_AMOUNT_CHANGED':
+      lfo = state.LFOs.find((l) => l.id === action.id)
+      lfo.amount = action.amount
+      return Object.assign({}, state)
+
     case 'LFO_DESTINATION_CHANGED':
       // Mark new destination as active:true to disable it in LFO dropdowns.
       // Mark previous destination as active:false to enable it in dropdown.
@@ -205,6 +215,7 @@ function LFOsReducer (state, action) {
         return lfo
       })
       return Object.assign({}, state)
+
     case 'SLIDER_CHANGED':
       state.LFOs = state.LFOs.map(function (lfo) {
         if (lfo.id === action.id) {
@@ -304,18 +315,47 @@ function OscillatorsReducer (state, action) {
       })
       return Object.assign({}, state)
 
+    case 'LFO_AMOUNT_CHANGED':
+      state.Oscillators = state.Oscillators.map(function (osc) {
+        if (osc.id === action.destination.moduleId) {
+          osc.lfoAmount = action.amount
+        }
+        return osc
+      })
+      return Object.assign({}, state)
+
+    case 'LFO_RATE_CHANGED':
+      state.Oscillators = state.Oscillators.map(function (osc) {
+        if (osc.id === action.destination.moduleId) {
+          osc.lfoRate = action.rate
+        }
+        return osc
+      })
+      return Object.assign({}, state)
+
+    case 'LFO_SHAPE_CHANGED':
+      state.Oscillators = state.Oscillators.map(function (osc) {
+        if (osc.id === action.destination.moduleId) {
+          osc.lfoShape = action.shape
+        }
+        return osc
+      })
+      return Object.assign({}, state)
+
     // Turn on the LFO if an oscillator was selected as a destination.
     case 'LFO_DESTINATION_CHANGED':
       state.Oscillators = state.Oscillators.map(function (osc) {
         // Turn off LFO.
         if (osc.id === action.oldDestination.moduleId) {
           osc.lfoOn = false
-          console.log('turn off lfo for osc', osc.name)
         }
         // Turn on LFO.
         if (osc.id === action.newDestination.moduleId) {
-          console.log('turn on lfo for osc', osc.name, action.newDestination.property)
+          let lfo = state.LFOs.find((l) => l.id === action.id)
           osc.lfoOn = true
+          osc.lfoRate = lfo.rate
+          osc.lfoAmount = lfo.amount
+          osc.lfoShape = lfo.shape
         }
         return osc
       })
