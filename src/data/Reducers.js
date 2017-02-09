@@ -1,21 +1,24 @@
 import { combineReducers } from 'redux'
+import queryString from 'query-string'
+
+const URL = queryString.parse(window.location.hash)
 
 // Master.
 let Master = {
   id: 'master',
-  volume: 25
+  volume: URL.mv || 25
 }
 
 // Filter.
 // sustain is Hz value. attack, decay, release are time in seconds.
 let Filter = {
   id: 'filter',
-  freq: 50,
-  res: 20,
-  attack: 1,
-  decay: 5,
-  sustain: 50,
-  release: 2,
+  freq: URL.ff || 50,
+  res: URL.fr || 20,
+  attack: URL.fa || 1,
+  decay: URL.fd || 5,
+  sustain: URL.fs || 50,
+  release: URL.fre || 2,
   lfoFreqOn: false,
   lfoFreqAmount: 0,
   lfoFreqRate: 0,
@@ -25,10 +28,10 @@ let Filter = {
 // Amp.
 let Amp = {
   id: 'amp',
-  attack: 12,
-  decay: 50,
-  sustain: 30,
-  release: 20,
+  attack: URL.aa || 12,
+  decay: URL.ad || 50,
+  sustain: URL.as || 30,
+  release: URL.ar || 20,
   lfoOn: false,
   lfoAmount: 0,
   lfoRate: 0,
@@ -102,6 +105,44 @@ let initialState = {
   ]
 }
 
+// Set the LFO initial destinations based on URL.
+initialState.LFOs.forEach((lfo, index) => {
+  // LFO destination &lfo1d=2
+  const dest = lfo.id + 'd'
+  const amount = lfo.id + 'a'
+  const rate = lfo.id + 'r'
+  const shape = lfo.id + 's'
+  if (URL[dest]) lfo.destination = lfo.destinations.find((d) => d.id === URL[dest])
+  if (URL[amount]) lfo.amount = URL[amount]
+  if (URL[rate]) lfo.rate = URL[rate]
+  if (URL[shape]) lfo.shape = URL[shape]
+
+  // Turn on filter LFO.
+  if (lfo.destination.id === '0') {
+    initialState.Amp.lfoOn = true
+    initialState.Amp.lfoAmount = lfo.amount
+    initialState.Amp.lfoRate = lfo.rate
+    initialState.Amp.lfoShape = lfo.shape
+  }
+
+  // Turn on filter LFO.
+  if (lfo.destination.id === '1') {
+    initialState.Filter.lfoFreqOn = true
+    initialState.Filter.lfoFreqAmount = lfo.amount
+    initialState.Filter.lfoFreqRate = lfo.rate
+    initialState.Filter.lfoFreqShape = lfo.shape
+  }
+})
+
+
+console.log('initial state', initialState)
+
+// Stores the parameters in the url.
+function updateURL (paramName, value) {
+  URL[paramName] = value
+  window.location.hash = queryString.stringify(URL)
+}
+
 function MasterReducer (state, action) {
   state = state || initialState
 
@@ -109,6 +150,7 @@ function MasterReducer (state, action) {
     case 'SLIDER_CHANGED':
       if (action.id === 'master') {
         state.Master.volume = action.value
+        updateURL('mv', action.value)
         return Object.assign({}, state)
       } else {
         return state
@@ -141,12 +183,16 @@ function AmpReducer (state, action) {
       let Amp = Object.assign({}, state.Amp)
       if (action.name === 'amp-attack') {
         Amp.attack = action.value
+        updateURL('aa', action.value)
       } else if (action.name === 'amp-decay') {
         Amp.decay = action.value
+        updateURL('ad', action.value)
       } else if (action.name === 'amp-sustain') {
         Amp.sustain = action.value
+        updateURL('as', action.value)
       } else if (action.name === 'amp-release') {
         Amp.release = action.value
+        updateURL('ar', action.value)
       }
       state.Amp = Amp
       return Object.assign({}, state)
@@ -198,16 +244,22 @@ function FilterReducer (state, action) {
       let Filter = Object.assign({}, state.Filter)
       if (action.name === 'filter-freq') {
         Filter.freq = action.value
+        updateURL('ff', action.value)
       } else if (action.name === 'filter-res') {
         Filter.res = action.value
+        updateURL('fr', action.value)
       } else if (action.name === 'filter-attack') {
         Filter.attack = action.value
+        updateURL('fa', action.value)
       } else if (action.name === 'filter-decay') {
         Filter.decay = action.value
+        updateURL('fd', action.value)
       } else if (action.name === 'filter-sustain') {
         Filter.sustain = action.value
+        updateURL('fs', action.value)
       } else if (action.name === 'filter-release') {
         Filter.release = action.value
+        updateURL('fre', action.value)
       }
       state.Filter = Filter
       return Object.assign({}, state)
@@ -235,6 +287,7 @@ function FilterReducer (state, action) {
       // Turn off LFO (if it was on).
       if (action.oldDestination.moduleId === 'filter') {
         state.Filter.lfoFreqOn = false
+        updateURL('flo', false)
       }
       // Turn on LFO.
       if (action.newDestination.moduleId === 'filter') {
@@ -243,6 +296,7 @@ function FilterReducer (state, action) {
         state.Filter.lfoFreqRate = lfo.rate
         state.Filter.lfoFreqAmount = lfo.amount
         state.Filter.lfoFreqShape = lfo.shape
+        updateURL('flo', true)
       }
       return Object.assign({}, state)
     default:
@@ -258,6 +312,7 @@ function LFOsReducer (state, action) {
       state.LFOs = state.LFOs.map(function (lfo) {
         if (lfo.id === action.id) {
           lfo.shape = action.shape
+          updateURL(lfo.id + 's', action.shape)
         }
         return lfo
       })
@@ -266,11 +321,13 @@ function LFOsReducer (state, action) {
     case 'LFO_RATE_CHANGED':
       let lfo = state.LFOs.find((l) => l.id === action.id)
       lfo.rate = action.rate
+      updateURL(lfo.id + 'r', action.rate)
       return Object.assign({}, state)
 
     case 'LFO_AMOUNT_CHANGED':
       lfo = state.LFOs.find((l) => l.id === action.id)
       lfo.amount = action.amount
+      updateURL(lfo.id + 'a', action.amount)
       return Object.assign({}, state)
 
     case 'LFO_DESTINATION_CHANGED':
@@ -279,7 +336,7 @@ function LFOsReducer (state, action) {
       state.LFOs = state.LFOs.map(function (lfo) {
         lfo.destination.active = false
         let destinations = [...lfo.destinations]
-        destinations.forEach((dest) => {
+        destinations.forEach((dest, index) => {
           if (dest.id === action.oldDestination.id) {
             dest.active = false
           } else if (dest.id === action.newDestination.id && dest.id !== '-1') {
@@ -290,6 +347,7 @@ function LFOsReducer (state, action) {
 
         if (lfo.id === action.id) {
           lfo.destination = action.newDestination
+          updateURL(lfo.id + 'd', action.newDestination.id)
         }
         return lfo
       })

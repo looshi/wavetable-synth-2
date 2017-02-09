@@ -44,6 +44,7 @@ class Synth extends React.Component {
 
     // Connections
     this.lfoFilter.connect(this.biquadFilter)
+    this.oscillatorsBus.connect(this.biquadFilter)
     this.biquadFilter.connect(this.vcaGain)
     this.vcaGain.connect(this.masterGain)
     this.masterGain.connect(audioContext.destination)
@@ -145,6 +146,7 @@ class Synth extends React.Component {
       this.lfoFreqGain.connect(this.lfoFilter.frequency)
     } else {
       // Disconnect the oscillators from the filter LFO.
+      console.log('synth filter lfo disconnect')
       this.oscillatorsBus.connect(this.biquadFilter)
       this.lfoFreq.disconnect()
       this.lfoFreqGain.disconnect()
