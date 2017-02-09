@@ -2,7 +2,7 @@
 Synth
 Contains all the audio components which comprise the synth.
 Nodes are connected in this order :
-Oscillators -> Filter -> VCA -> Master
+Oscillators -> Osc Bus -> LFOFilter (if on) -> Filter -> VCA -> Master
 */
 import React from 'react'
 import {connect} from 'react-redux'
@@ -13,15 +13,32 @@ class Synth extends React.Component {
     super(props, context)
     let {audioContext, eventEmitter} = this.props
 
+    // Amp
     this.masterGain = audioContext.createGain()
     this.vcaGain = audioContext.createGain()
     this.vcaGain.gain.value = 0
 
+    // Oscillators bus
+    this.oscillatorsBus = audioContext.createGain()
+    this.oscillatorsBus.gain.value = 1
+
+    // Filter
     this.biquadFilter = audioContext.createBiquadFilter()
     this.biquadFilter.type = 'lowpass'
-    this.biquadFilter.frequency.value = 300
-    this.biquadFilter.gain.value = 200
+    this.biquadFilter.frequency.value = 0
+    this.biquadFilter.gain.value = 300  // We can add a slider for this.
 
+    // LFOs
+    this.lfoFilter = audioContext.createBiquadFilter()
+    this.lfoFilter.type = 'lowpass'
+    this.lfoFilter.frequency.value = 100
+    this.lfoFilter.gain.value = 300  // We can add a slider for this.
+
+    this.lfoFreq = audioContext.createOscillator()
+    this.lfoFreq.start()
+    this.lfoFreqGain = audioContext.createGain()
+
+    this.lfoFilter.connect(this.biquadFilter)
     this.biquadFilter.connect(this.vcaGain)
     this.vcaGain.connect(this.masterGain)
     this.masterGain.connect(audioContext.destination)
@@ -41,10 +58,13 @@ class Synth extends React.Component {
     let now = this.props.audioContext.currentTime
     let {frequency} = this.biquadFilter
     let {attack, decay, sustain, freq} = this.props.Filter
-    attack = this.clampToMinMax(0.001, 1, attack / 100)
-    decay = decay / 100
-    sustain = this.clampToMinMax(60, 20000, sustain * 200)
-    freq = this.clampToMinMax(60, 20000, freq * 200)
+
+    attack = this.clampToMinMax(0.001, 1, attack / 50)
+    decay = decay / 50
+    sustain = (sustain / 100) * freq // Sustain is a percentage of freq.
+    sustain = this.clampToMinMax(60, 20000, sustain * 100)
+    freq = this.clampToMinMax(60, 20000, freq * 100)
+
     frequency.cancelScheduledValues(0)
     frequency.setValueAtTime(60, now)
     frequency.linearRampToValueAtTime(freq, now + attack)
@@ -56,7 +76,7 @@ class Synth extends React.Component {
     let now = this.props.audioContext.currentTime
     let {frequency} = this.biquadFilter
     let {release} = this.props.Filter
-    release = release / 100
+    release = release / 50
     frequency.cancelScheduledValues(0)
     frequency.setValueAtTime(frequency.value, now)
     frequency.linearRampToValueAtTime(60, now + release)
@@ -98,13 +118,38 @@ class Synth extends React.Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
+    // Amp
     this.masterGain.gain.value = this.props.Master.volume / 100
 
-    this.biquadFilter.frequency.value = this.props.Filter.freq
-    this.biquadFilter.Q.value = this.props.Filter.res
+    // Filter Res ( freq is set in envelopOn event )
+    this.biquadFilter.Q.value = this.props.Filter.res / 3
 
-    let {store} = this.props
-    store.dispatch({ type: 'synth updated.' })
+    // Connect the oscillators from the filter LFO.
+    // TODO : only run this if things changed.
+    if (this.props.Filter.lfoFreqOn) {
+      this.oscillatorsBus.connect(this.lfoFilter)
+
+      let freq = this.clampToMinMax(60, 20000, this.props.Filter.freq * 100 - 8000)
+      this.lfoFilter.frequency.value = freq
+
+      let {lfoFreqAmount, lfoFreqRate, lfoFreqShape} = this.props.Filter
+      this.lfoFreq.connect(this.lfoFreqGain)
+      this.lfoFreq.type = lfoFreqShape
+      this.lfoFreq.frequency.value = lfoFreqRate / 10
+      this.lfoFreqGain.gain.value = this.clampToMinMax(100, this.props.Filter.freq * 100, lfoFreqAmount * 20)
+      this.lfoFreqGain.connect(this.lfoFilter.frequency)
+    } else {
+      // Disconnect the oscillators from the filter LFO.
+      this.oscillatorsBus.connect(this.biquadFilter)
+      this.lfoFreq.disconnect()
+      this.lfoFreqGain.disconnect()
+    }
+
+    if (this.props.Filter.lfoResOn) {
+      let {lfoResAmount, lfoResRate, lfoResShape} = this.props.Filter
+      console.log('Filter Res LFO', lfoResAmount, lfoResRate, lfoResShape)
+    }
+
   }
 
   render () {
@@ -123,7 +168,7 @@ class Synth extends React.Component {
                 amount={oscillator.amount}
                 note={oscillator.note}
                 audioContext={this.props.audioContext}
-                output={this.biquadFilter}
+                output={this.oscillatorsBus}
                 lfoOn={oscillator.lfoOn}
                 lfoRate={oscillator.lfoRate}
                 lfoAmount={oscillator.lfoAmount}

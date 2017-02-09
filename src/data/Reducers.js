@@ -15,7 +15,11 @@ let Filter = {
   attack: 1,
   decay: 5,
   sustain: 50,
-  release: 2
+  release: 2,
+  lfoFreqOn: false,
+  lfoFreqAmount: 0,
+  lfoFreqRate: 0,
+  lfoFreqShape: 'sine'
 }
 
 // Amp.
@@ -24,7 +28,11 @@ let Amp = {
   attack: 12,
   decay: 50,
   sustain: 30,
-  release: 20
+  release: 20,
+  lfoOn: false,
+  lfoAmount: 0,
+  lfoRate: 0,
+  lfoShape: 'sine'
 }
 
 // Keyboard, notes are represented as object keys, { 22: 'on', 23: 'off' ... }.
@@ -71,10 +79,9 @@ function initLFO (name, id) {
       {id: '0', label: 'amp amount', moduleId: 'amp', property: 'gain', active: false},
       {id: '1', label: 'filter frequency', moduleId: 'filter', property: 'freq', active: false},
       {id: '2', label: 'filter resonance', moduleId: 'filter', property: 'res', active: false},
-      {id: '3', label: 'filter frequency', moduleId: 'filter', property: 'frequency', active: false},
-      {id: '4', label: 'osc 1 pitch', moduleId: 'osc1', property: 'detune', active: false},
-      {id: '5', label: 'osc 2 pitch', moduleId: 'osc2', property: 'detune', active: false},
-      {id: '6', label: 'osc 3 pitch', moduleId: 'osc3', property: 'detune', active: false}
+      {id: '3', label: 'osc 1 pitch', moduleId: 'osc1', property: 'detune', active: false},
+      {id: '4', label: 'osc 2 pitch', moduleId: 'osc2', property: 'detune', active: false},
+      {id: '5', label: 'osc 3 pitch', moduleId: 'osc3', property: 'detune', active: false}
     ]
   }
 }
@@ -151,11 +158,10 @@ function AmpReducer (state, action) {
 
 function FilterReducer (state, action) {
   state = state || initialState
-
+  let Filter
   switch (action.type) {
     case 'FILTER_SLIDER_CHANGED':
-    console.log('filter slider changed', action)
-      let Filter = Object.assign({}, state.Filter)
+      Filter = Object.assign({}, state.Filter)
       if (action.name === 'filter-freq') {
         Filter.freq = action.value
       } else if (action.name === 'filter-res') {
@@ -168,6 +174,71 @@ function FilterReducer (state, action) {
         Filter.sustain = action.value
       } else if (action.name === 'filter-release') {
         Filter.release = action.value
+      }
+      state.Filter = Filter
+      return Object.assign({}, state)
+
+    case 'LFO_AMOUNT_CHANGED':
+      Filter = Object.assign({}, state.Filter)
+      if (action.destination.moduleId === 'filter') {
+        if (action.destination.property === 'freq') {
+          Filter.lfoFreqAmount = action.amount
+        } else if (action.destination.property === 'res') {
+          Filter.lfoResAmount = action.amount
+        }
+      }
+      state.Filter = Filter
+      return Object.assign({}, state)
+
+    case 'LFO_RATE_CHANGED':
+      Filter = Object.assign({}, state.Filter)
+      if (action.destination.moduleId === 'filter') {
+        if (action.destination.property === 'freq') {
+          Filter.lfoFreqRate = action.rate
+        } else if (action.destination.property === 'res') {
+          Filter.lfoResRate = action.rate
+        }
+      }
+      state.Filter = Filter
+      return Object.assign({}, state)
+
+    case 'LFO_SHAPE_CHANGED':
+      Filter = Object.assign({}, state.Filter)
+      if (action.destination.moduleId === 'filter') {
+        if (action.destination.property === 'freq') {
+          Filter.lfoFreqShape = action.shape
+        } else if (action.destination.property === 'res') {
+          Filter.lfoResShape = action.shape
+        }
+      }
+      state.Filter = Filter
+      return Object.assign({}, state)
+
+    // Turn on the LFO if an oscillator was selected as a destination.
+    case 'LFO_DESTINATION_CHANGED':
+      Filter = Object.assign({}, state.Filter)
+      // Turn off LFO (if it was on).
+      if (action.oldDestination.moduleId === 'filter') {
+        if (action.oldDestination.property === 'freq') {
+          Filter.lfoFreqOn = false
+        } else if (action.oldDestination.property === 'res') {
+          Filter.lfoResOn = false
+        }
+      }
+      // Turn on LFO.
+      if (action.newDestination.moduleId === 'filter') {
+        let lfo = state.LFOs.find((l) => l.id === action.id)
+        if (action.newDestination.property === 'freq') {
+          Filter.lfoFreqOn = true
+          Filter.lfoFreqRate = lfo.rate
+          Filter.lfoFreqAmount = lfo.amount
+          Filter.lfoFreqShape = lfo.shape
+        } else if (action.newDestination.property === 'res') {
+          Filter.lfoResOn = true
+          Filter.lfoResRate = lfo.rate
+          Filter.lfoResAmount = lfo.amount
+          Filter.lfoResShape = lfo.shape
+        }
       }
       state.Filter = Filter
       return Object.assign({}, state)
@@ -216,19 +287,6 @@ function LFOsReducer (state, action) {
 
         if (lfo.id === action.id) {
           lfo.destination = action.newDestination
-        }
-        return lfo
-      })
-      return Object.assign({}, state)
-
-    case 'SLIDER_CHANGED':
-      state.LFOs = state.LFOs.map(function (lfo) {
-        if (lfo.id === action.id) {
-          if (action.name === 'lfo-amount') {
-            lfo.amount = action.value
-          } else if (action.name === 'lfo-rate') {
-            lfo.rate = action.value
-          }
         }
         return lfo
       })
