@@ -126,10 +126,31 @@ input[type=range][orient=vertical]{
     margin: 0 auto;
 }
 
+/* Amp tightly grouped sliders. */
+.asdr-sliders {
+  display: inline-block;
+  margin-left: 38px;
+  .vertical-slider {
+    width: 10px;
+  }
+}
+
 // LFOs
 .lfo {
-  select {
-    width: 100%;
+  .destination-selector {
+    width: calc(100% - 24px);
+    padding: 12px;
+    border-top: 4px solid $blue;
+    .label{
+      display: inline-block;
+      vertical-align: initial;
+    }
+    select {
+      display: inline-block;
+      width: 65%;
+      margin-left: 12px;
+      vertical-align: middle;
+    }
   }
   .shape-switch{
     width: 100px;

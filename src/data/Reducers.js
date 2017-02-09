@@ -195,19 +195,21 @@ function FilterReducer (state, action) {
 
   switch (action.type) {
     case 'FILTER_SLIDER_CHANGED':
+      let Filter = Object.assign({}, state.Filter)
       if (action.name === 'filter-freq') {
-        state.Filter.freq = action.value
+        Filter.freq = action.value
       } else if (action.name === 'filter-res') {
-        state.Filter.res = action.value
+        Filter.res = action.value
       } else if (action.name === 'filter-attack') {
-        state.Filter.attack = action.value
+        Filter.attack = action.value
       } else if (action.name === 'filter-decay') {
-        state.Filter.decay = action.value
+        Filter.decay = action.value
       } else if (action.name === 'filter-sustain') {
-        state.Filter.sustain = action.value
+        Filter.sustain = action.value
       } else if (action.name === 'filter-release') {
-        state.Filter.release = action.value
+        Filter.release = action.value
       }
+      state.Filter = Filter
       return Object.assign({}, state)
 
     case 'LFO_AMOUNT_CHANGED':

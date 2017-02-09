@@ -38,38 +38,40 @@ class FilterView extends React.Component {
               step={1}
               onChange={this.onSliderChange.bind(this)}
               value={this.props.res} />
-            <VerticalSlider
-              name='filter-attack'
-              label='a'
-              min={0}
-              max={100}
-              step={1}
-              onChange={this.onSliderChange.bind(this)}
-              value={this.props.attack} />
-            <VerticalSlider
-              name='filter-decay'
-              label='d'
-              min={0}
-              max={100}
-              step={1}
-              onChange={this.onSliderChange.bind(this)}
-              value={this.props.decay} />
-            <VerticalSlider
-              name='filter-sustain'
-              label='s'
-              min={0}
-              max={100}
-              step={10}
-              onChange={this.onSliderChange.bind(this)}
-              value={this.props.sustain} />
-            <VerticalSlider
-              name='filter-release'
-              label='r'
-              min={0}
-              max={100}
-              step={1}
-              onChange={this.onSliderChange.bind(this)}
-              value={this.props.release} />
+            <div className='asdr-sliders'>
+              <VerticalSlider
+                name='filter-attack'
+                label='a'
+                min={0}
+                max={100}
+                step={1}
+                onChange={this.onSliderChange.bind(this)}
+                value={this.props.attack} />
+              <VerticalSlider
+                name='filter-decay'
+                label='d'
+                min={0}
+                max={100}
+                step={1}
+                onChange={this.onSliderChange.bind(this)}
+                value={this.props.decay} />
+              <VerticalSlider
+                name='filter-sustain'
+                label='s'
+                min={0}
+                max={100}
+                step={10}
+                onChange={this.onSliderChange.bind(this)}
+                value={this.props.sustain} />
+              <VerticalSlider
+                name='filter-release'
+                label='r'
+                min={0}
+                max={100}
+                step={1}
+                onChange={this.onSliderChange.bind(this)}
+                value={this.props.release} />
+            </div>
           </div>
         </div>
       </div>

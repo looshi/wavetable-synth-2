@@ -81,31 +81,34 @@ class LFOView extends React.Component {
               onChange={this.onRateChanged.bind(this)}
               value={this.props.rate} />
           </div>
-        </div>
-        <select
-          onChange={this.onDestinationChanged.bind(this)}
-          value={this.props.destination.id} >
-          <option
-            key='none'
-            value='none'
-            disabled >
-            Select Destination
-          </option>
-          {
-            this.props.destinations.map((destination) => {
-              let options = {
-                key: destination.id,
-                value: destination.id
+          <div className='destination-selector'>
+            <div className='label'>destination</div>
+            <select
+              onChange={this.onDestinationChanged.bind(this)}
+              value={this.props.destination.id} >
+              <option
+                key='none'
+                value='none'
+                disabled >
+                Select Destination
+              </option>
+              {
+                this.props.destinations.map((destination) => {
+                  let options = {
+                    key: destination.id,
+                    value: destination.id
+                  }
+                  if (destination.active) options.disabled = 'disabled'
+                  return (
+                    <option {...options}>
+                      {destination.label}
+                    </option>
+                  )
+                })
               }
-              if (destination.active) options.disabled = 'disabled'
-              return (
-                <option {...options}>
-                  {destination.label}
-                </option>
-              )
-            })
-          }
-        </select>
+            </select>
+          </div>
+        </div>
       </div>
     )
   }
