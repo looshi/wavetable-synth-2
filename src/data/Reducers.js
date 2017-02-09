@@ -49,17 +49,17 @@ function initOscillator (name, id) {
   return {
     name,
     id,
-    fileA: 'AKWF_bsaw_0005.wav',
-    fileB: 'AKWF_cheeze_0001.wav',
+    fileA: URL[id + 'fa'] || 'AKWF_bsaw_0005.wav',
+    fileB: URL[id + 'fb'] || 'AKWF_cheeze_0001.wav',
     audioBufferA: null,
     audioBufferB: null,
     channelDataA: [],
     channelDataB: [],
     computedChannelData: [],
-    algorithm: 'plus',
-    amount: 75,
-    detune: 0,
-    octave: 0,
+    algorithm: URL[id + 'al'] || 'plus',
+    amount: URL[id + 'a'] || 75,
+    detune: URL[id + 'd'] || 0,
+    octave: URL[id + 'o'] || 0,
     note: null, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
     lfoOn: false,
     lfoAmount: 0,
@@ -107,7 +107,7 @@ let initialState = {
 
 // Set the LFO initial destinations based on URL.
 initialState.LFOs.forEach((lfo, index) => {
-  // LFO destination &lfo1d=2
+  // LFO destinations initial settings.
   const dest = lfo.id + 'd'
   const amount = lfo.id + 'a'
   const rate = lfo.id + 'r'
@@ -117,7 +117,7 @@ initialState.LFOs.forEach((lfo, index) => {
   if (URL[rate]) lfo.rate = URL[rate]
   if (URL[shape]) lfo.shape = URL[shape]
 
-  // Turn on filter LFO.
+  // Amp LFO initial settings.
   if (lfo.destination.id === '0') {
     initialState.Amp.lfoOn = true
     initialState.Amp.lfoAmount = lfo.amount
@@ -125,17 +125,23 @@ initialState.LFOs.forEach((lfo, index) => {
     initialState.Amp.lfoShape = lfo.shape
   }
 
-  // Turn on filter LFO.
+  // Filter LFO initial settings
   if (lfo.destination.id === '1') {
     initialState.Filter.lfoFreqOn = true
     initialState.Filter.lfoFreqAmount = lfo.amount
     initialState.Filter.lfoFreqRate = lfo.rate
     initialState.Filter.lfoFreqShape = lfo.shape
   }
+
+  // Oscillator LFO initial settings.
+  if (['3', '4', '5'].indexOf(lfo.destination.id) !== -1) {
+    let osc = initialState.Oscillators.find((o) => o.id === lfo.destination.moduleId)
+    osc.lfoOn = true
+    osc.lfoAmount = lfo.amount
+    osc.lfoRate = lfo.rate
+    osc.lfoShape = lfo.shape
+  }
 })
-
-
-console.log('initial state', initialState)
 
 // Stores the parameters in the url.
 function updateURL (paramName, value) {
@@ -385,8 +391,10 @@ function OscillatorsReducer (state, action) {
         if (osc.id === action.id) {
           if (action.side === 'A') {
             osc.fileA = action.file
+            updateURL(osc.id + 'fa', action.file)
           } else if (action.side === 'B') {
             osc.fileB = action.file
+            updateURL(osc.id + 'fb', action.file)
           }
         }
         return osc
@@ -415,6 +423,7 @@ function OscillatorsReducer (state, action) {
       state.Oscillators = state.Oscillators.map(function (osc) {
         if (osc.id === action.id) {
           osc.algorithm = action.algorithm
+          updateURL(osc.id + 'al', action.algorithm)
         }
         osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm)
         return osc
@@ -434,6 +443,8 @@ function OscillatorsReducer (state, action) {
       state.Oscillators = state.Oscillators.map(function (osc) {
         if (osc.id === action.id) {
           osc[action.name] = action.value
+          const paramName = osc.id + action.name[0] // id + first letter of param.
+          updateURL(paramName, action.value)
         }
         return osc
       })
