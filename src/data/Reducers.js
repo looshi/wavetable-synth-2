@@ -363,23 +363,37 @@ function LFOsReducer (state, action) {
   }
 }
 
+function lerp (v0, v1, t) {
+  return v0 * (1 - t) + v1 * t
+}
+
+function Float32Concat (first, second) {
+  const firstLength = first.length
+  const result = new Float32Array(firstLength + second.length)
+  result.set(first)
+  result.set(second, firstLength)
+  return result
+}
 // Update the computed waveform based on the current algorithm.
 function computeWaveform (channelDataA, channelDataB, algorithm) {
   if (!channelDataA || !channelDataB || !algorithm) {
     return []
   }
 
-  return channelDataB.map(function (data, index) {
-    if (algorithm === 'plus') {
-      return channelDataA[index] + channelDataB[index]
-    } else if (algorithm === 'minus') {
-      return channelDataA[index] - channelDataB[index]
-    } else if (algorithm === 'divide') {
-      return channelDataA[index] / channelDataB[index]
-    } else if (algorithm === 'multiply') {
-      return channelDataA[index] * channelDataB[index]
-    }
-  })
+  let computedChannelData = []
+  let computedStep = []
+
+  for (let i = 0; i < 1000; i++) {
+    computedStep = channelDataB.map(function (data, index) {
+      return lerp(channelDataA[index], channelDataB[index], i / 10)
+    })
+
+    computedChannelData = Float32Concat(computedChannelData, computedStep)
+  }
+  let origData = Float32Concat(computedChannelData, [])
+  let reverseData = computedChannelData.reverse()
+  let mirroredChannelData = Float32Concat(reverseData, origData)
+  return mirroredChannelData
 }
 
 function OscillatorsReducer (state, action) {
