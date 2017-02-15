@@ -8,6 +8,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import OscillatorAudio from './OscillatorAudio.js'
 import Chorus from './Chorus.js'
+import observeStore from '../data/ObserveStore'
 
 class Synth extends React.Component {
   constructor (props, context) {
@@ -44,7 +45,7 @@ class Synth extends React.Component {
     this.lfoAmp.start()
 
     // Chorus
-    this.chorus = new Chorus(audioContext)
+    this.chorus = new Chorus(audioContext, props.store)
     this.chorus.amount = this.props.Chorus.amount
     this.chorus.time = this.props.Chorus.time
 
@@ -59,6 +60,11 @@ class Synth extends React.Component {
     this.masterGain.connect(audioContext.destination)
 
     this.startListeners(eventEmitter)
+
+    observeStore(props.store, 'Chorus.amount', (amount) => {
+      console.log('chorus amount', amount)
+    })
+
   }
 
   startListeners (eventEmitter) {
@@ -154,6 +160,7 @@ class Synth extends React.Component {
     // Filter LFO
     // TODO : only run this if things changed.
     if (this.props.Filter.lfoFreqOn) {
+      console.log('turn on Filter LFO')
       this.oscillatorsBus.connect(this.lfoFilter)
 
       let freq = this.clampToMinMax(60, 20000, this.props.Filter.freq * 100 - 8000)
@@ -163,11 +170,12 @@ class Synth extends React.Component {
       this.lfoFreq.connect(this.lfoFreqGain)
       this.lfoFreq.type = lfoFreqShape
       this.lfoFreq.frequency.value = lfoFreqRate / 10
-      this.lfoFreqGain.gain.value = this.clampToMinMax(100, this.props.Filter.freq * 100, lfoFreqAmount * 20)
+      this.lfoFreqGain.gain.value = 1000 // this.clampToMinMax(100, this.props.Filter.freq, 1)
+      console.log('flo freq', this.lfoFreqGain.gain.value)
       this.lfoFreqGain.connect(this.lfoFilter.frequency)
     } else {
+      console.log('turn off Filter LFO')
       // Disconnect the oscillators from the filter LFO.
-      console.log('synth filter lfo disconnect')
       this.oscillatorsBus.connect(this.biquadFilter)
       this.lfoFreq.disconnect()
       this.lfoFreqGain.disconnect()

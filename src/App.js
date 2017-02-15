@@ -7,14 +7,12 @@ import AmpView from './views/Filter/AmpView.js'
 import LFOView from './views/LFO/LFOView.js'
 import WaveFiles from './data/WaveFiles.js'
 import {connect} from 'react-redux'
-import { createStore } from 'redux'
-import Reducers from './data/Reducers.js'
+
 import Synth from './audio/Synth.js'
 import HorizontalSlider from './views/Components/HorizontalSlider.js'
 import Keyboard from './views/Keyboard/Keyboard.js'
 import EventEmitter from 'event-emitter'
 
-let store = createStore(Reducers)
 const audioContext = new AudioContext()
 const eventEmitter = new EventEmitter()
 
@@ -104,7 +102,7 @@ class App extends React.Component {
           Keyboard={this.props.Keyboard} />
 
         <Synth
-          store={store}
+          store={this.props.store}
           eventEmitter={eventEmitter}
           audioContext={audioContext}
           Master={this.props.Master}
@@ -118,15 +116,15 @@ class App extends React.Component {
   }
 }
 
-function mapStateToProps (reducers) {
+function mapStateToProps (state) {
   return {
-    Master: reducers.MasterReducer.Master,
-    Filter: reducers.FilterReducer.Filter,
-    Amp: reducers.AmpReducer.Amp,
-    Chorus: reducers.ChorusReducer.Chorus,
-    LFOs: reducers.LFOsReducer.LFOs,
-    Keyboard: reducers.KeyboardReducer.Keyboard,
-    Oscillators: reducers.OscillatorsReducer.Oscillators
+    Master: state.Master,
+    Filter: state.Filter,
+    Amp: state.Amp,
+    Chorus: state.Chorus,
+    LFOs: state.LFOs,
+    Keyboard: state.Keyboard,
+    Oscillators: state.Oscillators
   }
 }
 

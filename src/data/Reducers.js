@@ -158,12 +158,11 @@ function updateURL (paramName, value) {
 }
 
 function MasterReducer (state, action) {
-  state = state || initialState
-
+  state = state || initialState.Master
   switch (action.type) {
     case 'SLIDER_CHANGED':
       if (action.id === 'master') {
-        state.Master.volume = action.value
+        state.volume = action.value
         updateURL('mv', action.value)
         return Object.assign({}, state)
       } else {
@@ -175,14 +174,14 @@ function MasterReducer (state, action) {
 }
 
 function KeyboardReducer (state, action) {
-  state = state || initialState
+  state = state || initialState.Keyboard
 
   switch (action.type) {
     case 'NOTE_ON':
-      state.Keyboard[action.note] = 'on'
+      state[action.note] = 'on'
       return Object.assign({}, state)
     case 'NOTE_OFF':
-      state.Keyboard[action.note] = 'off'
+      state[action.note] = 'off'
       return Object.assign({}, state)
     default:
       return state
@@ -190,42 +189,40 @@ function KeyboardReducer (state, action) {
 }
 
 function AmpReducer (state, action) {
-  state = state || initialState
+  state = state || initialState.Amp
 
   switch (action.type) {
     case 'AMP_SLIDER_CHANGED':
-      let Amp = Object.assign({}, state.Amp)
       if (action.name === 'amp-attack') {
-        Amp.attack = action.value
+        state.attack = action.value
         updateURL('aa', action.value)
       } else if (action.name === 'amp-decay') {
-        Amp.decay = action.value
+        state.decay = action.value
         updateURL('ad', action.value)
       } else if (action.name === 'amp-sustain') {
-        Amp.sustain = action.value
+        state.sustain = action.value
         updateURL('as', action.value)
       } else if (action.name === 'amp-release') {
-        Amp.release = action.value
+        state.release = action.value
         updateURL('ar', action.value)
       }
-      state.Amp = Amp
       return Object.assign({}, state)
 
     case 'LFO_AMOUNT_CHANGED':
       if (action.destination.moduleId === 'amp') {
-        state.Amp.lfoAmount = action.amount
+        state.lfoAmount = action.amount
       }
       return Object.assign({}, state)
 
     case 'LFO_RATE_CHANGED':
       if (action.destination.moduleId === 'amp') {
-        state.Amp.lfoRate = action.rate
+        state.lfoRate = action.rate
       }
       return Object.assign({}, state)
 
     case 'LFO_SHAPE_CHANGED':
       if (action.destination.moduleId === 'amp') {
-        state.Amp.lfoShape = action.shape
+        state.lfoShape = action.shape
       }
       return Object.assign({}, state)
 
@@ -233,15 +230,15 @@ function AmpReducer (state, action) {
     case 'LFO_DESTINATION_CHANGED':
       // Turn off LFO (if it was on).
       if (action.oldDestination.moduleId === 'amp') {
-        state.Amp.lfoOn = false
+        state.lfoOn = false
       }
       // Turn on LFO.
       if (action.newDestination.moduleId === 'amp') {
-        let lfo = state.LFOs.find((l) => l.id === action.id)
-        state.Amp.lfoOn = true
-        state.Amp.lfoRate = lfo.rate
-        state.Amp.lfoAmount = lfo.amount
-        state.Amp.lfoShape = lfo.shape
+        let lfo = initialState.LFOs.find((l) => l.id === action.id)
+        state.lfoOn = true
+        state.lfoRate = lfo.rate
+        state.lfoAmount = lfo.amount
+        state.lfoShape = lfo.shape
       }
       return Object.assign({}, state)
 
@@ -251,48 +248,46 @@ function AmpReducer (state, action) {
 }
 
 function FilterReducer (state, action) {
-  state = state || initialState
+  state = state || initialState.Filter
 
   switch (action.type) {
     case 'FILTER_SLIDER_CHANGED':
-      let Filter = Object.assign({}, state.Filter)
       if (action.name === 'filter-freq') {
-        Filter.freq = action.value
+        state.freq = action.value
         updateURL('ff', action.value)
       } else if (action.name === 'filter-res') {
-        Filter.res = action.value
+        state.res = action.value
         updateURL('fr', action.value)
       } else if (action.name === 'filter-attack') {
-        Filter.attack = action.value
+        state.attack = action.value
         updateURL('fa', action.value)
       } else if (action.name === 'filter-decay') {
-        Filter.decay = action.value
+        state.decay = action.value
         updateURL('fd', action.value)
       } else if (action.name === 'filter-sustain') {
-        Filter.sustain = action.value
+        state.sustain = action.value
         updateURL('fs', action.value)
       } else if (action.name === 'filter-release') {
-        Filter.release = action.value
+        state.release = action.value
         updateURL('fre', action.value)
       }
-      state.Filter = Filter
       return Object.assign({}, state)
 
     case 'LFO_AMOUNT_CHANGED':
       if (action.destination.moduleId === 'filter') {
-        state.Filter.lfoFreqAmount = action.amount
+        state.lfoFreqAmount = action.amount
       }
       return Object.assign({}, state)
 
     case 'LFO_RATE_CHANGED':
       if (action.destination.moduleId === 'filter') {
-        state.Filter.lfoFreqRate = action.rate
+        state.lfoFreqRate = action.rate
       }
       return Object.assign({}, state)
 
     case 'LFO_SHAPE_CHANGED':
       if (action.destination.moduleId === 'filter') {
-        state.Filter.lfoFreqShape = action.shape
+        state.lfoFreqShape = action.shape
       }
       return Object.assign({}, state)
 
@@ -300,16 +295,16 @@ function FilterReducer (state, action) {
     case 'LFO_DESTINATION_CHANGED':
       // Turn off LFO (if it was on).
       if (action.oldDestination.moduleId === 'filter') {
-        state.Filter.lfoFreqOn = false
+        state.lfoFreqOn = false
         updateURL('flo', false)
       }
       // Turn on LFO.
       if (action.newDestination.moduleId === 'filter') {
-        let lfo = state.LFOs.find((l) => l.id === action.id)
-        state.Filter.lfoFreqOn = true
-        state.Filter.lfoFreqRate = lfo.rate
-        state.Filter.lfoFreqAmount = lfo.amount
-        state.Filter.lfoFreqShape = lfo.shape
+        let lfo = initialState.LFOs.find((l) => l.id === action.id)
+        state.lfoFreqOn = true
+        state.lfoFreqRate = lfo.rate
+        state.lfoFreqAmount = lfo.amount
+        state.lfoFreqShape = lfo.shape
         updateURL('flo', true)
       }
       return Object.assign({}, state)
@@ -319,18 +314,16 @@ function FilterReducer (state, action) {
 }
 
 function ChorusReducer (state, action) {
-  state = state || initialState
-  let Chorus = Object.assign({}, state.Chorus)
+  state = state || initialState.Chorus
   switch (action.type) {
     case 'CHORUS_SLIDER_CHANGED':
       if (action.name === 'chorus-amount') {
-        Chorus.amount = action.value
+        state.amount = action.value
         updateURL('ca', action.value)
       } else if (action.name === 'chorus-time') {
-        Chorus.time = action.value
+        state.time = action.value
         updateURL('ct', action.value)
       }
-      state.Chorus = Chorus
       return Object.assign({}, state)
     default:
       return state
@@ -338,35 +331,35 @@ function ChorusReducer (state, action) {
 }
 
 function LFOsReducer (state, action) {
-  state = state || initialState
-
+  state = state || initialState.LFOs
+  console.log('LFOsReducer', state)
   switch (action.type) {
     case 'LFO_SHAPE_CHANGED':
-      state.LFOs = state.LFOs.map(function (lfo) {
+      state = state.map(function (lfo) {
         if (lfo.id === action.id) {
           lfo.shape = action.shape
           updateURL(lfo.id + 's', action.shape)
         }
         return lfo
       })
-      return Object.assign({}, state)
+      return [...state]
 
     case 'LFO_RATE_CHANGED':
-      let lfo = state.LFOs.find((l) => l.id === action.id)
+      let lfo = state.find((l) => l.id === action.id)
       lfo.rate = action.rate
       updateURL(lfo.id + 'r', action.rate)
-      return Object.assign({}, state)
+      return [...state]
 
     case 'LFO_AMOUNT_CHANGED':
-      lfo = state.LFOs.find((l) => l.id === action.id)
+      lfo = state.find((l) => l.id === action.id)
       lfo.amount = action.amount
       updateURL(lfo.id + 'a', action.amount)
-      return Object.assign({}, state)
+      return [...state]
 
     case 'LFO_DESTINATION_CHANGED':
       // Mark new destination as active:true to disable it in LFO dropdowns.
       // Mark previous destination as active:false to enable it in dropdown.
-      state.LFOs = state.LFOs.map(function (lfo) {
+      state = state.map(function (lfo) {
         lfo.destination.active = false
         let destinations = [...lfo.destinations]
         destinations.forEach((dest, index) => {
@@ -384,7 +377,7 @@ function LFOsReducer (state, action) {
         }
         return lfo
       })
-      return Object.assign({}, state)
+      return [...state]
     default:
       return state
   }
@@ -410,11 +403,11 @@ function computeWaveform (channelDataA, channelDataB, algorithm) {
 }
 
 function OscillatorsReducer (state, action) {
-  state = state || initialState
+  state = state || initialState.Oscillators
 
   switch (action.type) {
     case 'WAVE_FLE_LOAD_STARTED':
-      state.Oscillators = state.Oscillators.map(function (osc) {
+      state = state.map(function (osc) {
         if (osc.id === action.id) {
           if (action.side === 'A') {
             osc.fileA = action.file
@@ -426,10 +419,10 @@ function OscillatorsReducer (state, action) {
         }
         return osc
       })
-      return Object.assign({}, state)
+      return [...state]
 
     case 'WAVE_FLE_LOAD_COMPLETED':
-      state.Oscillators = state.Oscillators.map(function (osc) {
+      state = state.map(function (osc) {
         if (osc.id === action.id) {
           // Update the A or B channel data and audio buffer on load.
           if (action.side === 'A') {
@@ -443,11 +436,11 @@ function OscillatorsReducer (state, action) {
         }
         return osc
       })
-      return Object.assign({}, state)
+      return [...state]
 
     // The +, -, /, * selected operator was changed.
     case 'OSC_ALGORITHM_CHANGED':
-      state.Oscillators = state.Oscillators.map(function (osc) {
+      state = state.map(function (osc) {
         if (osc.id === action.id) {
           osc.algorithm = action.algorithm
           updateURL(osc.id + 'al', action.algorithm)
@@ -455,19 +448,19 @@ function OscillatorsReducer (state, action) {
         osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm)
         return osc
       })
-      return Object.assign({}, state)
+      return [...state]
 
     // A key was pressed on the keyboard, updates each oscillators' pitch.
     case 'NOTE_ON':
-      state.Oscillators = state.Oscillators.map(function (osc) {
+      state = state.map(function (osc) {
         osc.note = action.note
         return osc
       })
-      return Object.assign({}, state)
+      return [...state]
 
     // Updates local osc values, detune, octave, and amt.
     case 'SLIDER_CHANGED':
-      state.Oscillators = state.Oscillators.map(function (osc) {
+      state = state.map(function (osc) {
         if (osc.id === action.id) {
           osc[action.name] = action.value
           const paramName = osc.id + action.name[0] // id + first letter of param.
@@ -475,45 +468,45 @@ function OscillatorsReducer (state, action) {
         }
         return osc
       })
-      return Object.assign({}, state)
+      return [...state]
 
     case 'LFO_AMOUNT_CHANGED':
-      state.Oscillators = state.Oscillators.map(function (osc) {
+      state = state.map(function (osc) {
         if (osc.id === action.destination.moduleId) {
           osc.lfoAmount = action.amount
         }
         return osc
       })
-      return Object.assign({}, state)
+      return [...state]
 
     case 'LFO_RATE_CHANGED':
-      state.Oscillators = state.Oscillators.map(function (osc) {
+      state = state.map(function (osc) {
         if (osc.id === action.destination.moduleId) {
           osc.lfoRate = action.rate
         }
         return osc
       })
-      return Object.assign({}, state)
+      return [...state]
 
     case 'LFO_SHAPE_CHANGED':
-      state.Oscillators = state.Oscillators.map(function (osc) {
+      state = state.map(function (osc) {
         if (osc.id === action.destination.moduleId) {
           osc.lfoShape = action.shape
         }
         return osc
       })
-      return Object.assign({}, state)
+      return [...state]
 
     // Turn on the LFO if an oscillator was selected as a destination.
     case 'LFO_DESTINATION_CHANGED':
-      state.Oscillators = state.Oscillators.map(function (osc) {
+      state = state.map(function (osc) {
         // Turn off LFO.
         if (osc.id === action.oldDestination.moduleId) {
           osc.lfoOn = false
         }
         // Turn on LFO.
         if (osc.id === action.newDestination.moduleId) {
-          let lfo = state.LFOs.find((l) => l.id === action.id)
+          let lfo = initialState.LFOs.find((l) => l.id === action.id)
           osc.lfoOn = true
           osc.lfoRate = lfo.rate
           osc.lfoAmount = lfo.amount
@@ -521,7 +514,7 @@ function OscillatorsReducer (state, action) {
         }
         return osc
       })
-      return Object.assign({}, state)
+      return [...state]
 
     default:
       return state
@@ -529,13 +522,13 @@ function OscillatorsReducer (state, action) {
 }
 
 const Reducers = combineReducers({
-  MasterReducer,
-  FilterReducer,
-  AmpReducer,
-  ChorusReducer,
-  KeyboardReducer,
-  LFOsReducer,
-  OscillatorsReducer
+  Master: MasterReducer,
+  Filter: FilterReducer,
+  Amp: AmpReducer,
+  Chorus: ChorusReducer,
+  Keyboard: KeyboardReducer,
+  LFOs: LFOsReducer,
+  Oscillators: OscillatorsReducer
 })
 
 export default Reducers
