@@ -50,6 +50,11 @@ Actions.ampSliderChanged = function ampSliderChanged (id, value, name) {
   return { type: 'AMP_SLIDER_CHANGED', id, value, name }
 }
 
+// A Chorus value has changed.
+Actions.chorusSliderChanged = function chorusSliderChanged (id, value, name) {
+  return { type: 'CHORUS_SLIDER_CHANGED', id, value, name }
+}
+
 // LFO shape changed.
 Actions.lfoShapeChanged = function sliderChanged (id, shape, destination) {
   return { type: 'LFO_SHAPE_CHANGED', id, shape, destination }

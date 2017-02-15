@@ -7,6 +7,7 @@ Oscillators -> Osc Bus -> LFOFilter (if on) -> Filter -> VCA -> Master
 import React from 'react'
 import {connect} from 'react-redux'
 import OscillatorAudio from './OscillatorAudio.js'
+import Chorus from './Chorus.js'
 
 class Synth extends React.Component {
   constructor (props, context) {
@@ -42,21 +43,41 @@ class Synth extends React.Component {
     this.lfoAmpGain = audioContext.createGain()
     this.lfoAmp.start()
 
+    // Chorus
+    this.chorus = new Chorus(audioContext)
+    this.chorus.amount = this.props.Chorus.amount
+    this.chorus.time = this.props.Chorus.time
+
     // Connections
     this.lfoFilter.connect(this.biquadFilter)
-    this.oscillatorsBus.connect(this.biquadFilter)
+    // this.oscillatorsBus.connect(this.chorus.input) // this gets connected / disconnected below.
     this.biquadFilter.connect(this.vcaGain)
+    this.vcaGain.connect(this.chorus.inputLeft)
+    this.vcaGain.connect(this.chorus.inputRight)
+    this.chorus.connect(this.masterGain)
     this.vcaGain.connect(this.masterGain)
     this.masterGain.connect(audioContext.destination)
 
-    // Note On / Off events are handled manually here.
-    eventEmitter.on('NOTE_ON', (note) => {
+    this.startListeners(eventEmitter)
+  }
+
+  startListeners (eventEmitter) {
+    // Keyboard note on / off events.
+    eventEmitter.on('NOTE_ON', () => {
       this.ampEnvelopeOn()
       this.filterEnvelopeOn()
     })
-    eventEmitter.on('NOTE_OFF', (note) => {
+    eventEmitter.on('NOTE_OFF', () => {
       this.ampEnvelopeOff()
       this.filterEnvelopeOff()
+    })
+
+    // Chorus effect changes.
+    eventEmitter.on('CHORUS_AMOUNT_CHANGED', (amount) => {
+      this.chorus.amount = amount
+    })
+    eventEmitter.on('CHORUS_TIME_CHANGED', (time) => {
+      this.chorus.time = time
     })
   }
 

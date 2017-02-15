@@ -38,6 +38,13 @@ let Amp = {
   lfoShape: 'sine'
 }
 
+// Chorus.
+let Chorus = {
+  id: 'chorus',
+  amount: URL.ca || 50,
+  time: URL.ct || 50
+}
+
 // Keyboard, notes are represented as object keys, { 22: 'on', 23: 'off' ... }.
 let Keyboard = {}
 for (let i = 1; i <= 88; i++) {
@@ -92,6 +99,7 @@ let initialState = {
   Master,
   Filter,
   Amp,
+  Chorus,
   Keyboard,
   Oscillators: [
     initOscillator('1', 'osc1'),
@@ -310,6 +318,25 @@ function FilterReducer (state, action) {
   }
 }
 
+function ChorusReducer (state, action) {
+  state = state || initialState
+  let Chorus = Object.assign({}, state.Chorus)
+  switch (action.type) {
+    case 'CHORUS_SLIDER_CHANGED':
+      if (action.name === 'chorus-amount') {
+        Chorus.amount = action.value
+        updateURL('ca', action.value)
+      } else if (action.name === 'chorus-time') {
+        Chorus.time = action.value
+        updateURL('ct', action.value)
+      }
+      state.Chorus = Chorus
+      return Object.assign({}, state)
+    default:
+      return state
+  }
+}
+
 function LFOsReducer (state, action) {
   state = state || initialState
 
@@ -505,6 +532,7 @@ const Reducers = combineReducers({
   MasterReducer,
   FilterReducer,
   AmpReducer,
+  ChorusReducer,
   KeyboardReducer,
   LFOsReducer,
   OscillatorsReducer

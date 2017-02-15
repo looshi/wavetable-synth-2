@@ -2,6 +2,7 @@
 import React from 'react'
 import OscillatorView from './views/Oscillator/OscillatorView.js'
 import FilterView from './views/Filter/FilterView.js'
+import ChorusView from './views/Effects/ChorusView.js'
 import AmpView from './views/Filter/AmpView.js'
 import LFOView from './views/LFO/LFOView.js'
 import WaveFiles from './data/WaveFiles.js'
@@ -73,6 +74,10 @@ class App extends React.Component {
               decay={this.props.Amp.decay}
               sustain={this.props.Amp.sustain}
               release={this.props.Amp.release} />
+            <ChorusView
+              amount={this.props.Chorus.amount}
+              time={this.props.Chorus.time}
+              eventEmitter={eventEmitter}/>
           </div>
           <div>
             {
@@ -104,6 +109,7 @@ class App extends React.Component {
           audioContext={audioContext}
           Master={this.props.Master}
           Filter={this.props.Filter}
+          Chorus={this.props.Chorus}
           Amp={this.props.Amp}
           Oscillators={this.props.Oscillators} />
 
@@ -117,6 +123,7 @@ function mapStateToProps (reducers) {
     Master: reducers.MasterReducer.Master,
     Filter: reducers.FilterReducer.Filter,
     Amp: reducers.AmpReducer.Amp,
+    Chorus: reducers.ChorusReducer.Chorus,
     LFOs: reducers.LFOsReducer.LFOs,
     Keyboard: reducers.KeyboardReducer.Keyboard,
     Oscillators: reducers.OscillatorsReducer.Oscillators
