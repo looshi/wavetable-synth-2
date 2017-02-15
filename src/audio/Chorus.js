@@ -55,8 +55,6 @@ export default class Chorus {
   set amount (val) {
     val = Number(val)
     if (!this.isNumeric(val)) return false
-    console.log('set amount', val / 100)
-
     this.gainNode.gain.value = val / 100
   }
 
