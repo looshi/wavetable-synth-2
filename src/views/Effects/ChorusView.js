@@ -14,11 +14,6 @@ class ChorusView extends React.Component {
     const name = event.target.getAttribute('data-name')
     const action = Actions.chorusSliderChanged(id, event.target.value, name)
     this.props.dispatch(action)
-    if (name === 'chorus-amount') {
-      this.props.eventEmitter.emit('CHORUS_AMOUNT_CHANGED', event.target.value)
-    } else if (name === 'chorus-time') {
-      this.props.eventEmitter.emit('CHORUS_TIME_CHANGED', event.target.value)
-    }
   }
 
   render () {

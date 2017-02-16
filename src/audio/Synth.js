@@ -59,15 +59,10 @@ class Synth extends React.Component {
     this.vcaGain.connect(this.masterGain)
     this.masterGain.connect(audioContext.destination)
 
-    this.startListeners(eventEmitter)
-
-    observeStore(props.store, 'Chorus.amount', (amount) => {
-      console.log('chorus amount', amount)
-    })
-
+    this.startListeners(eventEmitter, props.store)
   }
 
-  startListeners (eventEmitter) {
+  startListeners (eventEmitter, store) {
     // Keyboard note on / off events.
     eventEmitter.on('NOTE_ON', () => {
       this.ampEnvelopeOn()
@@ -78,11 +73,10 @@ class Synth extends React.Component {
       this.filterEnvelopeOff()
     })
 
-    // Chorus effect changes.
-    eventEmitter.on('CHORUS_AMOUNT_CHANGED', (amount) => {
+    observeStore(store, 'Chorus.amount', (amount) => {
       this.chorus.amount = amount
     })
-    eventEmitter.on('CHORUS_TIME_CHANGED', (time) => {
+    observeStore(store, 'Chorus.time', (time) => {
       this.chorus.time = time
     })
   }
@@ -160,21 +154,19 @@ class Synth extends React.Component {
     // Filter LFO
     // TODO : only run this if things changed.
     if (this.props.Filter.lfoFreqOn) {
-      console.log('turn on Filter LFO')
       this.oscillatorsBus.connect(this.lfoFilter)
 
       let freq = this.clampToMinMax(60, 20000, this.props.Filter.freq * 100 - 8000)
       this.lfoFilter.frequency.value = freq
 
-      let {lfoFreqAmount, lfoFreqRate, lfoFreqShape} = this.props.Filter
+      let {lfoFreqRate, lfoFreqShape} = this.props.Filter
       this.lfoFreq.connect(this.lfoFreqGain)
       this.lfoFreq.type = lfoFreqShape
       this.lfoFreq.frequency.value = lfoFreqRate / 10
       this.lfoFreqGain.gain.value = 1000 // this.clampToMinMax(100, this.props.Filter.freq, 1)
-      console.log('flo freq', this.lfoFreqGain.gain.value)
+
       this.lfoFreqGain.connect(this.lfoFilter.frequency)
     } else {
-      console.log('turn off Filter LFO')
       // Disconnect the oscillators from the filter LFO.
       this.oscillatorsBus.connect(this.biquadFilter)
       this.lfoFreq.disconnect()

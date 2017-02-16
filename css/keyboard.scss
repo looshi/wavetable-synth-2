@@ -59,7 +59,7 @@ $light-gray: #B9BDD7;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    &:active {
+    &[data-on='true'] {
       background-color: #FA7900 !important;
     }
   }

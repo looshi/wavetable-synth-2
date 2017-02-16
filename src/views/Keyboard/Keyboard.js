@@ -9,6 +9,7 @@ import Actions from '../../data/Actions.js'
 class Keyboard extends React.Component {
 
   componentDidMount () {
+    console.log('keyboard', this.props)
     let keys = {
       'z': 1,
       'x': 2,
@@ -112,6 +113,10 @@ class Keyboard extends React.Component {
     return className
   }
 
+  isKeyOn (key) {
+    return this.props.Keyboard[key.note] === 'on'
+  }
+
   render () {
     let {black, white} = this.drawKeys()
 
@@ -125,6 +130,7 @@ class Keyboard extends React.Component {
                   <div
                     key={Math.random()}
                     data-key={key.note}
+                    data-on={this.isKeyOn(key)}
                     onMouseDown={this.handleKeyDown.bind(this)}
                     onMouseUp={this.handleKeyUp.bind(this)}
                     className='key'
@@ -140,6 +146,7 @@ class Keyboard extends React.Component {
                   <div
                     key={Math.random()}
                     data-key={key.note}
+                    data-on={this.isKeyOn(key)}
                     onMouseDown={this.handleKeyDown.bind(this)}
                     onMouseUp={this.handleKeyUp.bind(this)}
                     className={this.blackKeyClassName(key)}

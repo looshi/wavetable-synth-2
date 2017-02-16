@@ -74,8 +74,7 @@ class App extends React.Component {
               release={this.props.Amp.release} />
             <ChorusView
               amount={this.props.Chorus.amount}
-              time={this.props.Chorus.time}
-              eventEmitter={eventEmitter}/>
+              time={this.props.Chorus.time} />
           </div>
           <div>
             {

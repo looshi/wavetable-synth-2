@@ -332,7 +332,6 @@ function ChorusReducer (state, action) {
 
 function LFOsReducer (state, action) {
   state = state || initialState.LFOs
-  console.log('LFOsReducer', state)
   switch (action.type) {
     case 'LFO_SHAPE_CHANGED':
       state = state.map(function (lfo) {
