@@ -37,10 +37,12 @@ export default class LFO {
     this.lfoGain.gain.value = amount
   }
 
-  connect (destination, multiplier) {
+  connect (destination, multiplier, persist = false) {
     this.lfoGain.gain.value = this._value * multiplier
     this.multiplier = multiplier
-    this.init(this.lfo.frequency.value, this._shape, this.lfoGain.gain.value)
+    if (!persist) {
+      this.init(this.lfo.frequency.value, this._shape, this.lfoGain.gain.value)
+    }
     this.lfoGain.connect(destination)
   }
 

@@ -145,7 +145,12 @@ class Synth extends React.Component {
     if (id === 'filter') {
       lfo.connect(this.biquadFilter.frequency, 1000)
     }
-    if (_.includes(id, 'osc')) {
+    if (id === 'oscAll') {
+      this.oscillators.map((osc) => {
+        osc.connectToLFO(lfo, true)
+      })
+    }
+    if (_.includes(id, 'osc') && id !== 'oscAll') {
       let osc = this.oscillators.find((osc) => osc.id === id)
       osc.connectToLFO(lfo)
     }

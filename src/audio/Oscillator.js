@@ -10,6 +10,7 @@ export default class Oscillator {
     this._octave = props.octave
     this._note = props._note
     this._lfo = null
+    this._persistLFO = false
 
     this.output = props.output
     this.audioContext = props.audioContext
@@ -22,10 +23,13 @@ export default class Oscillator {
   // it will connect again below.
   // Only one LFO can be set on page load, however multiple LFOs can be
   // set after page load.  TODO : allow multiple on page load.
-  connectToLFO (lfo) {
+  // persist fixes an issue in setting LFO from filter to volume.
+  // Very loud pops happen when a note is on and setting to volume.
+  connectToLFO (lfo, persist = false) {
     this._lfo = lfo
+    this._persistLFO = persist
     if (this.wavSource) {
-      this._lfo.connect(this.wavSource.detune, 100)
+      this._lfo.connect(this.wavSource.detune, 100, persist)
     }
   }
 
@@ -88,7 +92,7 @@ export default class Oscillator {
     this.wavSource.connect(this.gainNode)
 
     if (this._lfo) {
-      this._lfo.connect(this.wavSource.detune, 100)
+      this._lfo.connect(this.wavSource.detune, 100, this._persistLFO)
     }
   }
 

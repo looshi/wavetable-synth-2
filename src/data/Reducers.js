@@ -73,12 +73,13 @@ function initOscillator (name, id) {
 
 // LFOs
 const LFODestinations = [
-  {id: '-1', label: 'None', active: true},
-  {id: '0', label: 'Amp', moduleId: 'amp', property: 'gain', active: false},
-  {id: '1', label: 'Filter', moduleId: 'filter', property: 'freq', active: false},
-  {id: '3', label: 'Osc 1 pitch', moduleId: 'osc1', property: 'detune', active: false},
-  {id: '4', label: 'Osc 2 pitch', moduleId: 'osc2', property: 'detune', active: false},
-  {id: '5', label: 'Osc 3 pitch', moduleId: 'osc3', property: 'detune', active: false},
+  {id: '-1', label: 'None'},
+  {id: '0', label: 'Amp', moduleId: 'amp', property: 'gain'},
+  {id: '1', label: 'Filter', moduleId: 'filter', property: 'freq'},
+  {id: '6', label: 'Osc ALL pitch', moduleId: 'oscAll', property: 'detune'},
+  {id: '3', label: 'Osc 1 pitch', moduleId: 'osc1', property: 'detune'},
+  {id: '4', label: 'Osc 2 pitch', moduleId: 'osc2', property: 'detune'},
+  {id: '5', label: 'Osc 3 pitch', moduleId: 'osc3', property: 'detune'},
 ]
 
 function initLFO (name, id) {
@@ -347,20 +348,7 @@ function LFOsReducer (state, action) {
       return [...state]
 
     case 'LFO_DESTINATION_CHANGED':
-      // Mark new destination as active:true to disable it in LFO dropdowns.
-      // Mark previous destination as active:false to enable it in dropdown.
       state = state.map(function (lfo) {
-        lfo.destination.active = false
-        let destinations = [...lfo.destinations]
-        destinations.forEach((dest, index) => {
-          if (dest.id === action.oldDestination.id) {
-            dest.active = false
-          } else if (dest.id === action.newDestination.id && dest.id !== '-1') {
-            dest.active = true
-          }
-        })
-        lfo.destinations = destinations
-
         if (lfo.id === action.id) {
           lfo.destination = action.newDestination
           updateURL(lfo.id + 'd', action.newDestination.id)
