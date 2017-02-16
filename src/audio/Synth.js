@@ -42,11 +42,6 @@ class Synth extends React.Component {
     this.postFilter.frequency.value = 10000
     this.postFilter.gain.value = 5000
 
-    // Amp LFO
-    // this.lfoAmp = audioContext.createOscillator()
-    // this.lfoAmpGain = audioContext.createGain()
-    // this.lfoAmp.start()
-
     // Chorus
     this.chorus = new Chorus(audioContext, props.store)
     this.chorus.amount = this.props.Chorus.amount
@@ -142,22 +137,22 @@ class Synth extends React.Component {
   // Route LFOs to targets.
   routeLFO (lfo, destination) {
     lfo.disconnect()
+    let id = destination.moduleId
 
-    if (destination.moduleId === 'amp') {
+    if (id === 'amp') {
       lfo.connect(this.oscillatorsBus.gain, 0.01)
     }
-    if (destination.moduleId === 'filter') {
+    if (id === 'filter') {
       lfo.connect(this.biquadFilter.frequency, 1000)
     }
-    // if (_.includes(id, 'osc')) {
-    //   return this.props.Oscillators.find((osc) => osc.id === id)
-    // }
+    if (_.includes(id, 'osc')) {
+      let osc = this.oscillators.find((osc) => osc.id === id)
+      osc.connectToLFO(lfo)
+    }
     // if (_.includes(id, 'lfo')) {
     //   return this.props.LFOs.find((osc) => osc.id === id)
     // }
     // this.oscillatorsBus.connect(this.biquadFilter)
-
-
   }
 
   startListeners (eventEmitter, store) {

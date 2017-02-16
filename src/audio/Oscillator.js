@@ -5,15 +5,28 @@ Audio output for a single oscillator.
 
 export default class Oscillator {
   constructor (props) {
+    this.id = props.id
     this._detune = props.detune
     this._octave = props.octave
     this._note = props._note
+    this._lfo = null
 
     this.output = props.output
     this.audioContext = props.audioContext
 
     this.gainNode = props.audioContext.createGain()
     this.gainNode.connect(this.output)
+  }
+
+  // Will connect immediately, but later on if the waveform is loaded
+  // it will connect again below.
+  // Only one LFO can be set on page load, however multiple LFOs can be
+  // set after page load.  TODO : allow multiple on page load.
+  connectToLFO (lfo) {
+    this._lfo = lfo
+    if (this.wavSource) {
+      this._lfo.connect(this.wavSource.detune, 100)
+    }
   }
 
   set amount (val) {
@@ -73,6 +86,10 @@ export default class Oscillator {
     this.wavSource.start()
     this.wavSource._started = true
     this.wavSource.connect(this.gainNode)
+
+    if (this._lfo) {
+      this._lfo.connect(this.wavSource.detune, 100)
+    }
   }
 
   arraysChanged (a, b) {

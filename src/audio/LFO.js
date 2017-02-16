@@ -40,10 +40,8 @@ export default class LFO {
   connect (destination, multiplier) {
     this.lfoGain.gain.value = this._value * multiplier
     this.multiplier = multiplier
-    console.log('init lfo gain', this.lfoGain.gain.value)
     this.init(this.lfo.frequency.value, this._shape, this.lfoGain.gain.value)
     this.lfoGain.connect(destination)
-    //this.updateAmount()
   }
 
   disconnect (destination) {
@@ -51,7 +49,6 @@ export default class LFO {
   }
 
   set rate (val) {
-    console.log('lfo rate', val)
     this.lfo.frequency.value = val
   }
 
@@ -62,7 +59,6 @@ export default class LFO {
 
   updateAmount () {
     this.lfoGain.gain.value = this._value * this.multiplier
-    console.log('lfo amount', this.lfoGain.gain.value)
   }
 
   set shape (val) {
