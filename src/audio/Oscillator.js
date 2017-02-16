@@ -9,8 +9,9 @@ export default class Oscillator {
     this._detune = props.detune
     this._octave = props.octave
     this._note = props._note
-    this._lfo = null
+    this._lfoPitch = null
     this._persistLFO = false
+    this._lfoAmount = null
 
     this.output = props.output
     this.audioContext = props.audioContext
@@ -25,11 +26,19 @@ export default class Oscillator {
   // set after page load.  TODO : allow multiple on page load.
   // persist fixes an issue in setting LFO from filter to volume.
   // Very loud pops happen when a note is on and setting to volume.
-  connectToLFO (lfo, persist = false) {
-    this._lfo = lfo
+  connectPitchToLFO (lfo, persist = false) {
+    this._lfoPitch = lfo
     this._persistLFO = persist
     if (this.wavSource) {
-      this._lfo.connect(this.wavSource.detune, 10, persist)
+      this._lfoPitch.connect(this.wavSource.detune, 10, persist)
+    }
+  }
+
+  connectAmountToLFO (lfo, persist = false) {
+    this._lfoAmount = lfo
+    this._persistLFO = persist
+    if (this.wavSource) {
+      this._lfoAmount.connect(this.gainNode.gain, 0.01, persist)
     }
   }
 
@@ -91,8 +100,11 @@ export default class Oscillator {
     this.wavSource._started = true
     this.wavSource.connect(this.gainNode)
 
-    if (this._lfo) {
-      this._lfo.connect(this.wavSource.detune, 10, this._persistLFO)
+    if (this._lfoPitch) {
+      this._lfoPitch.connect(this.wavSource.detune, 10, this._persistLFO)
+    }
+    if (this._lfoAmount) {
+      this._lfoAmount.connect(this.gainNode.gain, 0.01)
     }
   }
 

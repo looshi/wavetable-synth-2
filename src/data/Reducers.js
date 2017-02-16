@@ -80,6 +80,9 @@ const LFODestinations = [
   {id: '3', label: 'Osc 1 pitch', moduleId: 'osc1', property: 'detune'},
   {id: '4', label: 'Osc 2 pitch', moduleId: 'osc2', property: 'detune'},
   {id: '5', label: 'Osc 3 pitch', moduleId: 'osc3', property: 'detune'},
+  {id: '7', label: 'Osc 1 amount', moduleId: 'osc1', property: 'amount'},
+  {id: '8', label: 'Osc 2 amount', moduleId: 'osc2', property: 'amount'},
+  {id: '9', label: 'Osc 3 amount', moduleId: 'osc3', property: 'amount'},
 ]
 
 function initLFO (name, id) {

@@ -152,7 +152,11 @@ class Synth extends React.Component {
     }
     if (_.includes(id, 'osc') && id !== 'oscAll') {
       let osc = this.oscillators.find((osc) => osc.id === id)
-      osc.connectToLFO(lfo)
+      if (destination.property === 'detune') {
+        osc.connectPitchToLFO(lfo)
+      } else if (destination.property === 'amount') {
+        osc.connectAmountToLFO(lfo)
+      }
     }
     // if (_.includes(id, 'lfo')) {
     //   return this.props.LFOs.find((osc) => osc.id === id)
