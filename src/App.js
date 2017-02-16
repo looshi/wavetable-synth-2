@@ -22,95 +22,102 @@ class App extends React.Component {
     return (
       <div>
         <div className='scroll-container'>
-          <HorizontalSlider
-            id='master'
-            name='master gain'
-            label='master gain'
-            min={0}
-            max={100}
-            step={1}
-            value={this.props.Master.volume} />
-
-          {
-            this.props.Oscillators.map((oscillator) => {
-              return (
-                <OscillatorView
-                  key={oscillator.id}
-                  id={oscillator.id}
-                  name={oscillator.name}
-                  fileA={oscillator.fileA}
-                  fileB={oscillator.fileB}
-                  algorithm={oscillator.algorithm}
-                  audioBufferA={oscillator.audioBufferA}
-                  audioBufferB={oscillator.audioBufferB}
-                  channelDataA={oscillator.channelDataA}
-                  channelDataB={oscillator.channelDataB}
-                  computedChannelData={oscillator.computedChannelData}
-                  note={oscillator.note}
-                  detune={oscillator.detune}
-                  octave={oscillator.octave}
-                  amount={oscillator.amount}
-                  audioContext={audioContext}
-                  files={WaveFiles} />
-              )
-            })
-          }
-
-          <div>
-            <FilterView
-              id={this.props.Filter.id}
-              freq={this.props.Filter.freq}
-              res={this.props.Filter.res}
-              attack={this.props.Filter.attack}
-              decay={this.props.Filter.decay}
-              sustain={this.props.Filter.sustain}
-              release={this.props.Filter.release}
-              />
-            <AmpView
-              id={this.props.Amp.id}
-              attack={this.props.Amp.attack}
-              decay={this.props.Amp.decay}
-              sustain={this.props.Amp.sustain}
-              release={this.props.Amp.release} />
-            <ChorusView
-              amount={this.props.Chorus.amount}
-              time={this.props.Chorus.time} />
-          </div>
-          <div>
+          <header>
+            <div>
+              <h1>Oscillator Slop</h1>
+              <HorizontalSlider
+                id='master'
+                name='master gain'
+                label='volume'
+                min={0}
+                max={100}
+                step={1}
+                value={this.props.Master.volume} />
+            </div>
+          </header>
+          <div className='scroll-contents'>
             {
-              this.props.LFOs.map((LFO) => {
+              this.props.Oscillators.map((oscillator) => {
                 return (
-                  <LFOView
-                    key={LFO.id}
-                    id={LFO.id}
-                    name={LFO.name}
-                    shape={LFO.shape}
-                    amount={LFO.amount}
-                    rate={LFO.rate}
-                    destination={LFO.destination}
-                    destinations={LFO.destinations} />
+                  <OscillatorView
+                    key={oscillator.id}
+                    id={oscillator.id}
+                    name={oscillator.name}
+                    fileA={oscillator.fileA}
+                    fileB={oscillator.fileB}
+                    algorithm={oscillator.algorithm}
+                    audioBufferA={oscillator.audioBufferA}
+                    audioBufferB={oscillator.audioBufferB}
+                    channelDataA={oscillator.channelDataA}
+                    channelDataB={oscillator.channelDataB}
+                    computedChannelData={oscillator.computedChannelData}
+                    note={oscillator.note}
+                    detune={oscillator.detune}
+                    octave={oscillator.octave}
+                    amount={oscillator.amount}
+                    audioContext={audioContext}
+                    files={WaveFiles} />
                 )
               })
             }
+
+            <div>
+              <FilterView
+                id={this.props.Filter.id}
+                freq={this.props.Filter.freq}
+                res={this.props.Filter.res}
+                attack={this.props.Filter.attack}
+                decay={this.props.Filter.decay}
+                sustain={this.props.Filter.sustain}
+                release={this.props.Filter.release}
+                />
+              <AmpView
+                id={this.props.Amp.id}
+                attack={this.props.Amp.attack}
+                decay={this.props.Amp.decay}
+                sustain={this.props.Amp.sustain}
+                release={this.props.Amp.release} />
+              <ChorusView
+                amount={this.props.Chorus.amount}
+                time={this.props.Chorus.time} />
+            </div>
+            <div>
+              {
+                this.props.LFOs.map((LFO) => {
+                  return (
+                    <LFOView
+                      key={LFO.id}
+                      id={LFO.id}
+                      name={LFO.name}
+                      shape={LFO.shape}
+                      amount={LFO.amount}
+                      rate={LFO.rate}
+                      destination={LFO.destination}
+                      destinations={LFO.destinations} />
+                  )
+                })
+              }
+            </div>
+            <div className='scroll-footer'>&nbsp;</div>
           </div>
-          <div className='scroll-footer'>&nbsp;</div>
+
+          <footer>
+            <Keyboard
+              eventEmitter={eventEmitter}
+              Keyboard={this.props.Keyboard} />
+
+            <Synth
+              store={this.props.store}
+              eventEmitter={eventEmitter}
+              audioContext={audioContext}
+              Master={this.props.Master}
+              Filter={this.props.Filter}
+              Chorus={this.props.Chorus}
+              Amp={this.props.Amp}
+              Oscillators={this.props.Oscillators}
+              LFOs={this.props.LFOs} />
+          </footer>
         </div>
-
-        <Keyboard
-          eventEmitter={eventEmitter}
-          Keyboard={this.props.Keyboard} />
-
-        <Synth
-          store={this.props.store}
-          eventEmitter={eventEmitter}
-          audioContext={audioContext}
-          Master={this.props.Master}
-          Filter={this.props.Filter}
-          Chorus={this.props.Chorus}
-          Amp={this.props.Amp}
-          Oscillators={this.props.Oscillators}
-          LFOs={this.props.LFOs} />
-
       </div>
     )
   }

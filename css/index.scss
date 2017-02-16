@@ -8,18 +8,60 @@ body {
   font-family: 'Oswald', sans-serif;
   font-weight: 400;
   color: $blue;
-
+  margin: 0;
+  padding: 0;
 }
 
+
 .scroll-container {
-  padding: 0 80px;
-  margin-bottom: 40px;
+  padding: 0;
+  margin: 0;
   overflow: auto;
   height: calc(100% - 80px);
 }
-.scroll-footer {
-  height: 20px;
+
+header {
+  height: 48px;
+  width: 996px;
+  background-color: $blue;
+  color: white;
+  margin: 0 auto;
+  padding: 4px 12px;
+  h1 {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+  }
+  .horizontal-slider {
+    display: inline-block;
+    margin: -14px 0 0 167px;
+    vertical-align: middle;
+    .slider-label {
+      width: 53px;
+    }
+  }
 }
+
+.scroll-contents {
+  width: 960px;
+  margin: 0 auto 40px;
+  padding-left: 20px;
+  .scroll-footer {
+    height: 20px;
+  }
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  height: 100px;
+  padding: 1px 0 1px 1px;
+  width: 1020px;
+  background-color: #353744;
+  color: white;
+  left: calc(50% - 510px);
+}
+
 
 h1 {
   font-size: 30px;
