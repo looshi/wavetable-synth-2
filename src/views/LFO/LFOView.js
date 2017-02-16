@@ -98,7 +98,6 @@ class LFOView extends React.Component {
                     key: destination.id,
                     value: destination.id
                   }
-                  if (destination.active) options.disabled = 'disabled'
                   return (
                     <option {...options}>
                       {destination.label}

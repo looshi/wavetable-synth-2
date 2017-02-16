@@ -2,12 +2,14 @@
 Synth
 Contains all the audio components which comprise the synth.
 Nodes are connected in this order :
-Oscillators -> Osc Bus -> LFOFilter (if on) -> Filter -> VCA -> Master
+Oscillators -> Osc Bus -> Filter -> postFilter -> VCA -> Master
 */
 import React from 'react'
+import _ from 'lodash'
 import {connect} from 'react-redux'
 import Oscillator from './Oscillator.js'
 import Chorus from './Chorus.js'
+import LFO from './LFO.js'
 import observeStore from '../data/ObserveStore'
 
 class Synth extends React.Component {
@@ -30,21 +32,20 @@ class Synth extends React.Component {
     this.biquadFilter = audioContext.createBiquadFilter()
     this.biquadFilter.type = 'lowpass'
     this.biquadFilter.frequency.value = 0
-    this.biquadFilter.gain.value = 300  // We can add a slider for this.
+    this.biquadFilter.gain.value = 5000  // We can add a slider for this.
 
-    // Filter LFO
-    this.lfoFilter = audioContext.createBiquadFilter()
-    this.lfoFilter.type = 'lowpass'
-    this.lfoFilter.frequency.value = 100
-    this.lfoFilter.gain.value = 300  // We can add a slider for this.
-    this.lfoFreq = audioContext.createOscillator()
-    this.lfoFreqGain = audioContext.createGain()
-    this.lfoFreq.start()
+
+
+    // The filter LFO targets this postFilter.
+    this.postFilter = audioContext.createBiquadFilter()
+    this.postFilter.type = 'lowpass'
+    this.postFilter.frequency.value = 10000
+    this.postFilter.gain.value = 5000
 
     // Amp LFO
-    this.lfoAmp = audioContext.createOscillator()
-    this.lfoAmpGain = audioContext.createGain()
-    this.lfoAmp.start()
+    // this.lfoAmp = audioContext.createOscillator()
+    // this.lfoAmpGain = audioContext.createGain()
+    // this.lfoAmp.start()
 
     // Chorus
     this.chorus = new Chorus(audioContext, props.store)
@@ -52,9 +53,12 @@ class Synth extends React.Component {
     this.chorus.time = this.props.Chorus.time
 
     // Connections
-    this.lfoFilter.connect(this.biquadFilter)
-    // this.oscillatorsBus.connect(this.chorus.input) // this gets connected / disconnected below.
-    this.biquadFilter.connect(this.vcaGain)
+    // oscillator bus is sent to postFilter when Filter LFO is on.
+
+    this.oscillatorsBus.connect(this.biquadFilter)
+    this.biquadFilter.connect(this.postFilter)
+    this.postFilter.connect(this.vcaGain)
+
     this.vcaGain.connect(this.chorus.inputLeft)
     this.vcaGain.connect(this.chorus.inputRight)
     this.chorus.connect(this.masterGain)
@@ -62,24 +66,23 @@ class Synth extends React.Component {
     this.masterGain.connect(audioContext.destination)
 
     this.startListeners(eventEmitter, props.store)
+
+    // LFOs
+    this.initLFOs(this.props)
   }
 
   initOscillators (props) {
-    props.Oscillators.map((oscillator, index) => {
+    props.Oscillators.map((o, index) => {
       let options = {
-        id: oscillator.id,
-        name: oscillator.name,
-        computedChannelData: oscillator.computedChannelData,
-        detune: oscillator.detune,
-        octave: oscillator.octave,
-        amount: oscillator.amount,
-        note: oscillator.note,
+        id: o.id,
+        name: o.name,
+        computedChannelData: o.computedChannelData,
+        detune: o.detune,
+        octave: o.octave,
+        amount: o.amount,
+        note: o.note,
         audioContext: this.props.audioContext,
-        output: this.oscillatorsBus,
-        lfoOn: oscillator.lfoOn,
-        lfoRate: oscillator.lfoRate,
-        lfoAmount: oscillator.lfoAmount,
-        lfoShape: oscillator.lfoShape
+        output: this.oscillatorsBus
       }
 
       let osc = new Oscillator(options)
@@ -98,6 +101,63 @@ class Synth extends React.Component {
         })
       })
     })
+  }
+
+  initLFOs (props) {
+    props.LFOs.map((l, index) => {
+      let options = {
+        name: l.name,
+        id: l.id,
+        shape: l.shape,
+        amount: l.amount,
+        rate: l.rate,
+        min: l.min,
+        max: l.max,
+        destination: l.destination,
+        audioContext: this.props.audioContext
+      }
+
+      let lfo = new LFO(options)
+
+      let observableProps = [
+        'destination', // Has to be first, else race condition occurs.
+        'amount',
+        'rate',
+        'min',
+        'max',
+        'shape'
+      ]
+      observableProps.forEach((prop) => {
+        observeStore(props.store, `LFOs[${index}].${prop}`, (val) => {
+          lfo[prop] = val
+        })
+      })
+      // Wire up destination changes in a separate function.
+      observeStore(props.store, `LFOs[${index}].destination`, (destination) => {
+        this.routeLFO(lfo, destination)
+      })
+    })
+  }
+
+  // Route LFOs to targets.
+  routeLFO (lfo, destination) {
+    lfo.disconnect()
+
+    if (destination.moduleId === 'amp') {
+      lfo.connect(this.oscillatorsBus.gain, 0.01)
+    }
+    if (destination.moduleId === 'filter') {
+      lfo.connect(this.biquadFilter.frequency, 1000)
+    }
+    // if (_.includes(id, 'osc')) {
+    //   return this.props.Oscillators.find((osc) => osc.id === id)
+    // }
+    // if (_.includes(id, 'lfo')) {
+    //   return this.props.LFOs.find((osc) => osc.id === id)
+    // }
+    // this.oscillatorsBus.connect(this.biquadFilter)
+
+
   }
 
   startListeners (eventEmitter, store) {
@@ -191,39 +251,39 @@ class Synth extends React.Component {
 
     // Filter LFO
     // TODO : only run this if things changed.
-    if (this.props.Filter.lfoFreqOn) {
-      this.oscillatorsBus.connect(this.lfoFilter)
-
-      let freq = this.clampToMinMax(60, 20000, this.props.Filter.freq * 100 - 8000)
-      this.lfoFilter.frequency.value = freq
-
-      let {lfoFreqRate, lfoFreqShape} = this.props.Filter
-      this.lfoFreq.connect(this.lfoFreqGain)
-      this.lfoFreq.type = lfoFreqShape
-      this.lfoFreq.frequency.value = lfoFreqRate / 10
-      this.lfoFreqGain.gain.value = 1000 // this.clampToMinMax(100, this.props.Filter.freq, 1)
-
-      this.lfoFreqGain.connect(this.lfoFilter.frequency)
-    } else {
-      // Disconnect the oscillators from the filter LFO.
-      this.oscillatorsBus.connect(this.biquadFilter)
-      this.lfoFreq.disconnect()
-      this.lfoFreqGain.disconnect()
-    }
+    // if (this.props.Filter.lfoFreqOn) {
+    //   this.oscillatorsBus.connect(this.lfoFilter)
+    //
+    //   let freq = this.clampToMinMax(60, 20000, this.props.Filter.freq * 100 - 8000)
+    //   this.lfoFilter.frequency.value = freq
+    //
+    //   let {lfoFreqRate, lfoFreqShape} = this.props.Filter
+    //   this.lfoFreq.connect(this.lfoFreqGain)
+    //   this.lfoFreq.type = lfoFreqShape
+    //   this.lfoFreq.frequency.value = lfoFreqRate / 10
+    //   this.lfoFreqGain.gain.value = 1000 // this.clampToMinMax(100, this.props.Filter.freq, 1)
+    //
+    //   this.lfoFreqGain.connect(this.lfoFilter.frequency)
+    // } else {
+    //   // Disconnect the oscillators from the filter LFO.
+    //   this.oscillatorsBus.connect(this.biquadFilter)
+    //   this.lfoFreq.disconnect()
+    //   this.lfoFreqGain.disconnect()
+    // }
 
     // Amp LFO
-    if (this.props.Amp.lfoOn) {
-      let {lfoAmount, lfoRate, lfoShape} = this.props.Amp
-      this.lfoAmp.connect(this.lfoAmpGain)
-      this.lfoAmp.type = lfoShape
-      this.lfoAmp.frequency.value = lfoRate / 10
-      this.lfoAmpGain.gain.value = lfoAmount / 100
-      this.lfoAmpGain.connect(this.oscillatorsBus.gain)
-    } else {
-      // Stop the LFO Amp.
-      this.lfoAmp.disconnect()
-      this.lfoAmpGain.disconnect()
-    }
+  //   if (this.props.Amp.lfoOn) {
+  //     let {lfoAmount, lfoRate, lfoShape} = this.props.Amp
+  //     this.lfoAmp.connect(this.lfoAmpGain)
+  //     this.lfoAmp.type = lfoShape
+  //     this.lfoAmp.frequency.value = lfoRate / 10
+  //     this.lfoAmpGain.gain.value = lfoAmount / 100
+  //     this.lfoAmpGain.connect(this.oscillatorsBus.gain)
+  //   } else {
+  //     // Stop the LFO Amp.
+  //     this.lfoAmp.disconnect()
+  //     this.lfoAmpGain.disconnect()
+  //   }
   }
 
   render () {

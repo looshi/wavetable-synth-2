@@ -108,7 +108,8 @@ class App extends React.Component {
           Filter={this.props.Filter}
           Chorus={this.props.Chorus}
           Amp={this.props.Amp}
-          Oscillators={this.props.Oscillators} />
+          Oscillators={this.props.Oscillators}
+          LFOs={this.props.LFOs} />
 
       </div>
     )

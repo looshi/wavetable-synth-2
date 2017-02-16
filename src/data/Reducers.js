@@ -67,31 +67,31 @@ function initOscillator (name, id) {
     amount: URL[id + 'a'] || 75,
     detune: URL[id + 'd'] || 0,
     octave: URL[id + 'o'] || 0,
-    note: 0, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
-    lfoOn: false,
-    lfoAmount: 0,
-    lfoRate: 0,
-    lfoShape: 'sine'
+    note: 0 // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
   }
 }
 
 // LFOs
+const LFODestinations = [
+  {id: '-1', label: 'None', active: true},
+  {id: '0', label: 'Amp', moduleId: 'amp', property: 'gain', active: false},
+  {id: '1', label: 'Filter', moduleId: 'filter', property: 'freq', active: false},
+  {id: '3', label: 'Osc 1 pitch', moduleId: 'osc1', property: 'detune', active: false},
+  {id: '4', label: 'Osc 2 pitch', moduleId: 'osc2', property: 'detune', active: false},
+  {id: '5', label: 'Osc 3 pitch', moduleId: 'osc3', property: 'detune', active: false},
+]
+
 function initLFO (name, id) {
   return {
     name,
     id,
     shape: 'triangle',
-    amount: 50,
-    rate: 50,
-    destination: {id: '-1', label: 'none', active: true},
-    destinations: [
-      {id: '-1', label: 'None', active: true},
-      {id: '0', label: 'Amp', moduleId: 'amp', property: 'gain', active: false},
-      {id: '1', label: 'Filter', moduleId: 'filter', property: 'freq', active: false},
-      {id: '3', label: 'Osc 1 pitch', moduleId: 'osc1', property: 'detune', active: false},
-      {id: '4', label: 'Osc 2 pitch', moduleId: 'osc2', property: 'detune', active: false},
-      {id: '5', label: 'Osc 3 pitch', moduleId: 'osc3', property: 'detune', active: false}
-    ]
+    amount: 1,
+    rate: 1,
+    min: 0,
+    max: 1,
+    destination: LFODestinations[0],
+    destinations: LFODestinations
   }
 }
 
@@ -139,15 +139,6 @@ initialState.LFOs.forEach((lfo, index) => {
     initialState.Filter.lfoFreqAmount = lfo.amount
     initialState.Filter.lfoFreqRate = lfo.rate
     initialState.Filter.lfoFreqShape = lfo.shape
-  }
-
-  // Oscillator LFO initial settings.
-  if (['3', '4', '5'].indexOf(lfo.destination.id) !== -1) {
-    let osc = initialState.Oscillators.find((o) => o.id === lfo.destination.moduleId)
-    osc.lfoOn = true
-    osc.lfoAmount = lfo.amount
-    osc.lfoRate = lfo.rate
-    osc.lfoShape = lfo.shape
   }
 })
 
@@ -208,39 +199,39 @@ function AmpReducer (state, action) {
       }
       return Object.assign({}, state)
 
-    case 'LFO_AMOUNT_CHANGED':
-      if (action.destination.moduleId === 'amp') {
-        state.lfoAmount = action.amount
-      }
-      return Object.assign({}, state)
-
-    case 'LFO_RATE_CHANGED':
-      if (action.destination.moduleId === 'amp') {
-        state.lfoRate = action.rate
-      }
-      return Object.assign({}, state)
-
-    case 'LFO_SHAPE_CHANGED':
-      if (action.destination.moduleId === 'amp') {
-        state.lfoShape = action.shape
-      }
-      return Object.assign({}, state)
-
-    // Turn on the LFO if an oscillator was selected as a destination.
-    case 'LFO_DESTINATION_CHANGED':
-      // Turn off LFO (if it was on).
-      if (action.oldDestination.moduleId === 'amp') {
-        state.lfoOn = false
-      }
-      // Turn on LFO.
-      if (action.newDestination.moduleId === 'amp') {
-        let lfo = initialState.LFOs.find((l) => l.id === action.id)
-        state.lfoOn = true
-        state.lfoRate = lfo.rate
-        state.lfoAmount = lfo.amount
-        state.lfoShape = lfo.shape
-      }
-      return Object.assign({}, state)
+    // case 'LFO_AMOUNT_CHANGED':
+    //   if (action.destination.moduleId === 'amp') {
+    //     state.lfoAmount = action.amount
+    //   }
+    //   return Object.assign({}, state)
+    //
+    // case 'LFO_RATE_CHANGED':
+    //   if (action.destination.moduleId === 'amp') {
+    //     state.lfoRate = action.rate
+    //   }
+    //   return Object.assign({}, state)
+    //
+    // case 'LFO_SHAPE_CHANGED':
+    //   if (action.destination.moduleId === 'amp') {
+    //     state.lfoShape = action.shape
+    //   }
+    //   return Object.assign({}, state)
+    //
+    // // Turn on the LFO if an oscillator was selected as a destination.
+    // case 'LFO_DESTINATION_CHANGED':
+    //   // Turn off LFO (if it was on).
+    //   if (action.oldDestination.moduleId === 'amp') {
+    //     state.lfoOn = false
+    //   }
+    //   // Turn on LFO.
+    //   if (action.newDestination.moduleId === 'amp') {
+    //     let lfo = initialState.LFOs.find((l) => l.id === action.id)
+    //     state.lfoOn = true
+    //     state.lfoRate = lfo.rate
+    //     state.lfoAmount = lfo.amount
+    //     state.lfoShape = lfo.shape
+    //   }
+    //   return Object.assign({}, state)
 
     default:
       return state
@@ -273,40 +264,40 @@ function FilterReducer (state, action) {
       }
       return Object.assign({}, state)
 
-    case 'LFO_AMOUNT_CHANGED':
-      if (action.destination.moduleId === 'filter') {
-        state.lfoFreqAmount = action.amount
-      }
-      return Object.assign({}, state)
-
-    case 'LFO_RATE_CHANGED':
-      if (action.destination.moduleId === 'filter') {
-        state.lfoFreqRate = action.rate
-      }
-      return Object.assign({}, state)
-
-    case 'LFO_SHAPE_CHANGED':
-      if (action.destination.moduleId === 'filter') {
-        state.lfoFreqShape = action.shape
-      }
-      return Object.assign({}, state)
-
-    // Turn on the LFO if an oscillator was selected as a destination.
-    case 'LFO_DESTINATION_CHANGED':
-      // Turn off LFO (if it was on).
-      if (action.oldDestination.moduleId === 'filter') {
-        state.lfoFreqOn = false
-        updateURL('flo', false)
-      }
-      // Turn on LFO.
-      if (action.newDestination.moduleId === 'filter') {
-        let lfo = initialState.LFOs.find((l) => l.id === action.id)
-        state.lfoFreqOn = true
-        state.lfoFreqRate = lfo.rate
-        state.lfoFreqAmount = lfo.amount
-        state.lfoFreqShape = lfo.shape
-        updateURL('flo', true)
-      }
+    // case 'LFO_AMOUNT_CHANGED':
+    //   if (action.destination.moduleId === 'filter') {
+    //     state.lfoFreqAmount = action.amount
+    //   }
+    //   return Object.assign({}, state)
+    //
+    // case 'LFO_RATE_CHANGED':
+    //   if (action.destination.moduleId === 'filter') {
+    //     state.lfoFreqRate = action.rate
+    //   }
+    //   return Object.assign({}, state)
+    //
+    // case 'LFO_SHAPE_CHANGED':
+    //   if (action.destination.moduleId === 'filter') {
+    //     state.lfoFreqShape = action.shape
+    //   }
+    //   return Object.assign({}, state)
+    //
+    // // Turn on the LFO if an oscillator was selected as a destination.
+    // case 'LFO_DESTINATION_CHANGED':
+    //   // Turn off LFO (if it was on).
+    //   if (action.oldDestination.moduleId === 'filter') {
+    //     state.lfoFreqOn = false
+    //     updateURL('flo', false)
+    //   }
+    //   // Turn on LFO.
+    //   if (action.newDestination.moduleId === 'filter') {
+    //     let lfo = initialState.LFOs.find((l) => l.id === action.id)
+    //     state.lfoFreqOn = true
+    //     state.lfoFreqRate = lfo.rate
+    //     state.lfoFreqAmount = lfo.amount
+    //     state.lfoFreqShape = lfo.shape
+    //     updateURL('flo', true)
+    //   }
       return Object.assign({}, state)
     default:
       return state
@@ -469,51 +460,37 @@ function OscillatorsReducer (state, action) {
       })
       return [...state]
 
-    case 'LFO_AMOUNT_CHANGED':
-      state = state.map(function (osc) {
-        if (osc.id === action.destination.moduleId) {
-          osc.lfoAmount = action.amount
-        }
-        return osc
-      })
-      return [...state]
-
-    case 'LFO_RATE_CHANGED':
-      state = state.map(function (osc) {
-        if (osc.id === action.destination.moduleId) {
-          osc.lfoRate = action.rate
-        }
-        return osc
-      })
-      return [...state]
-
-    case 'LFO_SHAPE_CHANGED':
-      state = state.map(function (osc) {
-        if (osc.id === action.destination.moduleId) {
-          osc.lfoShape = action.shape
-        }
-        return osc
-      })
-      return [...state]
-
-    // Turn on the LFO if an oscillator was selected as a destination.
-    case 'LFO_DESTINATION_CHANGED':
-      state = state.map(function (osc) {
-        // Turn off LFO.
-        if (osc.id === action.oldDestination.moduleId) {
-          osc.lfoOn = false
-        }
-        // Turn on LFO.
-        if (osc.id === action.newDestination.moduleId) {
-          let lfo = initialState.LFOs.find((l) => l.id === action.id)
-          osc.lfoOn = true
-          osc.lfoRate = lfo.rate
-          osc.lfoAmount = lfo.amount
-          osc.lfoShape = lfo.shape
-        }
-        return osc
-      })
-      return [...state]
+    // case 'LFO_AMOUNT_CHANGED':
+    //   state = state.map(function (osc) {
+    //     if (osc.id === action.destination.moduleId) {
+    //       osc.lfoAmount = action.amount
+    //     }
+    //     return osc
+    //   })
+    //   return [...state]
+    //
+    // case 'LFO_RATE_CHANGED':
+    //   state = state.map(function (osc) {
+    //     if (osc.id === action.destination.moduleId) {
+    //       osc.lfoRate = action.rate
+    //     }
+    //     return osc
+    //   })
+    //   return [...state]
+    //
+    // case 'LFO_SHAPE_CHANGED':
+    //   state = state.map(function (osc) {
+    //     if (osc.id === action.destination.moduleId) {
+    //       osc.lfoShape = action.shape
+    //     }
+    //     return osc
+    //   })
+    //   return [...state]
+    //
+    // // Turn on the LFO if an oscillator was selected as a destination.
+    // case 'LFO_DESTINATION_CHANGED':
+    //   console.log('LFO destination changed', action)
+    //   return [...state]
 
     default:
       return state

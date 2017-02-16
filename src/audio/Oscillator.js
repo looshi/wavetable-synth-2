@@ -16,23 +16,6 @@ export default class Oscillator {
     this.gainNode.connect(this.output)
   }
 
-  arraysChanged (a, b) {
-    if (!b) {
-      return true
-    }
-    for (var i = 0; i < b.length; i++) {
-      // Allow only numbers.
-      if (typeof b[i] !== 'number' || isNaN(parseFloat(b[i]))) {
-        return false
-      }
-      // Make sure the array actually changed before we update the wavetable.
-      if (a[i] !== b[i]) {
-        return true
-      }
-    }
-    return false
-  }
-
   set amount (val) {
     this.gainNode.gain.value = val / 100
   }
@@ -90,5 +73,22 @@ export default class Oscillator {
     this.wavSource.start()
     this.wavSource._started = true
     this.wavSource.connect(this.gainNode)
+  }
+
+  arraysChanged (a, b) {
+    if (!b) {
+      return true
+    }
+    for (var i = 0; i < b.length; i++) {
+      // Allow only numbers.
+      if (typeof b[i] !== 'number' || isNaN(parseFloat(b[i]))) {
+        return false
+      }
+      // Make sure the array actually changed before we update the wavetable.
+      if (a[i] !== b[i]) {
+        return true
+      }
+    }
+    return false
   }
 }
