@@ -6,7 +6,7 @@ Oscillators -> Osc Bus -> LFOFilter (if on) -> Filter -> VCA -> Master
 */
 import React from 'react'
 import {connect} from 'react-redux'
-import OscillatorAudio from './OscillatorAudio.js'
+import Oscillator from './Oscillator.js'
 import Chorus from './Chorus.js'
 import observeStore from '../data/ObserveStore'
 
@@ -23,6 +23,8 @@ class Synth extends React.Component {
     // Oscillators bus
     this.oscillatorsBus = audioContext.createGain()
     this.oscillatorsBus.gain.value = 1
+    this.oscillators = []
+    this.initOscillators(this.props)
 
     // Filter
     this.biquadFilter = audioContext.createBiquadFilter()
@@ -60,6 +62,42 @@ class Synth extends React.Component {
     this.masterGain.connect(audioContext.destination)
 
     this.startListeners(eventEmitter, props.store)
+  }
+
+  initOscillators (props) {
+    props.Oscillators.map((oscillator, index) => {
+      let options = {
+        id: oscillator.id,
+        name: oscillator.name,
+        computedChannelData: oscillator.computedChannelData,
+        detune: oscillator.detune,
+        octave: oscillator.octave,
+        amount: oscillator.amount,
+        note: oscillator.note,
+        audioContext: this.props.audioContext,
+        output: this.oscillatorsBus,
+        lfoOn: oscillator.lfoOn,
+        lfoRate: oscillator.lfoRate,
+        lfoAmount: oscillator.lfoAmount,
+        lfoShape: oscillator.lfoShape
+      }
+
+      let osc = new Oscillator(options)
+      this.oscillators.push(osc)
+
+      let observableProps = [
+        'amount',
+        'detune',
+        'note',
+        'octave',
+        'computedChannelData'
+      ]
+      observableProps.forEach((prop) => {
+        observeStore(props.store, `Oscillators[${index}].${prop}`, (val) => {
+          osc[prop] = val
+        })
+      })
+    })
   }
 
   startListeners (eventEmitter, store) {
@@ -189,31 +227,7 @@ class Synth extends React.Component {
   }
 
   render () {
-    return (
-      <div>
-        {
-          this.props.Oscillators.map((oscillator) => {
-            return (
-              <OscillatorAudio
-                key={oscillator.id}
-                id={oscillator.id}
-                name={oscillator.name}
-                computedChannelData={oscillator.computedChannelData}
-                detune={oscillator.detune}
-                octave={oscillator.octave}
-                amount={oscillator.amount}
-                note={oscillator.note}
-                audioContext={this.props.audioContext}
-                output={this.oscillatorsBus}
-                lfoOn={oscillator.lfoOn}
-                lfoRate={oscillator.lfoRate}
-                lfoAmount={oscillator.lfoAmount}
-                lfoShape={oscillator.lfoShape} />
-            )
-          })
-        }
-      </div>
-    )
+    return null
   }
 }
 

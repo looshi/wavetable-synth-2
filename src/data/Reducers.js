@@ -67,7 +67,7 @@ function initOscillator (name, id) {
     amount: URL[id + 'a'] || 75,
     detune: URL[id + 'd'] || 0,
     octave: URL[id + 'o'] || 0,
-    note: null, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
+    note: 0, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
     lfoOn: false,
     lfoAmount: 0,
     lfoRate: 0,
