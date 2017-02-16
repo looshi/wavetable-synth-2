@@ -29,7 +29,7 @@ export default class Oscillator {
     this._lfo = lfo
     this._persistLFO = persist
     if (this.wavSource) {
-      this._lfo.connect(this.wavSource.detune, 100, persist)
+      this._lfo.connect(this.wavSource.detune, 10, persist)
     }
   }
 
@@ -92,7 +92,7 @@ export default class Oscillator {
     this.wavSource.connect(this.gainNode)
 
     if (this._lfo) {
-      this._lfo.connect(this.wavSource.detune, 100, this._persistLFO)
+      this._lfo.connect(this.wavSource.detune, 10, this._persistLFO)
     }
   }
 

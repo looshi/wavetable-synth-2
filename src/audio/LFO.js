@@ -51,7 +51,7 @@ export default class LFO {
   }
 
   set rate (val) {
-    this.lfo.frequency.value = val
+    this.lfo.frequency.value = val / 10
   }
 
   set amount (val) {
