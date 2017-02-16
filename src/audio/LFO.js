@@ -1,13 +1,16 @@
 /*
 LFO
-useage :
-let options = {
-  rate: 1
-  amount: 10
-  shape: 'sine'
-}
+Given an input of zero to 100 ( our sliders are in this range ),
+for affecting frequency values, multiplier is usually 100 or more.
+for affecting gain values, mulitiplier should be quite small, around .001.
+
 let lfo = new LFO(options)
-lfo.connect(node.audioParam)
+let multiplier = 0.001
+lfo.connect(node.audioParam, multiplier)
+
+When the LFO is connected to the filter, clicking can be heard if the LFO
+gain is greater than the current filter frequency.  I don't know how to
+adjust the LFO gain automatically in accordance with the filter.
 */
 
 export default class LFO {
@@ -19,9 +22,12 @@ export default class LFO {
     this.max = props.max
     this.destinations = props.destinations
     this.multiplier = 1
+    this.freqMultiplier = 1
 
     this._value = 0
     this._shape = props.shape
+    this._frequency = 0
+
     this.audioContext = props.audioContext
 
     this.init(props.rate, props.shape, props.amount)
@@ -32,9 +38,9 @@ export default class LFO {
     this.lfoGain = this.audioContext.createGain()
     this.lfo.start()
     this.lfo.connect(this.lfoGain)
-    this.lfo.type = shape
     this.lfo.frequency.value = rate
     this.lfoGain.gain.value = amount
+    this.updateShape(shape)
   }
 
   connect (destination, multiplier, persist = false) {
@@ -50,8 +56,25 @@ export default class LFO {
     this.lfoGain.disconnect()
   }
 
+  // Allows an external controller to get a reference to this LFOs frequency.
+  get lfoInputFrequency () {
+    return this.lfo.frequency
+  }
+
+  // Allows an external controller to get a reference to this LFOs amount.
+  get lfoInputAmount () {
+    return this.lfoGain.gain
+  }
+
   set rate (val) {
-    this.lfo.frequency.value = val / 10
+    this._frequency = val
+    if (val) {
+      this.updateRate(val)
+    }
+  }
+
+  updateRate (val) {
+    this.lfo.frequency.value = (val / 10) * this.freqMultiplier
   }
 
   set amount (val) {
@@ -65,7 +88,29 @@ export default class LFO {
 
   set shape (val) {
     this._shape = val
-    this.lfo.type = val
+    this.updateShape(val)
   }
 
+  updateShape (shape) {
+    if (shape === 'random') {
+      let waveData = [0]
+      for (let i = 0; i < 48; i++) {
+        if (Math.random() < 0.5) {
+          waveData.push(0)
+        } else {
+          waveData.push(1)
+        }
+      }
+      let real = new Float32Array(waveData)
+      let imag = new Float32Array(waveData.length)
+      waveData = this.audioContext.createPeriodicWave(real, imag)
+      this.lfo.setPeriodicWave(waveData)
+      this.freqMultiplier = 0.0325
+      this.updateRate(this._frequency)
+    } else {
+      this.lfo.type = shape
+      this.freqMultiplier = 1
+      this.updateRate(this._frequency)
+    }
+  }
 }

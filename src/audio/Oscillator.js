@@ -24,8 +24,8 @@ export default class Oscillator {
   // it will connect again below.
   // Only one LFO can be set on page load, however multiple LFOs can be
   // set after page load.  TODO : allow multiple on page load.
-  // persist fixes an issue in setting LFO from filter to volume.
-  // Very loud pops happen when a note is on and setting to volume.
+  // 'persist' parameter fixes an issue in setting LFO from filter to volume -
+  // Very loud pops happen when a note is on and setting lfo to volume.
   connectPitchToLFO (lfo, persist = false) {
     this._lfoPitch = lfo
     this._persistLFO = persist
@@ -62,7 +62,7 @@ export default class Oscillator {
   }
 
   updatePitch () {
-    if (!this.wavSource) return
+    if (!this.wavSource || !this._note) return
     // Calculate pitch.
     this.wavSource.detune.value = this._detune
     // Add note value (note value * 100 cents per note).

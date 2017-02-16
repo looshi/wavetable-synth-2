@@ -76,13 +76,18 @@ const LFODestinations = [
   {id: '-1', label: 'None'},
   {id: '0', label: 'Amp', moduleId: 'amp', property: 'gain'},
   {id: '1', label: 'Filter', moduleId: 'filter', property: 'freq'},
-  {id: '6', label: 'Osc ALL pitch', moduleId: 'oscAll', property: 'detune'},
-  {id: '3', label: 'Osc 1 pitch', moduleId: 'osc1', property: 'detune'},
-  {id: '4', label: 'Osc 2 pitch', moduleId: 'osc2', property: 'detune'},
-  {id: '5', label: 'Osc 3 pitch', moduleId: 'osc3', property: 'detune'},
-  {id: '7', label: 'Osc 1 amount', moduleId: 'osc1', property: 'amount'},
-  {id: '8', label: 'Osc 2 amount', moduleId: 'osc2', property: 'amount'},
-  {id: '9', label: 'Osc 3 amount', moduleId: 'osc3', property: 'amount'},
+  {id: '6', label: 'Osc ALL Pitch', moduleId: 'oscAll', property: 'detune'},
+  {id: '3', label: 'Osc 1 Pitch', moduleId: 'osc1', property: 'detune'},
+  {id: '4', label: 'Osc 2 Pitch', moduleId: 'osc2', property: 'detune'},
+  {id: '5', label: 'Osc 3 Pitch', moduleId: 'osc3', property: 'detune'},
+  {id: '7', label: 'Osc 1 Amount', moduleId: 'osc1', property: 'amount'},
+  {id: '8', label: 'Osc 2 Amount', moduleId: 'osc2', property: 'amount'},
+  {id: '9', label: 'Osc 3 Amount', moduleId: 'osc3', property: 'amount'},
+  {id: '10', label: 'Chorus Amount', moduleId: 'chorus', property: 'amount'},
+  {id: '11', label: 'Chorus Time', moduleId: 'chorus', property: 'time'},
+  {id: '12', label: 'LFO 1', moduleId: 'lfo1', property: 'amount'},
+  {id: '13', label: 'LFO 2', moduleId: 'lfo2', property: 'amount'},
+  {id: '14', label: 'LFO 3', moduleId: 'lfo3', property: 'amount'}
 ]
 
 function initLFO (name, id) {

@@ -55,10 +55,10 @@ class LFOView extends React.Component {
         <h1>LFO {this.props.name}</h1>
         <div className='box'>
           <div onClick={this.onShapeChanged.bind(this)} className='shape-switch'>
-            <div data-shape={'sine'} className={this.buttonClassName('sine', selected)}>~</div>
-            <div data-shape={'triangle'} className={this.buttonClassName('triangle', selected)}>&#94;</div>
-            <div data-shape={'sawtooth'} className={this.buttonClassName('sawtooth', selected)}>/\/\</div>
-            <div data-shape={'square'} className={this.buttonClassName('square', selected)}>|-|</div>
+            <div data-shape={'random'} className={this.buttonClassName('random', selected)}>Ran</div>
+            <div data-shape={'triangle'} className={this.buttonClassName('triangle', selected)}>Tri</div>
+            <div data-shape={'sawtooth'} className={this.buttonClassName('sawtooth', selected)}>Saw</div>
+            <div data-shape={'square'} className={this.buttonClassName('square', selected)}>Sq</div>
             <div className='wave-label'>shape</div>
           </div>
           <div className='sliders'>

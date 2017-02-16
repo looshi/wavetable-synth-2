@@ -73,6 +73,14 @@ export default class Chorus {
     return this.gainNode.gain.value * 100
   }
 
+  get lfoInputTime () {
+    return this.lfoL.frequency
+  }
+
+  get lfoInputAmount () {
+    return this.gainNode.gain
+  }
+
   isNumeric (val) {
     if (typeof val !== 'number') {
       return false
