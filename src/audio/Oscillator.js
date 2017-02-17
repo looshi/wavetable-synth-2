@@ -106,6 +106,7 @@ export default class Oscillator {
     if (this._lfoAmount) {
       this._lfoAmount.connect(this.gainNode.gain, 0.01)
     }
+    this.updatePitch()
   }
 
   arraysChanged (a, b) {

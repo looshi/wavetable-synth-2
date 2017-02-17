@@ -53,14 +53,15 @@ class WaveLine extends React.Component {
       sampledWaveData.push(pixelValue)
     }
 
-    let rgba = [0, 71, 180, 255]
-    drawPixels(sampledWaveData, padWidth, padHeight, context, rgba)
+    drawPixels(sampledWaveData, padWidth, padHeight, context, this.props.color)
   }
 
   render () {
     const boxStyle = {
       width: this.props.width,
-      height: this.props.height
+      height: this.props.height,
+      backgroundColor: 'white',
+      borderColor: this.props.color
     }
     return (
       <div className='box' style={boxStyle}>
@@ -84,10 +85,10 @@ WaveLine.defaultProps = {
 
 export default WaveLine
 
-function drawPixels (pixels, width, height, context, rgba) {
+function drawPixels (pixels, width, height, context, color) {
   context.beginPath()
   context.lineWidth = 2
-  context.strokeStyle = '#0047B4'
+  context.strokeStyle = color
 
   for (var i = 0; i < pixels.length; i++) {
     if (pixels[i - 1]) {

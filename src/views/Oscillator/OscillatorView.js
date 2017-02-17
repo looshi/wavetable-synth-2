@@ -13,14 +13,19 @@ import HorizontalSlider from '../Components/HorizontalSlider.js'
 class OscillatorView extends React.Component {
 
   render () {
+    const colorStyle = {
+      color: this.props.color
+    }
+
     return (
       <div className='oscillator'>
-        <h1>Oscillator {this.props.name}</h1>
+        <h1 style={colorStyle}>Oscillator {this.props.name}</h1>
         <div className='wavetable-boxes'>
           <div className='wavetable-box'>
             <WaveLine
               width={140}
               height={136}
+              color={this.props.color}
               channelData={this.props.channelDataA} />
 
             <WaveFileLoader
@@ -35,6 +40,7 @@ class OscillatorView extends React.Component {
             <WaveLine
               width={140}
               height={136}
+              color={this.props.color}
               channelData={this.props.channelDataB} />
 
             <WaveFileLoader
@@ -47,12 +53,14 @@ class OscillatorView extends React.Component {
           <div className='algorithm-switch-horizontal'>
             <AlgorithmSwitch
               id={this.props.id}
+              color={this.props.color}
               algorithm={this.props.algorithm} />
           </div>
           <div className='wavetable-computed'>
             <WaveLine
               width={300}
               height={136}
+              color={this.props.color}
               channelData={this.props.computedChannelData} />
           </div>
           <div className='oscillator-sliders'>
@@ -63,6 +71,7 @@ class OscillatorView extends React.Component {
               min={-12}
               max={12}
               step={1}
+              color={this.props.color}
               value={this.props.detune} />
             <HorizontalSlider
               id={this.props.id}
@@ -71,6 +80,7 @@ class OscillatorView extends React.Component {
               min={-3}
               max={3}
               step={1}
+              color={this.props.color}
               value={this.props.octave} />
             <HorizontalSlider
               id={this.props.id}
@@ -79,6 +89,7 @@ class OscillatorView extends React.Component {
               min={0}
               max={100}
               step={1}
+              color={this.props.color}
               value={this.props.amount} />
           </div>
 

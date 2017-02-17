@@ -55,6 +55,7 @@ class App extends React.Component {
                     detune={oscillator.detune}
                     octave={oscillator.octave}
                     amount={oscillator.amount}
+                    color={oscillator.color}
                     audioContext={audioContext}
                     files={WaveFiles} />
                 )

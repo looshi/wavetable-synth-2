@@ -1,0 +1,179 @@
+.fader {
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 180px; /* Specific width is required for Firefox. */
+  background: transparent; /* Otherwise white in Chrome */
+}
+
+.fader::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+
+.fader:focus {
+  outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+
+.fader::-ms-track {
+  width: 180px;
+  cursor: pointer;
+  /* Hides the slider so custom styles can be added */
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+/* Style for thumb */
+
+/* Special styling for WebKit/Blink */
+.fader::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  background: #fff;
+  margin-top: -7px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+  /* box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+}
+.fader.color-00BBBE::-webkit-slider-thumb {
+  background: #00BBBE;
+}
+.fader.color-FF7403::-webkit-slider-thumb {
+  background: #FF7403;
+}
+.fader.color-A7CA33::-webkit-slider-thumb {
+  background: #A7CA33;
+}
+
+/* All the same stuff for IE */
+.fader::-ms-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  background: #fff;
+}
+.fader.color-00BBBE::-ms-thumb {
+  background: #00BBBE;
+}
+.fader.color-FF7403::-ms-thumb {
+  background: #FF7403;
+}
+.fader.color-A7CA33::-ms-thumb {
+  background: #A7CA33;
+}
+
+
+/* Style for track */
+.fader::-webkit-slider-runnable-track {
+  width: 180px;
+  height: 3px;
+  cursor: pointer;
+  background: #B9BDD7;
+}
+
+.fader:focus::-webkit-slider-runnable-track {
+  background: #B9BDD7;
+}
+
+/* --------------- Firefox ---------------  */
+.fader::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 16px;
+  cursor: pointer;
+  background: #0047B4;
+}
+.fader.color-00BBBE::-moz-range-thumb {
+  background: #00BBBE;
+}
+.fader.color-FF7403::-moz-range-thumb {
+  background: #FF7403;
+}
+.fader.color-A7CA33::-moz-range-thumb {
+  background: #A7CA33;
+}
+.fader::-moz-range-track {
+  width: 180px;
+  height: 3px;
+  cursor: pointer;
+  background: #B9BDD7;
+}
+.fader.vertical::-moz-range-track {
+  width: 3px;
+  height: 100px;
+  cursor: pointer;
+  background: #B9BDD7;
+}
+
+/* --------------- IE ---------------  */
+.fader::-ms-track {
+  width: 180px;
+  height: 3px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  border-width: 16px 0;
+  color: transparent;
+}
+.fader::-ms-fill-lower {
+  background: #B9BDD7;
+}
+.fader:focus::-ms-fill-lower {
+  background: #B9BDD7;
+}
+.fader::-ms-fill-upper {
+  background: #B9BDD7;
+}
+.fader:focus::-ms-fill-upper {
+  background: #B9BDD7;
+}
+
+
+/*  --------------- Vertical Fader --------------- */
+.fader.vertical{
+  writing-mode: bt-lr; /* IE */
+  -webkit-appearance: slider-vertical; /* WebKit */
+  width: 8px;
+  height: 115px;
+  padding: 0 5px;
+  margin: 0 auto;
+}
+
+/* This media query makes it so that these styles are only applied in Chrome */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+
+  .vertical-silder-container {
+    height: 100px;
+    display: block;
+  }
+
+  .fader.vertical {
+    -webkit-appearance: none;
+    transform: rotate(270deg) translateY(-52px);
+    margin-top: 50px; /* 50% of the width because of the transformation */
+    margin-left: 60%;
+    width: 100px;
+    height: 3px;
+    outline: none;
+  }
+
+  .fader.vertical::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    opacity: 1;
+    height: 16px;
+    width: 16px;
+    border-radius: 16px;
+    cursor: pointer;
+    background: #0047B4;
+    transform: translateY(1px);
+  }
+
+  input[type=range].fader.vertical::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    background-color: #B9BDD7;
+    opacity: 1;
+    color: #444;
+    height: 3px;
+    width: 100px;
+  }
+}

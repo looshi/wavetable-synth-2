@@ -14,18 +14,30 @@ class HorizontalSlider extends React.Component {
     this.props.dispatch(action)
   }
 
+  sliderClassName () {
+    let className = 'fader horizontal '
+    if (this.props.color) {
+      className += this.props.color.split('#').join('color-')
+    }
+    return className
+  }
+
   render () {
+    const textStyle = {
+      color: this.props.color
+    }
     return (
       <div className='horizontal-slider'>
-        <div className='slider-label'>{this.props.label}</div>
+        <div className='slider-label' style={textStyle}>{this.props.label}</div>
         <input
+          className={this.sliderClassName()}
           type='range'
           min={this.props.min}
           max={this.props.max}
           defaultValue={this.props.value}
           onChange={this.handleChange.bind(this)} />
 
-        <div className='slider-value'>{this.props.value}</div>
+        <div className='slider-value' style={textStyle}>{this.props.value}</div>
       </div>
     )
   }

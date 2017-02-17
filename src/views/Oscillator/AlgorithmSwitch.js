@@ -20,6 +20,7 @@ class AlgorithmSwitch extends React.Component {
 
   buttonClassName (type, selected) {
     let className = 'toggle-button algorithm-button'
+    className += ' ' + this.props.color.split('#').join('color-')
     if (type === selected) {
       className += ' selected'
     }
@@ -28,9 +29,13 @@ class AlgorithmSwitch extends React.Component {
 
   render () {
     let selected = this.props.algorithm
+    const textStyle = {
+      color: this.props.color
+    }
+
     return (
       <div onClick={this.onAlgorithmChanged.bind(this)} className='algorithm-switch'>
-        <div className='combine-prompt'>combine</div>
+        <div className='combine-prompt' style={textStyle}>combine</div>
         <div data-algo={'plus'} className={this.buttonClassName('plus', selected)}>+</div>
         <div data-algo={'minus'} className={this.buttonClassName('minus', selected)}>-</div>
         <div data-algo={'divide'} className={this.buttonClassName('divide', selected)}>/</div>

@@ -46,8 +46,13 @@ header {
   width: 960px;
   margin: 0 auto 40px;
   padding-left: 20px;
+  /* Pads the bottom so the controls can scroll above the keyboard. */
   .scroll-footer {
-    height: 20px;
+    height: 80px;
+    @media screen and (-webkit-min-device-pixel-ratio:0) {
+      /* Chrome */
+      height: 20px;
+    }
   }
 }
 
@@ -115,9 +120,30 @@ h1 {
     color: #fff;
     background-color: $blue;
     cursor: pointer;
+    &.color-00BBBE {
+      color: #fff;
+      background-color: #00BBBE;
+    }
+    &.color-FF7403 {
+      color: #fff;
+      background-color: #FF7403;
+    }
+    &.color-A7CA33 {
+      color: #fff;
+      background-color: #A7CA33;
+    }
   }
   &.algorithm-button {
     margin-left: 23px;
+  }
+  &.color-00BBBE {
+    color: #00BBBE;
+  }
+  &.color-FF7403 {
+    color: #FF7403;
+  }
+  &.color-A7CA33 {
+    color: #A7CA33;
   }
 }
 
@@ -156,16 +182,6 @@ h1 {
   width: 26px;
   text-align: center;
   padding: 10px;
-}
-
-/* vertical slider */
-input[type=range][orient=vertical]{
-    writing-mode: bt-lr; /* IE */
-    -webkit-appearance: slider-vertical; /* WebKit */
-    width: 8px;
-    height: 115px;
-    padding: 0 5px;
-    margin: 0 auto;
 }
 
 /* Amp tightly grouped sliders. */

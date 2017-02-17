@@ -52,7 +52,7 @@ for (let i = 1; i <= 88; i++) {
 }
 
 // Oscillator.
-function initOscillator (name, id) {
+function initOscillator (name, id, color) {
   return {
     name,
     id,
@@ -67,7 +67,8 @@ function initOscillator (name, id) {
     amount: URL[id + 'a'] || 75,
     detune: URL[id + 'd'] || 0,
     octave: URL[id + 'o'] || 0,
-    note: 0 // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
+    note: 0, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
+    color
   }
 }
 
@@ -111,9 +112,9 @@ let initialState = {
   Chorus,
   Keyboard,
   Oscillators: [
-    initOscillator('1', 'osc1'),
-    initOscillator('2', 'osc2'),
-    initOscillator('3', 'osc3')
+    initOscillator('1', 'osc1', '#00BBBE'),
+    initOscillator('2', 'osc2', '#FF7403'),
+    initOscillator('3', 'osc3', '#A7CA33')
   ],
   LFOs: [
     initLFO('1', 'lfo1'),
