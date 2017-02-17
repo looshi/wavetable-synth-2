@@ -4,6 +4,7 @@ On select, loads the file.
 */
 import React from 'react'
 import axios from 'axios'
+import Select from 'react-select';
 import {connect} from 'react-redux'
 import Actions from '../../data/Actions.js'
 const baseUrl = 'http://davedave.us/wavetable-synth/wavs/'
@@ -15,10 +16,11 @@ class WaveFileLoader extends React.Component {
   }
 
   onFileSelected (e) {
+    console.log('on selected', e)
     const {id, side, dispatch} = this.props
-    let action = Actions.waveFileLoadStarted(id, side, e.target.value)
+    let action = Actions.waveFileLoadStarted(id, side, e.value)
     dispatch(action)
-    this.loadWaveFile(e.target.value)
+    this.loadWaveFile(e.value)
   }
 
   loadWaveFile (fileName) {
@@ -40,17 +42,18 @@ class WaveFileLoader extends React.Component {
   }
 
   render () {
+    const options = this.props.files.map((file) => {
+      return { value: file, label: file }
+    })
     return (
       <div>
-        <select onChange={this.onFileSelected.bind(this)}>
-          {
-            this.props.files.map((file) => {
-              return (
-                <option key={file} >{file}</option>
-              )
-            })
-          }
-        </select>
+        <Select
+          className='wave-file-loader'
+          value={this.props.selectedFile}
+          clearable={false}
+          searchable={false}
+          options={options}
+          onChange={this.onFileSelected.bind(this)} />
       </div>
     )
   }

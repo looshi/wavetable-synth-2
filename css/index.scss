@@ -16,7 +16,7 @@ body {
 .scroll-container {
   padding: 0;
   margin: 0;
-  overflow: auto;
+  overflow: visible;
   height: calc(100% - 80px);
 }
 
@@ -49,10 +49,6 @@ header {
   /* Pads the bottom so the controls can scroll above the keyboard. */
   .scroll-footer {
     height: 80px;
-    @media screen and (-webkit-min-device-pixel-ratio:0) {
-      /* Chrome */
-      height: 20px;
-    }
   }
 }
 
@@ -91,18 +87,6 @@ h1 {
   display:inline-block;
   width: 300px;
   margin-right: 20px;
-}
-
-.wavetable-box {
-  display: inline-block;
-  width: 140px;
-  &:first-child {
-    margin: 0 20px 0 0;
-  }
-  select {
-    width: 136px;
-    margin: 2px 2px 0;
-  }
 }
 
 .waveline-canvas {
