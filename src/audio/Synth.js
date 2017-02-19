@@ -145,7 +145,7 @@ class Synth extends React.Component {
       lfo.connect(this.oscillatorsBus.gain, 0.04)
     }
     if (id === 'filter') {
-      lfo.connect(this.biquadFilter.frequency, 50)
+      lfo.connect(this.biquadFilter.detune, 50)
       this.biquadFilter.connect(lfo.lfoInputAmount)
     }
     if (id === 'oscAll') {
