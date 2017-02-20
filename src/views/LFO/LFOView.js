@@ -3,15 +3,26 @@ LFOView
 Set shape, amount, rate, and destination.
 */
 import React from 'react'
+import Select from 'react-select'
 import {connect} from 'react-redux'
 import VerticalSlider from '../Components/VerticalSlider.js'
 import Actions from '../../data/Actions.js'
 
 class LFOView extends React.Component {
+  constructor (props) {
+    super(props)
+    let options = this.props.destinations.map((destination) => {
+      return {
+        label: destination.label,
+        value: destination.id
+      }
+    })
+    this.state = { options }
+  }
 
   onDestinationChanged (event) {
     const {id, dispatch, destinations} = this.props
-    const newDestination = destinations.find((dest) => dest.id === event.target.value)
+    const newDestination = destinations.find((dest) => dest.id === event.value)
     const oldDestination = this.props.destination
     let action = Actions.lfoDestinationChanged(id, oldDestination, newDestination)
     dispatch(action)
@@ -81,32 +92,15 @@ class LFOView extends React.Component {
               onChange={this.onRateChanged.bind(this)}
               value={this.props.rate} />
           </div>
-          <div className='destination-selector'>
-            <div className='label'>destination</div>
-            <select
-              onChange={this.onDestinationChanged.bind(this)}
-              value={this.props.destination.id} >
-              <option
-                key='none'
-                value='none'
-                disabled >
-                Select Destination
-              </option>
-              {
-                this.props.destinations.map((destination) => {
-                  let options = {
-                    key: destination.id,
-                    value: destination.id
-                  }
-                  return (
-                    <option {...options}>
-                      {destination.label}
-                    </option>
-                  )
-                })
-              }
-            </select>
-          </div>
+        </div>
+        <div className='destination-selector'>
+          <Select
+            className='lfo-destination'
+            value={this.props.destination.id}
+            clearable={false}
+            searchable={false}
+            options={this.state.options}
+            onChange={this.onDestinationChanged.bind(this)} />
         </div>
       </div>
     )

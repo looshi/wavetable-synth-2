@@ -88,6 +88,28 @@ $blue: #0047B4;
 
 }
 
+/* LFO Destination */
+.Select.lfo-destination {
+  border: none;
+  .Select-control {
+    border-left: 4px solid $blue;
+    border-right: 4px solid $blue;
+    border-bottom: 4px solid $blue;
+  }
+  .Select-value-label {
+    color: $blue;
+    margin-top: 7px;
+    margin-left: 5px;
+    font-size: 16px;
+  }
+  .Select-control {
+    height: 52px;
+  }
+  .Select-option {
+    font-size: 16px;
+  }
+}
+
 
 /* React-Select Styles */
 .Select {
@@ -334,7 +356,10 @@ $blue: #0047B4;
 .Select-menu-outer {
   border-radius: 0;
   background-color: #fff;
-  border: 4px solid $blue;
+  border-left: 4px solid $blue;
+  border-right: 4px solid $blue;
+  border-bottom: 4px solid $blue;
+  border-top: 1px solid $blue;
   border-top: none;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
