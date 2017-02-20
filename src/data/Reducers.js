@@ -56,8 +56,8 @@ function initOscillator (name, id, color) {
   return {
     name,
     id,
-    fileA: URL[id + 'fa'] || 'AKWF_bsaw_0005.wav',
-    fileB: URL[id + 'fb'] || 'AKWF_cheeze_0001.wav',
+    fileA: URL[id + 'fa'] || 'bsaw.wav',
+    fileB: URL[id + 'fb'] || 'cheeze.wav',
     audioBufferA: null,
     audioBufferB: null,
     channelDataA: [],
@@ -68,7 +68,8 @@ function initOscillator (name, id, color) {
     detune: URL[id + 'd'] || 0,
     octave: URL[id + 'o'] || 0,
     note: 0, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
-    color
+    color,
+    waveFiles: []
   }
 }
 
@@ -324,7 +325,14 @@ function OscillatorsReducer (state, action) {
   state = state || initialState.Oscillators
 
   switch (action.type) {
-    case 'WAVE_FLE_LOAD_STARTED':
+    case 'WAVE_FILE_LIST_LOADED':
+      state = state.map(function (osc) {
+        osc.waveFiles = [...action.files]
+        return osc
+      })
+      return [...state]
+
+    case 'WAVE_FILE_LOAD_STARTED':
       state = state.map(function (osc) {
         if (osc.id === action.id) {
           if (action.side === 'A') {
@@ -339,7 +347,7 @@ function OscillatorsReducer (state, action) {
       })
       return [...state]
 
-    case 'WAVE_FLE_LOAD_COMPLETED':
+    case 'WAVE_FILE_LOAD_COMPLETED':
       state = state.map(function (osc) {
         if (osc.id === action.id) {
           // Update the A or B channel data and audio buffer on load.

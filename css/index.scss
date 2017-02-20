@@ -10,6 +10,7 @@ body {
   color: $blue;
   margin: 0;
   padding: 0;
+  letter-spacing: 0.03em;
 }
 
 
@@ -66,7 +67,6 @@ footer {
 
 h1 {
   font-size: 30px;
-  letter-spacing: 0;
   font-weight: 400;
   text-transform: uppercase;
   margin-bottom: 7px;

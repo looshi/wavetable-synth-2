@@ -1,11 +1,12 @@
 /* global AudioContext */
+import axios from 'axios'
 import React from 'react'
+import Actions from './data/Actions'
 import OscillatorView from './views/Oscillator/OscillatorView.js'
 import FilterView from './views/Filter/FilterView.js'
 import ChorusView from './views/Effects/ChorusView.js'
 import AmpView from './views/Filter/AmpView.js'
 import LFOView from './views/LFO/LFOView.js'
-import WaveFiles from './data/WaveFiles.js'
 import {connect} from 'react-redux'
 
 import Synth from './audio/Synth.js'
@@ -17,6 +18,16 @@ const audioContext = new AudioContext()
 const eventEmitter = new EventEmitter()
 
 class App extends React.Component {
+  constructor (props) {
+    super(props)
+    let wavsURL = 'http://davedave.us/wavetable-synth/wavefiles.php'
+    wavsURL += '?rand=' + Math.random().toString()  // Bust annoying long cache on my server.
+    axios.get(wavsURL, { responseType: 'json' })
+      .then(function (response) {
+        let action = Actions.waveFileListLoaded(response.data)
+        props.dispatch(action)
+      })
+  }
 
   render () {
     return (
@@ -57,7 +68,7 @@ class App extends React.Component {
                     amount={oscillator.amount}
                     color={oscillator.color}
                     audioContext={audioContext}
-                    files={WaveFiles} />
+                    files={oscillator.waveFiles} />
                 )
               })
             }

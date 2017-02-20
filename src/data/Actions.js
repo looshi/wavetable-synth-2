@@ -1,9 +1,14 @@
 let Actions = {}
 
+// Loads the list of wave files based on the server's "wavs" directory.
+Actions.waveFileListLoaded = function waveFileListLoaded (files) {
+  return {type: 'WAVE_FILE_LIST_LOADED', files}
+}
+
 // An oscillator started to load a wave file.
 Actions.waveFileLoadStarted = function waveFileLoadStarted (id, side, file) {
   return {
-    type: 'WAVE_FLE_LOAD_STARTED',
+    type: 'WAVE_FILE_LOAD_STARTED',
     id,
     side,    // This will be either 'A' or 'B'.
     file    // The filename selected.
@@ -13,7 +18,7 @@ Actions.waveFileLoadStarted = function waveFileLoadStarted (id, side, file) {
 // An oscillator wave file has been loaded.
 Actions.waveFileLoadCompleted = function waveFileLoadCompleted (id, side, audioBuffer, channelData) {
   return {
-    type: 'WAVE_FLE_LOAD_COMPLETED',
+    type: 'WAVE_FILE_LOAD_COMPLETED',
     id,
     side,           // This will be either 'A' or 'B'.
     audioBuffer,    // The AudioBuffer object.

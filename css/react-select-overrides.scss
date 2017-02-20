@@ -3,6 +3,7 @@
 */
 
 /* Our Styles */
+$blue: #0047B4;
 
 .wavetable-box {
   display: inline-block;
@@ -16,10 +17,75 @@
 .Select.wave-file-loader {
   position: absolute;
   top: 100px;
-  width: 138px;
+  width: 140px;
   &:hover {
     cursor: pointer;
   }
+
+  &.color-00BBBE {
+    .Select-menu-outer {
+      border-left: 4px solid #00BBBE;
+      border-right: 4px solid #00BBBE;
+      border-bottom: 4px solid #00BBBE;
+      border-top: none;
+    }
+    .Select-option.is-focused {
+      background-color: #00BBBE;
+      color: #fff;
+    }
+    .Select-option {
+      color: #00BBBE;
+    }
+    .Select-value-label {
+      color: #00BBBE;
+    }
+    .Select-arrow {
+      border-color: #00BBBE transparent transparent;
+    }
+  }
+  &.color-FF7403 {
+    .Select-menu-outer {
+      border-left: 4px solid #FF7403;
+      border-right: 4px solid #FF7403;
+      border-bottom: 4px solid #FF7403;
+      border-top: none;
+    }
+    .Select-option.is-focused {
+      background-color: #FF7403;
+      color: #fff;
+    }
+    .Select-option {
+      color: #FF7403;
+    }
+    .Select-value-label {
+      color: #FF7403;
+    }
+    .Select-arrow {
+      border-color: #FF7403 transparent transparent;
+    }
+  }
+  &.color-A7CA33 {
+    .Select-menu-outer {
+      border-left: 4px solid #A7CA33;
+      border-right: 4px solid #A7CA33;
+      border-bottom: 4px solid #A7CA33;
+      border-top: none;
+    }
+    .Select-option.is-focused {
+      background-color: #A7CA33;
+      color: #fff;
+    }
+    .Select-option {
+      color: #A7CA33;
+    }
+    .Select-value-label {
+      color: #A7CA33;
+    }
+    .Select-arrow {
+      border-color: #A7CA33 transparent transparent;
+    }
+  }
+
 }
 
 
@@ -109,10 +175,11 @@
 
 
 /* ------------- Selected Item Text -------------  */
-.has-value.Select--single > .Select-control .Select-value .Select-value-label,
-.has-value.is-pseudo-focused.Select--single > .Select-control .Select-value .Select-value-label {
+.Select-value-label {
   color: #B9BDD7;
   font-size: 14px;
+  display: inline-block;
+  width: 100%;
   &:hover {
     cursor: pointer;
     color: #444;
@@ -222,7 +289,7 @@
   padding-right: 5px;
 }
 .Select-arrow {
-  border-color: #999 transparent transparent;
+  border-color: $blue transparent transparent;
   border-style: solid;
   border-width: 5px 5px 2.5px;
   display: inline-block;
@@ -262,16 +329,17 @@
     opacity: 1;
   }
 }
+
+/* Dropdown container */
 .Select-menu-outer {
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
+  border-radius: 0;
   background-color: #fff;
-  border: 1px solid #ccc;
-  border-top-color: #e6e6e6;
+  border: 4px solid $blue;
+  border-top: none;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
   margin-top: -1px;
-  max-height: 200px;
+  max-height: 282px;
   position: absolute;
   top: 100%;
   width: 100%;
@@ -279,22 +347,20 @@
   -webkit-overflow-scrolling: touch;
 }
 .Select-menu {
-  max-height: 198px;
+  max-height: 220px;
   overflow-y: auto;
 }
 
-
-/* ------------- Option text -------------  */
+/* -------------  DL item in dropdown -------------  */
 .Select-option {
   box-sizing: border-box;
   background-color: #fff;
-  color: #B9BDD7;
+  color: $blue;
   cursor: pointer;
   display: block;
   padding: 8px 10px;
   font-size: 14px;
 }
-
 
 .Select-option:last-child {
   border-bottom-right-radius: 4px;
@@ -306,12 +372,13 @@
   background-color: rgba(0, 126, 255, 0.04);
   color: #333;
 }
+
+/* -------- DL Hovered item in dropdown --------  */
 .Select-option.is-focused {
-  background-color: #ebf5ff;
-  /* Fallback color for IE 8 */
-  background-color: rgba(0, 126, 255, 0.08);
-  color: #333;
+  background-color: $blue;
+  color: white;
 }
+
 .Select-option.is-disabled {
   color: #cccccc;
   cursor: default;

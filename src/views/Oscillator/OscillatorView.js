@@ -30,6 +30,7 @@ class OscillatorView extends React.Component {
 
             <WaveFileLoader
               id={this.props.id}
+              color={this.props.color}
               side={'A'}
               selectedFile={this.props.fileA}
               audioContext={this.props.audioContext}
@@ -45,6 +46,7 @@ class OscillatorView extends React.Component {
 
             <WaveFileLoader
               id={this.props.id}
+              color={this.props.color}
               side={'B'}
               selectedFile={this.props.fileB}
               audioContext={this.props.audioContext}

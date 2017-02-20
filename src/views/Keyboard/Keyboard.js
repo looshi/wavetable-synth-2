@@ -9,7 +9,6 @@ import Actions from '../../data/Actions.js'
 class Keyboard extends React.Component {
 
   componentDidMount () {
-    console.log('keyboard', this.props)
     let keys = {
       'z': 1,
       'x': 2,

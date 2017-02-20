@@ -4,7 +4,7 @@ On select, loads the file.
 */
 import React from 'react'
 import axios from 'axios'
-import Select from 'react-select';
+import Select from 'react-select'
 import {connect} from 'react-redux'
 import Actions from '../../data/Actions.js'
 const baseUrl = 'http://davedave.us/wavetable-synth/wavs/'
@@ -13,10 +13,21 @@ class WaveFileLoader extends React.Component {
   constructor (props) {
     super(props)
     this.loadWaveFile(this.props.selectedFile)
+    this.state = {
+      options: []
+    }
+  }
+
+  componentWillUpdate (nextProps, nextState) {
+    if (this.props.files.length !== nextProps.files.length) {
+      let options = nextProps.files.map((file) => {
+        return { value: file, label: file.split('.')[0] }
+      })
+      this.setState({options})
+    }
   }
 
   onFileSelected (e) {
-    console.log('on selected', e)
     const {id, side, dispatch} = this.props
     let action = Actions.waveFileLoadStarted(id, side, e.value)
     dispatch(action)
@@ -42,17 +53,19 @@ class WaveFileLoader extends React.Component {
   }
 
   render () {
-    const options = this.props.files.map((file) => {
-      return { value: file, label: file }
-    })
+    // Can't pass "options" via props.  "options" must be a reference to state.options.
+    // Otherwise, react-select component will lose selected value in list.
+    // Seems okay to pass in "value" via props.selectedFile.
+    // To inspect the dropdown CSS add this handler to stop js and prevent
+    // the dropdown from closing : onBlur={() => { debugger } } .
     return (
       <div>
         <Select
-          className='wave-file-loader'
+          className={'wave-file-loader color-' + this.props.color.split('#')[1]}
           value={this.props.selectedFile}
           clearable={false}
           searchable={false}
-          options={options}
+          options={this.state.options}
           onChange={this.onFileSelected.bind(this)} />
       </div>
     )
