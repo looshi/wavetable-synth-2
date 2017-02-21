@@ -4,30 +4,39 @@ Dropdown list of available presets.
 */
 import React from 'react'
 import Select from 'react-select'
+import {connect} from 'react-redux'
 import PresetData from '../../data/PresetData.js'
+import Actions from '../../data/Actions.js'
 
 class Presets extends React.Component {
+  constructor (props) {
+    super(props)
+    const options = PresetData.map((preset) => {
+      return {label: preset.name, value: preset.id}
+    })
+    this.state = { options }
+  }
 
   onPresetChanged (e) {
-    console.log('preset changed', e)
+    let preset = PresetData.find((p) => p.id === e.value)
+    window.location.hash = preset.data
+    let action = Actions.loadPresetURLData()
+    this.props.dispatch(action)
   }
 
   render () {
-    const presetData = Object.keys(PresetData).map((preset) => {
-      return {label: preset, value: PresetData[preset]}
-    })
     return (
       <div className='preset-list-container'>
         <Select
           className='preset-list'
-          value={this.props.preset}
+          value={Number(this.props.presetId)}
           clearable={false}
           searchable={false}
-          options={presetData}
+          options={this.state.options}
           onChange={this.onPresetChanged.bind(this)} />
       </div>
     )
   }
 }
 
-export default Presets
+export default connect()(Presets)

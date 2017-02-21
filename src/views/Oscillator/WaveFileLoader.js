@@ -12,10 +12,10 @@ const baseUrl = 'http://davedave.us/wavetable-synth/wavs/'
 class WaveFileLoader extends React.Component {
   constructor (props) {
     super(props)
-    this.loadWaveFile(this.props.selectedFile)
     this.state = {
       options: []
     }
+    this.hasLoaded = false
   }
 
   componentWillUpdate (nextProps, nextState) {
@@ -26,13 +26,17 @@ class WaveFileLoader extends React.Component {
       })
       this.setState({options})
     }
+
+    if (!this.hasLoaded || this.props.selectedFile !== nextProps.selectedFile) {
+      this.loadWaveFile(nextProps.selectedFile)
+      this.hasLoaded = true
+    }
   }
 
   onFileSelected (e) {
     const {id, side, dispatch} = this.props
     let action = Actions.waveFileLoadStarted(id, side, e.value)
     dispatch(action)
-    this.loadWaveFile(e.value)
   }
 
   loadWaveFile (fileName) {
@@ -47,9 +51,6 @@ class WaveFileLoader extends React.Component {
           let action = Actions.waveFileLoadCompleted(id, side, buffer, channelData)
           dispatch(action)
         })
-      })
-      .catch(function (error) {
-        console.warn('Error loading wav', error)
       })
   }
 

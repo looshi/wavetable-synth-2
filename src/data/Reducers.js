@@ -1,70 +1,15 @@
 import { combineReducers } from 'redux'
 import queryString from 'query-string'
 
-const URL = queryString.parse(window.location.hash)
-
-// Master.
-let Master = {
-  id: 'master',
-  volume: URL.mv || 25,
-  preset: URL.preset || 'custom'
-}
-
-// Filter.
-// sustain is Hz value. attack, decay, release are time in seconds.
-let Filter = {
-  id: 'filter',
-  freq: URL.ff || 50,
-  res: URL.fr || 20,
-  attack: URL.fa || 1,
-  decay: URL.fd || 5,
-  sustain: URL.fs || 50,
-  release: URL.fre || 2
-}
-
-// Amp.
-let Amp = {
-  id: 'amp',
-  attack: URL.aa || 12,
-  decay: URL.ad || 50,
-  sustain: URL.as || 30,
-  release: URL.ar || 20
-}
-
-// Chorus.
-let Chorus = {
-  id: 'chorus',
-  amount: URL.ca || 50,
-  time: URL.ct || 50
-}
-
-// Keyboard, notes are represented as object keys, { 22: 'on', 23: 'off' ... }.
+let Master = {}
+let Filter = {}
+let Amp = {}
+let Chorus = {}
 let Keyboard = {}
-for (let i = 1; i <= 88; i++) {
-  Keyboard[i] = 'off'
-}
 
-// Oscillator.
-function initOscillator (name, id, color) {
-  return {
-    name,
-    id,
-    fileA: URL[id + 'fa'] || 'dbass',
-    fileB: URL[id + 'fb'] || 'cheeze',
-    audioBufferA: null,
-    audioBufferB: null,
-    channelDataA: [],
-    channelDataB: [],
-    computedChannelData: [],
-    algorithm: URL[id + 'al'] || 'p',
-    amount: URL[id + 'a'] || 75,
-    detune: URL[id + 'd'] || 0,
-    octave: URL[id + 'o'] || 0,
-    note: 0, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
-    color,
-    waveFiles: []
-  }
-}
+// The list of waveforms should only be loaded once when the page loads,
+// not reloaded each time a preset changes.
+let OSC_WAV_FILES = []
 
 // LFOs
 const LFODestinations = [
@@ -85,6 +30,104 @@ const LFODestinations = [
   {id: '14', label: 'LFO 3', moduleId: 'l3', property: 'amount'}
 ]
 
+function initializeState (URL) {
+  // Master.
+  Master = {
+    id: 'master',
+    volume: URL.mv || 25,
+    presetId: URL.p || 'Custom'
+  }
+
+  // Filter.
+  // Sustain is Hz value. Attack, Decay and Release are time in seconds.
+  Filter = {
+    id: 'filter',
+    freq: URL.ff || 50,
+    res: URL.fr || 20,
+    attack: URL.fa || 1,
+    decay: URL.fd || 5,
+    sustain: URL.fs || 50,
+    release: URL.fre || 2
+  }
+
+  // Amp.
+  Amp = {
+    id: 'amp',
+    attack: URL.aa || 12,
+    decay: URL.ad || 50,
+    sustain: URL.as || 30,
+    release: URL.ar || 20
+  }
+
+  // Chorus.
+  Chorus = {
+    id: 'chorus',
+    amount: URL.ca || 50,
+    time: URL.ct || 50
+  }
+
+  // Keyboard, notes are represented as object keys, { 22: 'on', 23: 'off' ... }.
+  Keyboard = {}
+  for (let i = 1; i <= 88; i++) {
+    Keyboard[i] = 'off'
+  }
+
+  let initialState = {
+    Master,
+    Filter,
+    Amp,
+    Chorus,
+    Keyboard,
+    Oscillators: [
+      initOscillator(URL, '1', 'o1', '#00BBBE'),
+      initOscillator(URL, '2', 'o2', '#FF7403'),
+      initOscillator(URL, '3', 'o3', '#A7CA33')
+    ],
+    LFOs: [
+      initLFO('1', 'l1'),
+      initLFO('2', 'l2'),
+      initLFO('3', 'l3')
+    ]
+  }
+
+  // Set the LFO initial destinations based on URL.
+  initialState.LFOs.forEach((lfo, index) => {
+    // LFO destinations initial settings.
+    const dest = lfo.id + 'd'
+    const amount = lfo.id + 'a'
+    const rate = lfo.id + 'r'
+    const shape = lfo.id + 's'
+    if (URL[dest]) lfo.destination = lfo.destinations.find((d) => d.id === URL[dest])
+    if (URL[amount]) lfo.amount = Number(URL[amount])
+    if (URL[rate]) lfo.rate = Number(URL[rate])
+    if (URL[shape]) lfo.shape = URL[shape]
+  })
+
+  return initialState
+}
+
+// Oscillator.
+function initOscillator (URL, name, id, color) {
+  return {
+    name,
+    id,
+    fileA: URL[id + 'fa'] || 'dbass',
+    fileB: URL[id + 'fb'] || 'cheeze',
+    audioBufferA: null,
+    audioBufferB: null,
+    channelDataA: [],
+    channelDataB: [],
+    computedChannelData: [],
+    algorithm: URL[id + 'al'] || 'p',
+    amount: URL[id + 'a'] || 75,
+    detune: URL[id + 'd'] || 0,
+    octave: URL[id + 'o'] || 0,
+    note: 0, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
+    color,
+    waveFiles: OSC_WAV_FILES
+  }
+}
+
 function initLFO (name, id) {
   return {
     name,
@@ -99,42 +142,16 @@ function initLFO (name, id) {
   }
 }
 
-let initialState = {
-  Master,
-  Filter,
-  Amp,
-  Chorus,
-  Keyboard,
-  Oscillators: [
-    initOscillator('1', 'o1', '#00BBBE'),
-    initOscillator('2', 'o2', '#FF7403'),
-    initOscillator('3', 'o3', '#A7CA33')
-  ],
-  LFOs: [
-    initLFO('1', 'l1'),
-    initLFO('2', 'l2'),
-    initLFO('3', 'l3')
-  ]
-}
-
-// Set the LFO initial destinations based on URL.
-initialState.LFOs.forEach((lfo, index) => {
-  // LFO destinations initial settings.
-  const dest = lfo.id + 'd'
-  const amount = lfo.id + 'a'
-  const rate = lfo.id + 'r'
-  const shape = lfo.id + 's'
-  if (URL[dest]) lfo.destination = lfo.destinations.find((d) => d.id === URL[dest])
-  if (URL[amount]) lfo.amount = Number(URL[amount])
-  if (URL[rate]) lfo.rate = Number(URL[rate])
-  if (URL[shape]) lfo.shape = URL[shape]
-})
-
 // Stores the parameters in the url.
 function updateURL (paramName, value) {
-  URL[paramName] = value
-  window.location.hash = queryString.stringify(URL)
+  let urlData = queryString.parse(window.location.hash)
+  urlData[paramName] = value
+  window.location.hash = queryString.stringify(urlData)
 }
+
+// Initialize the state.
+let urlData = queryString.parse(window.location.hash)
+let initialState = initializeState(urlData)
 
 function MasterReducer (state, action) {
   state = state || initialState.Master
@@ -304,7 +321,10 @@ function OscillatorsReducer (state, action) {
   switch (action.type) {
     case 'WAVE_FILE_LIST_LOADED':
       state = state.map(function (osc) {
-        osc.waveFiles = [...action.files]
+        OSC_WAV_FILES = action.files
+        if (!osc.waveFiles.length) {
+          osc.waveFiles = [...action.files] // Only set this once per page load.
+        }
         return osc
       })
       return [...state]
@@ -378,7 +398,7 @@ function OscillatorsReducer (state, action) {
   }
 }
 
-const Reducers = combineReducers({
+const appReducer = combineReducers({
   Master: MasterReducer,
   Filter: FilterReducer,
   Amp: AmpReducer,
@@ -387,5 +407,14 @@ const Reducers = combineReducers({
   LFOs: LFOsReducer,
   Oscillators: OscillatorsReducer
 })
+
+const Reducers = (state, action) => {
+  if (action.type === 'LOAD_PRESET_URL_DATA') {
+    let urlData = queryString.parse(window.location.hash)
+    state = initializeState(urlData)
+  }
+
+  return appReducer(state, action)
+}
 
 export default Reducers

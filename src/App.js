@@ -47,7 +47,7 @@ class App extends React.Component {
                 value={this.props.Master.volume} />
             </div>
             <Presets
-              preset={this.props.Master.preset} />
+              presetId={this.props.Master.presetId} />
           </header>
           <div className='scroll-contents'>
             {
