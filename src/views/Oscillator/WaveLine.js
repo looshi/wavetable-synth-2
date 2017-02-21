@@ -5,14 +5,15 @@ Displays a waveform graphic.
 import React from 'react'
 
 class WaveLine extends React.Component {
-
-  componentDidMount () {
-    this.drawWaveForm()
+  constructor (props) {
+    super(props)
+    this.hasInitialized = false
   }
 
   shouldComponentUpdate (nextProps, nextState) {
-    // TODO : Block drawing unless the wave has changed.
-    return true
+    // Don't redraw unless the wave has changed.  Assume the 17th amplitude
+    // value is different for all our wavs vs. comparing the whole array.
+    return nextProps.channelData[17] !== this.props.channelData[17]
   }
 
   componentDidUpdate () {
@@ -21,18 +22,18 @@ class WaveLine extends React.Component {
 
   drawWaveForm () {
     let {channelData, width, height} = this.props
-    const context = this.refs.canvas.getContext('2d')
-    context.clearRect(0, 0, width, height)
-
     let sampledWaveData = []
     let step = 1
 
-    // Reduce the width to add some padding left and right.
-    let padWidth = width * 0.75
-    let padHeight = height * 0.75
+    // Add some margins and padding.
+    let padWidth = width - 36
+    let padHeight = height - 36
+    let marginLeft = 12
+    let marginTop = 12
+    if (this.props.width === 300) marginTop = 14
 
     if (channelData.length > padWidth) {
-      step = Math.ceil(channelData.length / padWidth)
+      step = channelData.length / padWidth
     }
 
     // Clamp the pixels so they don't go beyond upper or lower bounds.
@@ -47,13 +48,30 @@ class WaveLine extends React.Component {
     var index = 0
 
     for (let i = 0; i < padWidth; i++) {
-      pixelValue = Math.floor((channelData[index] * -padHeight / 2) + padHeight / 2)
+      pixelValue = Math.floor((channelData[Math.ceil(index)] * -padHeight / 2) + padHeight / 2)
       pixelValue = clamp(pixelValue)
       index = index + step
       sampledWaveData.push(pixelValue)
     }
 
-    drawPixels(sampledWaveData, padWidth, padHeight, context, this.props.color)
+    const context = this.refs.canvas.getContext('2d')
+    context.clearRect(0, 0, width, height)
+    context.beginPath()
+    context.lineWidth = 3
+    context.strokeStyle = this.props.color
+
+    for (var i = 0; i < sampledWaveData.length; i++) {
+      let x = i + marginLeft
+      if (sampledWaveData[i - 1]) {
+        context.moveTo(x - 1, sampledWaveData[i - 1] + marginTop)
+      }
+
+      if (sampledWaveData[i + 1]) {
+        context.lineTo(x, sampledWaveData[i + 1] + marginTop)
+      }
+    }
+
+    context.stroke()
   }
 
   render () {
@@ -66,8 +84,8 @@ class WaveLine extends React.Component {
     return (
       <div className='box' style={boxStyle}>
         <canvas ref='canvas' className='waveline-canvas'
-          width={this.props.width * 0.75}
-          height={this.props.height * 0.75} />
+          width={this.props.width}
+          height={this.props.height} />
       </div>
     )
   }
@@ -84,21 +102,3 @@ WaveLine.defaultProps = {
 }
 
 export default WaveLine
-
-function drawPixels (pixels, width, height, context, color) {
-  context.beginPath()
-  context.lineWidth = 2
-  context.strokeStyle = color
-
-  for (var i = 0; i < pixels.length; i++) {
-    if (pixels[i - 1]) {
-      context.moveTo(i - 1, pixels[i - 1])
-    }
-
-    if (pixels[i + 1]) {
-      context.lineTo(i, pixels[i + 1])
-    }
-  }
-
-  context.stroke()
-}
