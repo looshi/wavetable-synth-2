@@ -5,12 +5,12 @@ Nodes are connected in this order :
 Oscillators -> Osc Bus -> Filter -> postFilter -> VCA -> Master
 */
 import React from 'react'
-import _ from 'lodash'
 import {connect} from 'react-redux'
 import Oscillator from './Oscillator.js'
 import Chorus from './Chorus.js'
 import LFO from './LFO.js'
 import observeStore from '../data/ObserveStore'
+import {limit} from '../helpers/helpers.js'
 
 class Synth extends React.Component {
   constructor (props, context) {
@@ -201,11 +201,11 @@ class Synth extends React.Component {
     let {frequency} = this.biquadFilter
     let {attack, decay, sustain, freq} = this.props.Filter
 
-    attack = this.clampToMinMax(0.001, 1, attack / 50)
+    attack = limit(0.001, 1, attack / 50)
     decay = decay / 50
     sustain = (sustain / 100) * freq // Sustain is a percentage of freq.
-    sustain = this.clampToMinMax(60, 20000, sustain * 100)
-    freq = this.clampToMinMax(60, 20000, freq * 100)
+    sustain = limit(60, 20000, sustain * 100)
+    freq = limit(60, 20000, freq * 100)
 
     frequency.cancelScheduledValues(0)
     frequency.setValueAtTime(60, now)
@@ -228,7 +228,7 @@ class Synth extends React.Component {
     let now = this.props.audioContext.currentTime
     let {gain} = this.vcaGain
     let {attack, decay, sustain} = this.props.Amp
-    attack = this.clampToMinMax(0.001, 1, attack / 100)
+    attack = limit(0.001, 1, attack / 100)
     decay = decay / 100
     sustain = sustain / 100
     // // Prevent clicking by fading out very fast, then fading back up.
@@ -246,22 +246,15 @@ class Synth extends React.Component {
     let now = this.props.audioContext.currentTime
     let {gain} = this.vcaGain
     let {release} = this.props.Amp
-    release = this.clampToMinMax(0.001, 1, release / 100)
+    release = limit(0.001, 1, release / 100)
     gain.cancelScheduledValues(0)
     gain.setValueAtTime(gain.value, now)
     gain.linearRampToValueAtTime(0, now + release)
   }
 
-  // Helper function to keep a value within a range.
-  clampToMinMax (min, max, val) {
-    if (val < min) return min
-    if (val > max) return max
-    return val
-  }
-
   componentDidUpdate (prevProps, prevState) {
     // Amp
-    this.masterGain.gain.value = this.props.Master.volume / 100
+    this.masterGain.gain.value = limit(0, 1, this.props.Master.volume / 100)
 
     // Filter Res ( freq is set in envelopOn event )
     this.biquadFilter.Q.value = this.props.Filter.res / 3

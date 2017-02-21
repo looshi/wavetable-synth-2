@@ -2,6 +2,7 @@
 Oscillator
 Audio output for a single oscillator.
 */
+import {limit} from '../helpers/helpers.js'
 
 export default class Oscillator {
   constructor (props) {
@@ -42,8 +43,9 @@ export default class Oscillator {
     }
   }
 
+  // Limits gain between zero and 1.
   set amount (val) {
-    this.gainNode.gain.value = val / 100
+    this.gainNode.gain.value = limit(0, 1, val / 100)
   }
 
   set detune (val) {
