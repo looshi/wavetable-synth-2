@@ -50,7 +50,22 @@ class LFOView extends React.Component {
   }
 
   buttonClassName (type, selected) {
-    let className = 'toggle-button shape-button ' + type
+    let typeClass = ''
+    switch (type) {
+      case 't':
+        typeClass = 'triangle'
+        break
+      case 'w':
+        typeClass = 'sawtooth'
+        break
+      case 's':
+        typeClass = 'square'
+        break
+      case 'r':
+        typeClass = 'random'
+        break
+    }
+    let className = 'toggle-button shape-button ' + typeClass
     if (type === selected) {
       className += ' selected'
     }
@@ -68,10 +83,10 @@ class LFOView extends React.Component {
         <h1>LFO {this.props.name}</h1>
         <div className='box'>
           <div onClick={this.onShapeChanged.bind(this)} className='shape-switch'>
-            <div data-shape={'triangle'} className={this.buttonClassName('triangle', selected)} />
-            <div data-shape={'sawtooth'} className={this.buttonClassName('sawtooth', selected)} />
-            <div data-shape={'square'} className={this.buttonClassName('square', selected)} />
-            <div data-shape={'random'} className={this.buttonClassName('random', selected)} />
+            <div data-shape={'t'} className={this.buttonClassName('t', selected)} />
+            <div data-shape={'w'} className={this.buttonClassName('w', selected)} />
+            <div data-shape={'s'} className={this.buttonClassName('s', selected)} />
+            <div data-shape={'r'} className={this.buttonClassName('r', selected)} />
             <div className='wave-label'>shape</div>
           </div>
           <div className='sliders'>

@@ -21,7 +21,8 @@ class WaveFileLoader extends React.Component {
   componentWillUpdate (nextProps, nextState) {
     if (this.props.files.length !== nextProps.files.length) {
       let options = nextProps.files.map((file) => {
-        return { value: file, label: file.split('.')[0] }
+        let fileName = file.split('.')[0]
+        return { value: fileName, label: file.split('.')[0] }
       })
       this.setState({options})
     }
@@ -36,7 +37,7 @@ class WaveFileLoader extends React.Component {
 
   loadWaveFile (fileName) {
     const {id, side, audioContext, dispatch} = this.props
-    const filePath = baseUrl + fileName
+    const filePath = baseUrl + fileName + '.wav'
 
     axios.get(filePath, { responseType: 'arraybuffer' })
       .then(function (response) {

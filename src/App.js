@@ -7,6 +7,7 @@ import FilterView from './views/Filter/FilterView.js'
 import ChorusView from './views/Effects/ChorusView.js'
 import AmpView from './views/Filter/AmpView.js'
 import LFOView from './views/LFO/LFOView.js'
+import Presets from './views/Presets/Presets.js'
 import {connect} from 'react-redux'
 
 import Synth from './audio/Synth.js'
@@ -45,6 +46,8 @@ class App extends React.Component {
                 step={1}
                 value={this.props.Master.volume} />
             </div>
+            <Presets
+              preset={this.props.Master.preset} />
           </header>
           <div className='scroll-contents'>
             {

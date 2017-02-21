@@ -1,0 +1,5 @@
+export default [
+  {id: 0, data: 'aa=97&ad=61&ar=90&as=64&ca=78&ct=43&fa=2&fd=37&ff=34&fr=9&fre=80&fs=86&lfo1a=4&lfo1d=6&lfo1r=58&lfo2a=81&lfo2d=7&lfo2r=30&lfo2s=random&lfo3a=6&lfo3d=1&lfo3r=58&lfo3s=triangle&osc1a=100&osc1al=multiply&osc1d=-2&osc1fa=ebass_8.wav&osc2a=77&osc2al=plus&osc2d=12&osc2fa=cheeze_3.wav&osc2fb=cheeze_4.wav&osc2o=0&osc3a=81&osc3al=plus&osc3d=-11&osc3fa=cheeze_2.wav&osc3fb=cheeze_2.wav&osc3o=1'},
+  {id: 1, data: 'aa=27&ad=61&ar=42&as=64&ca=3&ct=24&fa=0&fd=44&ff=14&fr=34&fre=17&fs=19&lfo1a=3&lfo1d=3&lfo1r=1&lfo1s=random&lfo2a=82&lfo2d=10&lfo2r=20&lfo2s=triangle&lfo3a=35&lfo3d=11&lfo3r=6&lfo3s=sawtooth&osc1a=67&osc1al=minus&osc1d=-8&osc1fa=hvoice.wav&osc1fb=hvoice_53.wav&osc1o=0&osc2a=63&osc2al=multiply&osc2d=-2&osc2fa=linear_11.wav&osc2fb=organ_8.wav&osc2o=-1&osc3a=81&osc3al=multiply&osc3d=-2&osc3fa=hvoice_32.wav&osc3fb=hvoice_37.wav&osc3o=0'},
+  {id: 2, data: 'fd=65&ff=14&fr=59&fs=15&lfo1a=55&lfo1d=1&lfo1r=13&lfo2a=12&lfo2d=12&lfo2r=2&lfo2s=triangle&mv=34&osc1a=55&osc1fa=violin.wav&osc1fb=vgsaw.wav&osc1o=-1&osc2a=32&osc2al=multiply&osc2d=-4&osc2fb=cheeze_3.wav&osc2o=1&osc3a=64&osc3d=5&osc3fa=oboe.wav&osc3o=-2'}
+]

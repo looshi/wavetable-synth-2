@@ -1,4 +1,5 @@
 <?php
+// Returns a list of files as JSON which are located in the "wavs" directory.
 $files = array();
 
 $dir = opendir('./wavs');

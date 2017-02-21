@@ -19,7 +19,22 @@ class AlgorithmSwitch extends React.Component {
   }
 
   buttonClassName (type, selected) {
-    let className = type + ' toggle-button algorithm-button'
+    let typeClass = ''
+    switch (type) {
+      case 'p':
+        typeClass = 'plus'
+        break
+      case 'm':
+        typeClass = 'minus'
+        break
+      case 'd':
+        typeClass = 'divide'
+        break
+      case 'x':
+        typeClass = 'multiply'
+        break
+    }
+    let className = typeClass + ' toggle-button algorithm-button'
     className += ' ' + this.props.color.split('#').join('color-')
     if (type === selected) {
       className += ' selected'
@@ -36,10 +51,10 @@ class AlgorithmSwitch extends React.Component {
     return (
       <div onClick={this.onAlgorithmChanged.bind(this)} className='algorithm-switch'>
         <div className='combine-prompt' style={textStyle}>combine</div>
-        <div data-algo={'plus'} className={this.buttonClassName('plus', selected)} />
-        <div data-algo={'minus'} className={this.buttonClassName('minus', selected)} />
-        <div data-algo={'divide'} className={this.buttonClassName('divide', selected)} />
-        <div data-algo={'multiply'} className={this.buttonClassName('multiply', selected)} />
+        <div data-algo={'p'} className={this.buttonClassName('p', selected)} />
+        <div data-algo={'m'} className={this.buttonClassName('m', selected)} />
+        <div data-algo={'d'} className={this.buttonClassName('d', selected)} />
+        <div data-algo={'x'} className={this.buttonClassName('x', selected)} />
       </div>
     )
   }

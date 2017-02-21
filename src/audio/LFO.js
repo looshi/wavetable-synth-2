@@ -92,6 +92,21 @@ export default class LFO {
   }
 
   updateShape (shape) {
+    switch (shape) {
+      case 'r':
+        shape = 'random'
+        break
+      case 'w':
+        shape = 'sawtooth'
+        break
+      case 's':
+        shape = 'square'
+        break
+      case 't':
+        shape = 'triangle'
+        break
+    }
+
     if (shape === 'random') {
       let waveData = [0]
       for (let i = 0; i < 48; i++) {

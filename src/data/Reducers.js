@@ -6,7 +6,8 @@ const URL = queryString.parse(window.location.hash)
 // Master.
 let Master = {
   id: 'master',
-  volume: URL.mv || 25
+  volume: URL.mv || 25,
+  preset: URL.preset || 'custom'
 }
 
 // Filter.
@@ -48,14 +49,14 @@ function initOscillator (name, id, color) {
   return {
     name,
     id,
-    fileA: URL[id + 'fa'] || 'bsaw.wav',
-    fileB: URL[id + 'fb'] || 'cheeze.wav',
+    fileA: URL[id + 'fa'] || 'dbass',
+    fileB: URL[id + 'fb'] || 'cheeze',
     audioBufferA: null,
     audioBufferB: null,
     channelDataA: [],
     channelDataB: [],
     computedChannelData: [],
-    algorithm: URL[id + 'al'] || 'plus',
+    algorithm: URL[id + 'al'] || 'p',
     amount: URL[id + 'a'] || 75,
     detune: URL[id + 'd'] || 0,
     octave: URL[id + 'o'] || 0,
@@ -71,24 +72,24 @@ const LFODestinations = [
   {id: '0', label: 'Amp', moduleId: 'amp', property: 'gain'},
   {id: '1', label: 'Filter', moduleId: 'filter', property: 'freq'},
   {id: '6', label: 'Osc ALL Pitch', moduleId: 'oscAll', property: 'detune'},
-  {id: '3', label: 'Osc 1 Pitch', moduleId: 'osc1', property: 'detune'},
-  {id: '4', label: 'Osc 2 Pitch', moduleId: 'osc2', property: 'detune'},
-  {id: '5', label: 'Osc 3 Pitch', moduleId: 'osc3', property: 'detune'},
-  {id: '7', label: 'Osc 1 Amount', moduleId: 'osc1', property: 'amount'},
-  {id: '8', label: 'Osc 2 Amount', moduleId: 'osc2', property: 'amount'},
-  {id: '9', label: 'Osc 3 Amount', moduleId: 'osc3', property: 'amount'},
+  {id: '3', label: 'Osc 1 Pitch', moduleId: 'o1', property: 'detune'},
+  {id: '4', label: 'Osc 2 Pitch', moduleId: 'o2', property: 'detune'},
+  {id: '5', label: 'Osc 3 Pitch', moduleId: 'o3', property: 'detune'},
+  {id: '7', label: 'Osc 1 Amount', moduleId: 'o1', property: 'amount'},
+  {id: '8', label: 'Osc 2 Amount', moduleId: 'o2', property: 'amount'},
+  {id: '9', label: 'Osc 3 Amount', moduleId: 'o3', property: 'amount'},
   {id: '10', label: 'Chorus Amount', moduleId: 'chorus', property: 'amount'},
   {id: '11', label: 'Chorus Time', moduleId: 'chorus', property: 'time'},
-  {id: '12', label: 'LFO 1', moduleId: 'lfo1', property: 'amount'},
-  {id: '13', label: 'LFO 2', moduleId: 'lfo2', property: 'amount'},
-  {id: '14', label: 'LFO 3', moduleId: 'lfo3', property: 'amount'}
+  {id: '12', label: 'LFO 1', moduleId: 'l1', property: 'amount'},
+  {id: '13', label: 'LFO 2', moduleId: 'l2', property: 'amount'},
+  {id: '14', label: 'LFO 3', moduleId: 'l3', property: 'amount'}
 ]
 
 function initLFO (name, id) {
   return {
     name,
     id,
-    shape: 'triangle',
+    shape: 't',
     amount: 1,
     rate: 1,
     min: 0,
@@ -105,14 +106,14 @@ let initialState = {
   Chorus,
   Keyboard,
   Oscillators: [
-    initOscillator('1', 'osc1', '#00BBBE'),
-    initOscillator('2', 'osc2', '#FF7403'),
-    initOscillator('3', 'osc3', '#A7CA33')
+    initOscillator('1', 'o1', '#00BBBE'),
+    initOscillator('2', 'o2', '#FF7403'),
+    initOscillator('3', 'o3', '#A7CA33')
   ],
   LFOs: [
-    initLFO('1', 'lfo1'),
-    initLFO('2', 'lfo2'),
-    initLFO('3', 'lfo3')
+    initLFO('1', 'l1'),
+    initLFO('2', 'l2'),
+    initLFO('3', 'l3')
   ]
 }
 
@@ -285,13 +286,13 @@ function computeWaveform (channelDataA, channelDataB, algorithm) {
   }
 
   return channelDataB.map(function (data, index) {
-    if (algorithm === 'plus') {
+    if (algorithm === 'p') {
       return channelDataA[index] + channelDataB[index]
-    } else if (algorithm === 'minus') {
+    } else if (algorithm === 'm') {
       return channelDataA[index] - channelDataB[index]
-    } else if (algorithm === 'divide') {
+    } else if (algorithm === 'd') {
       return channelDataA[index] / channelDataB[index]
-    } else if (algorithm === 'multiply') {
+    } else if (algorithm === 'x') {
       return channelDataA[index] * channelDataB[index]
     }
   })

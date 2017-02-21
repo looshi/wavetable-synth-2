@@ -153,7 +153,7 @@ class Synth extends React.Component {
         osc.connectPitchToLFO(lfo, true)
       })
     }
-    if (_.includes(id, 'osc') && id !== 'oscAll') {
+    if (id && id[0] === 'o' && id !== 'oscAll') {
       let osc = this.oscillators.find((osc) => osc.id === id)
       if (destination.property === 'detune') {
         osc.connectPitchToLFO(lfo)
@@ -171,7 +171,7 @@ class Synth extends React.Component {
     }
 
     // LFO to LFO mappings.  Sort of works.
-    if (_.includes(id, 'lfo')) {
+    if (id && id[0] === 'l') {
       let targetLFO = this.LFOs.find((osc) => osc.id === id)
       lfo.connect(targetLFO.lfoInputFrequency, 1, true)
     }
