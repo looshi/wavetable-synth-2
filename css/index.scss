@@ -98,36 +98,79 @@ h1 {
   height: 34px;
   display: inline-block;
   color: $blue;
-  text-align: center;
   font-size: 20px;
-  &:hover, &.selected {
-    color: #fff;
-    background-color: $blue;
+  vertical-align: middle;
+  &:hover {
     cursor: pointer;
-    &.color-00BBBE {
-      color: #fff;
-      background-color: #00BBBE;
-    }
-    &.color-FF7403 {
-      color: #fff;
-      background-color: #FF7403;
-    }
-    &.color-A7CA33 {
-      color: #fff;
-      background-color: #A7CA33;
-    }
   }
   &.algorithm-button {
     margin-left: 23px;
   }
-  &.color-00BBBE {
-    color: #00BBBE;
+
+  $colors-list: 'A7CA33' 'FF7403' '00BBBE';
+
+  @for $i from 1 through length($colors-list) {
+    $current-color: nth($colors-list, $i);
+    $y: (-7 + $i * 46) + px;
+
+    &.plus.color-#{$current-color} {
+      background: url('../images/operator-btns.png');
+      background-position: 411px $y;
+      &:hover, &.selected {
+        background-position: 147px $y;
+      }
+    }
+    &.minus.color-#{$current-color} {
+      background: url('../images/operator-btns.png');
+      background-position: 288px $y;
+      &:hover, &.selected {
+        background-position: 39px $y;
+      }
+    }
+    &.divide.color-#{$current-color} {
+      background: url('../images/operator-btns.png');
+      background-position: 349px $y;
+      &:hover, &.selected {
+        background-position: 93px $y;
+      }
+    }
+    &.multiply.color-#{$current-color} {
+      background: url('../images/operator-btns.png');
+      background-position: 471px $y;
+      &:hover, &.selected {
+        background-position: 201px $y;
+      }
+    }
   }
-  &.color-FF7403 {
-    color: #FF7403;
+}
+
+.shape-button {
+  width: 52px;
+  height: 52px;
+  background: url('../images/lfo-shape-btns.png');
+  &.random {
+    background-position: 74px -66px;
+    &:hover, &.selected {
+      background-position: 207px -67px;
+    }
   }
-  &.color-A7CA33 {
-    color: #A7CA33;
+  &.triangle {
+    background-position: 138px -1px;
+    &:hover, &.selected {
+      background-position: -1px -1px;
+    }
+  }
+  &.sawtooth {
+    background-position: 72px -1px;
+    &:hover, &.selected {
+      background-position: -67px -1px;
+    }
+  }
+  &.square {
+    background-position: 137px 57px;
+    &:hover, &.selected {
+      background-position: -1px 53px;
+    }
   }
 }
 
@@ -174,16 +217,19 @@ h1 {
   margin-left: 38px;
   .vertical-slider {
     width: 10px;
+    .vertical-slider-container {
+      margin-left: -7px;
+    }
   }
 }
 
 // LFOs
 .lfo {
   .shape-switch{
-    width: 100px;
+    width: 142px;
     display: inline-block;
     vertical-align: top;
-    margin: 25px 32px;
+    margin: 25px 16px;
     .wave-label {
       text-align: center;
     }

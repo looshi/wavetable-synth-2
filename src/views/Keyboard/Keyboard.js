@@ -118,7 +118,6 @@ class Keyboard extends React.Component {
 
   render () {
     let {black, white} = this.drawKeys()
-
     return (
       <div className='keyboard-container'>
         <div className='keyboard'>
@@ -127,7 +126,7 @@ class Keyboard extends React.Component {
               white.map((key) => {
                 return (
                   <div
-                    key={Math.random()}
+                    key={key.note || Math.random()}
                     data-key={key.note}
                     data-on={this.isKeyOn(key)}
                     onMouseDown={this.handleKeyDown.bind(this)}
@@ -143,7 +142,7 @@ class Keyboard extends React.Component {
               black.map((key) => {
                 return (
                   <div
-                    key={Math.random()}
+                    key={key.note || Math.random()}
                     data-key={key.note}
                     data-on={this.isKeyOn(key)}
                     onMouseDown={this.handleKeyDown.bind(this)}

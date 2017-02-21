@@ -20,7 +20,7 @@ class VerticalSlider extends React.Component {
       <div className='vertical-slider'>
 
         <div className='slider-amount'>{this.props.value}</div>
-        <div className='vertical-silder-container'>
+        <div className='vertical-slider-container'>
           <input
             type='range'
             orient='vertical'

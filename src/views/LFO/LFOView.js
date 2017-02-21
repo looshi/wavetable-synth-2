@@ -37,18 +37,20 @@ class LFOView extends React.Component {
 
   onAmountChanged (e) {
     const {id, destination} = this.props
-    let action = Actions.lfoAmountChanged(id, e.target.value, destination)
+    let value = Number(e.target.value)
+    let action = Actions.lfoAmountChanged(id, value, destination)
     this.props.dispatch(action)
   }
 
   onRateChanged (e) {
     const {id, destination} = this.props
-    let action = Actions.lfoRateChanged(id, e.target.value, destination)
+    let value = Number(e.target.value)
+    let action = Actions.lfoRateChanged(id, value, destination)
     this.props.dispatch(action)
   }
 
   buttonClassName (type, selected) {
-    let className = 'toggle-button shape-button'
+    let className = 'toggle-button shape-button ' + type
     if (type === selected) {
       className += ' selected'
     }
@@ -66,10 +68,10 @@ class LFOView extends React.Component {
         <h1>LFO {this.props.name}</h1>
         <div className='box'>
           <div onClick={this.onShapeChanged.bind(this)} className='shape-switch'>
-            <div data-shape={'random'} className={this.buttonClassName('random', selected)}>Ran</div>
-            <div data-shape={'triangle'} className={this.buttonClassName('triangle', selected)}>Tri</div>
-            <div data-shape={'sawtooth'} className={this.buttonClassName('sawtooth', selected)}>Saw</div>
-            <div data-shape={'square'} className={this.buttonClassName('square', selected)}>Sq</div>
+            <div data-shape={'triangle'} className={this.buttonClassName('triangle', selected)} />
+            <div data-shape={'sawtooth'} className={this.buttonClassName('sawtooth', selected)} />
+            <div data-shape={'square'} className={this.buttonClassName('square', selected)} />
+            <div data-shape={'random'} className={this.buttonClassName('random', selected)} />
             <div className='wave-label'>shape</div>
           </div>
           <div className='sliders'>
@@ -105,6 +107,17 @@ class LFOView extends React.Component {
       </div>
     )
   }
+}
+
+const {string, number, arrayOf, object} = React.PropTypes
+LFOView.propTypes = {
+  id: string.isRequired,
+  name: string.isRequired,
+  shape: string.isRequired,
+  amount: number.isRequired,
+  rate: number.isRequired,
+  destination: object.isRequired,
+  destinations: arrayOf(React.PropTypes.object)
 }
 
 export default connect()(LFOView)

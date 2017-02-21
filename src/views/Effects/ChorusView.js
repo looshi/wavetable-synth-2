@@ -24,7 +24,7 @@ class ChorusView extends React.Component {
           <div className='filter-sliders'>
             <VerticalSlider
               name='chorus-amount'
-              label='amount'
+              label='amt'
               min={0}
               max={100}
               step={1}

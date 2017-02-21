@@ -18,11 +18,7 @@ let Filter = {
   attack: URL.fa || 1,
   decay: URL.fd || 5,
   sustain: URL.fs || 50,
-  release: URL.fre || 2,
-  lfoFreqOn: false,
-  lfoFreqAmount: 0,
-  lfoFreqRate: 0,
-  lfoFreqShape: 'sine'
+  release: URL.fre || 2
 }
 
 // Amp.
@@ -31,11 +27,7 @@ let Amp = {
   attack: URL.aa || 12,
   decay: URL.ad || 50,
   sustain: URL.as || 30,
-  release: URL.ar || 20,
-  lfoOn: false,
-  lfoAmount: 0,
-  lfoRate: 0,
-  lfoShape: 'sine'
+  release: URL.ar || 20
 }
 
 // Chorus.
@@ -132,25 +124,9 @@ initialState.LFOs.forEach((lfo, index) => {
   const rate = lfo.id + 'r'
   const shape = lfo.id + 's'
   if (URL[dest]) lfo.destination = lfo.destinations.find((d) => d.id === URL[dest])
-  if (URL[amount]) lfo.amount = URL[amount]
-  if (URL[rate]) lfo.rate = URL[rate]
+  if (URL[amount]) lfo.amount = Number(URL[amount])
+  if (URL[rate]) lfo.rate = Number(URL[rate])
   if (URL[shape]) lfo.shape = URL[shape]
-
-  // Amp LFO initial settings.
-  if (lfo.destination.id === '0') {
-    initialState.Amp.lfoOn = true
-    initialState.Amp.lfoAmount = lfo.amount
-    initialState.Amp.lfoRate = lfo.rate
-    initialState.Amp.lfoShape = lfo.shape
-  }
-
-  // Filter LFO initial settings
-  if (lfo.destination.id === '1') {
-    initialState.Filter.lfoFreqOn = true
-    initialState.Filter.lfoFreqAmount = lfo.amount
-    initialState.Filter.lfoFreqRate = lfo.rate
-    initialState.Filter.lfoFreqShape = lfo.shape
-  }
 })
 
 // Stores the parameters in the url.

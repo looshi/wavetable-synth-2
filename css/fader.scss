@@ -142,17 +142,17 @@
 /* This media query makes it so that these styles are only applied in Chrome */
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 
-  .vertical-silder-container {
-    height: 100px;
+  .vertical-slider-container {
+    height: 127px;
     display: block;
   }
 
   .fader.vertical {
     -webkit-appearance: none;
     transform: rotate(270deg) translateY(-52px);
-    margin-top: 50px; /* 50% of the width because of the transformation */
-    margin-left: 60%;
-    width: 100px;
+    margin-top: 63px; /* 50% of the width because of the transformation */
+    margin-left: 10%;
+    width: 127px;
     height: 3px;
     outline: none;
   }
