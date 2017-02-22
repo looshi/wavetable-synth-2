@@ -412,6 +412,7 @@ const Reducers = (state, action) => {
   if (action.type === 'LOAD_PRESET_URL_DATA') {
     let urlData = queryString.parse(window.location.hash)
     state = initializeState(urlData)
+    state.Master.presetId = action.presetId
   }
 
   return appReducer(state, action)

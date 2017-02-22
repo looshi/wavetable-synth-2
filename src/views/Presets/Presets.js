@@ -12,7 +12,8 @@ class Presets extends React.Component {
   constructor (props) {
     super(props)
     const options = PresetData.map((preset) => {
-      return {label: preset.name, value: preset.id}
+      let label = preset.name + ' by ' + preset.author
+      return {label, value: preset.id}
     })
     this.state = { options }
   }
@@ -20,7 +21,7 @@ class Presets extends React.Component {
   onPresetChanged (e) {
     let preset = PresetData.find((p) => p.id === e.value)
     window.location.hash = preset.data
-    let action = Actions.loadPresetURLData()
+    let action = Actions.loadPresetURLData(e.value)
     this.props.dispatch(action)
   }
 
@@ -28,7 +29,7 @@ class Presets extends React.Component {
     return (
       <div className='preset-list-container'>
         <Select
-          className='preset-list'
+          className={'preset-list color-' + this.props.color.split('#')[1]}
           value={Number(this.props.presetId)}
           clearable={false}
           searchable={false}

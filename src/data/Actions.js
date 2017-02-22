@@ -84,8 +84,8 @@ Actions.noteOff = function noteOff (note) {
 }
 
 // Re-initializes the entire state based on the current url hash.
-Actions.loadPresetURLData = function loadPresetURLData () {
-  return { type: 'LOAD_PRESET_URL_DATA' }
+Actions.loadPresetURLData = function loadPresetURLData (presetId) {
+  return { type: 'LOAD_PRESET_URL_DATA', presetId }
 }
 
 export default Actions

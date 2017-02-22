@@ -1,10 +1,27 @@
 /**
  * React-Select css with overrides done inline.
 */
-
-/* Our Styles */
 $blue: #0047B4;
 
+
+/* Presets */
+.preset-list-container {
+  display: inline-block;
+  width: 200px;
+  float: right;
+  border: 3px solid white;
+  margin-top: 2px;
+}
+.Select.preset-list {
+  .Select-value-label {
+    color: #fff;
+  }
+  .Select-arrow {
+    border-color: #fff transparent transparent;
+  }
+}
+
+/* Wave Files */
 .wavetable-box {
   display: inline-block;
   width: 140px;
@@ -22,70 +39,35 @@ $blue: #0047B4;
     cursor: pointer;
   }
 
-  &.color-00BBBE {
-    .Select-menu-outer {
-      border-left: 4px solid #00BBBE;
-      border-right: 4px solid #00BBBE;
-      border-bottom: 4px solid #00BBBE;
-      border-top: none;
-    }
-    .Select-option.is-focused {
-      background-color: #00BBBE;
-      color: #fff;
-    }
-    .Select-option {
-      color: #00BBBE;
-    }
-    .Select-value-label {
-      color: #00BBBE;
-    }
-    .Select-arrow {
-      border-color: #00BBBE transparent transparent;
-    }
-  }
-  &.color-FF7403 {
-    .Select-menu-outer {
-      border-left: 4px solid #FF7403;
-      border-right: 4px solid #FF7403;
-      border-bottom: 4px solid #FF7403;
-      border-top: none;
-    }
-    .Select-option.is-focused {
-      background-color: #FF7403;
-      color: #fff;
-    }
-    .Select-option {
-      color: #FF7403;
-    }
-    .Select-value-label {
-      color: #FF7403;
-    }
-    .Select-arrow {
-      border-color: #FF7403 transparent transparent;
-    }
-  }
-  &.color-A7CA33 {
-    .Select-menu-outer {
-      border-left: 4px solid #A7CA33;
-      border-right: 4px solid #A7CA33;
-      border-bottom: 4px solid #A7CA33;
-      border-top: none;
-    }
-    .Select-option.is-focused {
-      background-color: #A7CA33;
-      color: #fff;
-    }
-    .Select-option {
-      color: #A7CA33;
-    }
-    .Select-value-label {
-      color: #A7CA33;
-    }
-    .Select-arrow {
-      border-color: #A7CA33 transparent transparent;
-    }
-  }
+  $colors-list: 'A7CA33' 'FF7403' '00BBBE';
 
+  @for $i from 1 through length($colors-list) {
+    $current-color: nth($colors-list, $i);
+    $color: '#' + $current-color;
+    $y: (-7 + $i * 46) + px;
+
+    &.color-#{$current-color} {
+      .Select-menu-outer {
+        border-left: 4px solid #{$color};
+        border-right: 4px solid #{$color};
+        border-bottom: 4px solid #{$color};
+        border-top: none;
+      }
+      .Select-option.is-focused {
+        background-color: #{$color};
+        color: #fff;
+      }
+      .Select-option {
+        color: #{$color};
+      }
+      .Select-value-label {
+        color: #{$color};
+      }
+      .Select-arrow {
+        border-color: #{$color} transparent transparent;
+      }
+    }
+  }
 }
 
 /* LFO Destination */
@@ -388,8 +370,8 @@ $blue: #0047B4;
 }
 
 .Select-option:last-child {
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 .Select-option.is-selected {
   background-color: #f5faff;

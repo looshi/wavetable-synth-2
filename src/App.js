@@ -36,7 +36,7 @@ class App extends React.Component {
         <div className='scroll-container'>
           <header>
             <div>
-              <h1>Oscillator Slop</h1>
+              <h1>Dog Synth</h1>
               <HorizontalSlider
                 id='master'
                 name='master gain'
@@ -45,9 +45,11 @@ class App extends React.Component {
                 max={100}
                 step={1}
                 value={this.props.Master.volume} />
+              <Presets
+                color={'#ffffff'}
+                presetId={this.props.Master.presetId} />
             </div>
-            <Presets
-              presetId={this.props.Master.presetId} />
+
           </header>
           <div className='scroll-contents'>
             {
