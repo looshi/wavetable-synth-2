@@ -11,10 +11,11 @@ import Actions from '../../data/Actions.js'
 class Presets extends React.Component {
   constructor (props) {
     super(props)
-    const options = PresetData.map((preset) => {
+    let options = PresetData.map((preset) => {
       let label = preset.name + ' by ' + preset.author
       return {label, value: preset.id}
     })
+    options.unshift({ label: 'Select Preset', value: -1, disabled: true })
     this.state = { options }
   }
 
@@ -31,6 +32,7 @@ class Presets extends React.Component {
         <Select
           className={'preset-list'}
           value={Number(this.props.presetId)}
+          placeholder={'Select Preset'}
           clearable={false}
           searchable={false}
           options={this.state.options}

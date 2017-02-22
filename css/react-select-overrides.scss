@@ -13,6 +13,7 @@ $blue: #0047B4;
   border: 3px solid white;
   margin-top: 2px;
   margin-left: 12px;
+
 }
 .Select.preset-list,
 .Select.midi-input-list {
@@ -21,6 +22,11 @@ $blue: #0047B4;
   }
   .Select-arrow {
     border-color: #fff transparent transparent;
+  }
+}
+.Select-placeholder {
+  &:hover {
+    cursor: pointer;
   }
 }
 

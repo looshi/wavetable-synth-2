@@ -4,7 +4,7 @@ import React from 'react'
 import Actions from './data/Actions'
 import OscillatorView from './views/Oscillator/OscillatorView.js'
 import FilterView from './views/Filter/FilterView.js'
-import ChorusView from './views/Effects/ChorusView.js'
+import EffectsView from './views/Effects/EffectsView.js'
 import AmpView from './views/Filter/AmpView.js'
 import LFOView from './views/LFO/LFOView.js'
 import Presets from './views/Presets/Presets.js'
@@ -94,9 +94,10 @@ class App extends React.Component {
                 decay={this.props.Amp.decay}
                 sustain={this.props.Amp.sustain}
                 release={this.props.Amp.release} />
-              <ChorusView
-                amount={this.props.Chorus.amount}
-                time={this.props.Chorus.time} />
+              <EffectsView
+                amount={this.props.Effects.chorusAmount}
+                time={this.props.Effects.chorusTime}
+                glide={this.props.Effects.glide}/>
             </div>
             <div>
               {
@@ -129,7 +130,7 @@ class App extends React.Component {
               audioContext={audioContext}
               Master={this.props.Master}
               Filter={this.props.Filter}
-              Chorus={this.props.Chorus}
+              Effects={this.props.Effects}
               Amp={this.props.Amp}
               Oscillators={this.props.Oscillators}
               LFOs={this.props.LFOs} />
@@ -145,7 +146,7 @@ function mapStateToProps (state) {
     Master: state.Master,
     Filter: state.Filter,
     Amp: state.Amp,
-    Chorus: state.Chorus,
+    Effects: state.Effects,
     LFOs: state.LFOs,
     Keyboard: state.Keyboard,
     Oscillators: state.Oscillators

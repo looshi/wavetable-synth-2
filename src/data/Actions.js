@@ -45,6 +45,10 @@ Actions.sliderChanged = function sliderChanged (id, value, name) {
   }
 }
 
+Actions.glideChanged = function oscGlideChanged(value) {
+  return { type: 'GLIDE_CHANGED', value }
+}
+
 // A Filter value has changed.
 Actions.filterSliderChanged = function filterSliderChanged (id, value, name) {
   return { type: 'FILTER_SLIDER_CHANGED', id, value, name }

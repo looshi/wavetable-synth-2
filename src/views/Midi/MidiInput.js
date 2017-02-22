@@ -11,10 +11,11 @@ class MidiInput extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      options: [{ label: 'Select MIDI device', value: -1 }],
+      options: [{ label: 'Select MIDI device', value: -1, disabled: true }],
       selectedInput: -1
     }
     navigator.requestMIDIAccess().then(this.onMidiInit.bind(this), this.onMidiError)
+    this.notesOn = []
   }
 
   onMidiInit (midiAccess) {
@@ -40,14 +41,30 @@ class MidiInput extends React.Component {
     this.setState({ selectedInput: e.value })
   }
 
-  handleKeyDown (key) {
-    this.props.dispatch(Actions.noteOn(key))
-    this.props.eventEmitter.emit('NOTE_ON', key)
+  handleKeyDown (noteNumber) {
+    // Change pitch.
+    this.props.dispatch(Actions.noteOn(noteNumber))
+
+    // Start Envelope.
+    if (this.notesOn.length === 0) {
+      this.props.eventEmitter.emit('NOTE_ON', noteNumber)
+    }
+    this.notesOn.push(noteNumber)
   }
 
-  handleKeyUp (key) {
-    this.props.dispatch(Actions.noteOff(key))
-    this.props.eventEmitter.emit('NOTE_OFF', key)
+  handleKeyUp (noteNumber) {
+    this.props.dispatch(Actions.noteOff(noteNumber))
+
+    this.notesOn = this.notesOn.filter((note) => {
+      return note !== noteNumber
+    })
+
+    if (this.notesOn.length === 0) {
+      this.props.eventEmitter.emit('NOTE_OFF', noteNumber)
+    } else {
+      let lastNotePlayed = this.notesOn[this.notesOn.length - 1]
+      this.props.dispatch(Actions.noteOn(lastNotePlayed))
+    }
   }
 
   onMidiMessage (e) {
@@ -73,7 +90,6 @@ class MidiInput extends React.Component {
       this.handleKeyUp(noteNumber)
     } else if (cmd === 9) {
       // NOTE ON
-      console.log('note ', noteNumber)
       this.handleKeyDown(noteNumber)
     } else if (cmd === 11) {
       // CONTROLLER

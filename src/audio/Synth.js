@@ -42,8 +42,8 @@ class Synth extends React.Component {
 
     // Chorus
     this.chorus = new Chorus(audioContext, props.store)
-    this.chorus.amount = this.props.Chorus.amount
-    this.chorus.time = this.props.Chorus.time
+    this.chorus.amount = this.props.Effects.chorusAmount
+    this.chorus.time = this.props.Effects.chorusTime
 
     // Connections
     this.oscillatorsBus.connect(this.biquadFilter)
@@ -73,8 +73,9 @@ class Synth extends React.Component {
         octave: o.octave,
         amount: o.amount,
         note: o.note,
-        audioContext: this.props.audioContext,
-        output: this.oscillatorsBus
+        audioContext: props.audioContext,
+        output: this.oscillatorsBus,
+        glide: props.Effects.glide
       }
 
       let osc = new Oscillator(options)
@@ -85,7 +86,8 @@ class Synth extends React.Component {
         'detune',
         'note',
         'octave',
-        'computedChannelData'
+        'computedChannelData',
+        'glide'
       ]
       observableProps.forEach((prop) => {
         observeStore(props.store, `Oscillators[${index}].${prop}`, (val) => {
@@ -188,10 +190,10 @@ class Synth extends React.Component {
       this.filterEnvelopeOff()
     })
 
-    observeStore(store, 'Chorus.amount', (amount) => {
+    observeStore(store, 'Effects.chorusAmount', (amount) => {
       this.chorus.amount = amount
     })
-    observeStore(store, 'Chorus.time', (time) => {
+    observeStore(store, 'Effects.chorusTime', (time) => {
       this.chorus.time = time
     })
   }

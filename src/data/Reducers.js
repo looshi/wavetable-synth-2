@@ -4,7 +4,7 @@ import queryString from 'query-string'
 let Master = {}
 let Filter = {}
 let Amp = {}
-let Chorus = {}
+let Effects = {}
 let Keyboard = {}
 
 // The list of waveforms should only be loaded once when the page loads,
@@ -23,8 +23,8 @@ const LFODestinations = [
   {id: '7', label: 'Osc 1 Amount', moduleId: 'o1', property: 'amount'},
   {id: '8', label: 'Osc 2 Amount', moduleId: 'o2', property: 'amount'},
   {id: '9', label: 'Osc 3 Amount', moduleId: 'o3', property: 'amount'},
-  {id: '10', label: 'Chorus Amount', moduleId: 'chorus', property: 'amount'},
-  {id: '11', label: 'Chorus Time', moduleId: 'chorus', property: 'time'},
+  {id: '10', label: 'Chorus Amount', moduleId: 'effects', property: 'chorusAmount'},
+  {id: '11', label: 'Chorus Time', moduleId: 'effects', property: 'chorusTime'},
   {id: '12', label: 'LFO 1', moduleId: 'l1', property: 'amount'},
   {id: '13', label: 'LFO 2', moduleId: 'l2', property: 'amount'},
   {id: '14', label: 'LFO 3', moduleId: 'l3', property: 'amount'}
@@ -59,11 +59,12 @@ function initializeState (URL) {
     release: URL.ar || 20
   }
 
-  // Chorus.
-  Chorus = {
-    id: 'chorus',
-    amount: URL.ca || 50,
-    time: URL.ct || 50
+  // Effects.
+  Effects = {
+    id: 'effects',
+    chorusAmount: URL.ca || 50,
+    chorusTime: URL.ct || 50,
+    glide: URL.g || 20
   }
 
   // Keyboard, notes are represented as object keys, { 24: 'on', 25: 'off' ... }.
@@ -77,7 +78,7 @@ function initializeState (URL) {
     Master,
     Filter,
     Amp,
-    Chorus,
+    Effects,
     Keyboard,
     Oscillators: [
       initOscillator(URL, '1', 'o1', '#00BBBE'),
@@ -125,7 +126,8 @@ function initOscillator (URL, name, id, color) {
     octave: URL[id + 'o'] || 0,
     note: 0, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
     color,
-    waveFiles: OSC_WAV_FILES
+    waveFiles: OSC_WAV_FILES,
+    glide: URL.g || 20
   }
 }
 
@@ -175,7 +177,6 @@ function KeyboardReducer (state, action) {
 
   switch (action.type) {
     case 'NOTE_ON':
-      console.log('note on!', action.note)
       state[action.note] = 'on'
       return Object.assign({}, state)
     case 'NOTE_OFF':
@@ -242,17 +243,21 @@ function FilterReducer (state, action) {
   }
 }
 
-function ChorusReducer (state, action) {
-  state = state || initialState.Chorus
+function EffectsReducer (state, action) {
+  state = state || initialState.Effects
   switch (action.type) {
     case 'CHORUS_SLIDER_CHANGED':
       if (action.name === 'chorus-amount') {
-        state.amount = action.value
+        state.chorusAmount = action.value
         updateURL('ca', action.value)
       } else if (action.name === 'chorus-time') {
-        state.time = action.value
+        state.chorusTime = action.value
         updateURL('ct', action.value)
       }
+      return Object.assign({}, state)
+    case 'GLIDE_CHANGED':
+      state.glide = action.value
+      updateURL('g', action.value)
       return Object.assign({}, state)
     default:
       return state
@@ -395,6 +400,13 @@ function OscillatorsReducer (state, action) {
       })
       return [...state]
 
+    case 'GLIDE_CHANGED':
+      state = state.map(function (osc) {
+        osc.glide = action.value
+        return osc
+      })
+      return [...state]
+
     default:
       return state
   }
@@ -404,7 +416,7 @@ const appReducer = combineReducers({
   Master: MasterReducer,
   Filter: FilterReducer,
   Amp: AmpReducer,
-  Chorus: ChorusReducer,
+  Effects: EffectsReducer,
   Keyboard: KeyboardReducer,
   LFOs: LFOsReducer,
   Oscillators: OscillatorsReducer

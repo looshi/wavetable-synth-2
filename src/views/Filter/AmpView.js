@@ -21,7 +21,7 @@ class AmpView extends React.Component {
       <div className='module'>
         <h1>Amp</h1>
         <div className='box'>
-          <div className='filter-sliders'>
+          <div className='amp-sliders'>
             <VerticalSlider
               name='amp-attack'
               label='a'

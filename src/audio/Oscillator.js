@@ -13,6 +13,7 @@ export default class Oscillator {
     this._lfoPitch = null
     this._persistLFO = false
     this._lfoAmount = null
+    this._glide = Number(props.glide) / 100
 
     this.output = props.output
     this.audioContext = props.audioContext
@@ -63,14 +64,21 @@ export default class Oscillator {
     this.updatePitch()
   }
 
+  set glide (val) {
+    this._glide = val / 100
+  }
+
   updatePitch () {
     if (!this.wavSource || !this._note) return
-    // Calculate pitch.
-    this.wavSource.detune.value = this._detune
-    // Add note value (note value * 100 cents per note).
-    this.wavSource.detune.value += this._note * 100
-     // Add Octave value  (100 cents * 12 notes = 1 octave).
-    this.wavSource.detune.value += this._octave * 100 * 12
+    let current = this.wavSource.detune.value
+    let next = Number(this._detune) + this._note * 100 // Note value * 100 cents per note.
+    next += this._octave * 100 * 12 // 100 cents * 12 notes = 1 octave
+
+    // Schedule glide based on the current glide amount.
+    let now = this.audioContext.currentTime
+    this.wavSource.detune.cancelScheduledValues(0)
+    this.wavSource.detune.setValueAtTime(current, now)
+    this.wavSource.detune.linearRampToValueAtTime(next, now + this._glide)
   }
 
   set computedChannelData (data) {

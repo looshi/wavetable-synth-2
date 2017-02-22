@@ -12,6 +12,9 @@ class VerticalSlider extends React.Component {
     if (this.props.color) {
       className += this.props.color.split('#').join('color-')
     }
+    if (this.props.className) {
+      className += ' ' + this.props.className
+    }
     return className
   }
 
@@ -20,7 +23,7 @@ class VerticalSlider extends React.Component {
       <div className='vertical-slider'>
 
         <div className='slider-amount'>{this.props.value}</div>
-        <div className='vertical-slider-container'>
+        <div className={'vertical-slider-container ' + this.props.className}>
           <input
             type='range'
             orient='vertical'
@@ -31,7 +34,7 @@ class VerticalSlider extends React.Component {
             defaultValue={this.props.value}
             onChange={this.props.onChange} />
         </div>
-        <div className='slider-label'>{this.props.label}</div>
+        <div className={'slider-label ' + this.props.className}>{this.props.label}</div>
       </div>
     )
   }
