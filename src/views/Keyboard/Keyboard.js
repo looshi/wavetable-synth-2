@@ -5,8 +5,13 @@ Sends note on / off events.
 import React from 'react'
 import {connect} from 'react-redux'
 import Actions from '../../data/Actions.js'
+import _ from 'lodash'
 
 class Keyboard extends React.Component {
+  constructor (props) {
+    super(props)
+    this.notesOn = []
+  }
 
   componentDidMount () {
     let keys = {
@@ -42,38 +47,71 @@ class Keyboard extends React.Component {
       'o': 33,
       'p': 34,
       '[': 35,
-      ']': 36
+      ']': 36,
+      '1': 48,
+      '2': 49,
+      '3': 50,
+      '4': 51,
+      '5': 52,
+      '6': 53,
+      '7': 54,
+      '8': 55,
+      '9': 56,
+      '0': 57,
+      '-': 58,
+      '=': 59
     }
 
-    this.keydown = false
-
     document.addEventListener('keydown', (event) => {
-      if (!this.keydown) {
-        this.keydown = true
-        const midiNote = keys[event.key] + 23
-        this.props.dispatch(Actions.noteOn(midiNote))
-        this.props.eventEmitter.emit('NOTE_ON', midiNote)
+      if (keys[event.key]) {
+        const noteNumber = keys[event.key] + 23
+        if (!_.includes(this.notesOn, noteNumber)) {
+          this.noteOn(noteNumber)
+        }
       }
     })
 
     document.addEventListener('keyup', (event) => {
-      this.keydown = false
-      const midiNote = keys[event.key] + 23
-      this.props.dispatch(Actions.noteOff(midiNote))
-      this.props.eventEmitter.emit('NOTE_OFF', midiNote)
+      if (keys[event.key]) {
+        const noteNumber = keys[event.key] + 23
+        this.noteOff(noteNumber)
+      }
     })
   }
 
-  handleMouseDown (event) {
-    const midiNote = event.target.getAttribute('data-midi')
-    this.props.dispatch(Actions.noteOn(midiNote))
-    this.props.eventEmitter.emit('NOTE_ON', midiNote)
+  onMouseDown (event) {
+    const noteNumber = event.target.getAttribute('data-midi')
+    this.noteOn(noteNumber)
+  }
+  onMouseUp (event) {
+    const noteNumber = event.target.getAttribute('data-midi')
+    this.noteOff(noteNumber)
   }
 
-  handleMouseUp (event) {
-    const midiNote = event.target.getAttribute('data-midi')
-    this.props.dispatch(Actions.noteOff(midiNote))
-    this.props.eventEmitter.emit('NOTE_OFF', midiNote)
+  noteOn (noteNumber) {
+    // Changes pitch.
+    this.props.dispatch(Actions.noteOn(noteNumber))
+
+    // Starts Envelope.
+    if (this.notesOn.length === 0) {
+      this.props.eventEmitter.emit('NOTE_ON', noteNumber)
+    }
+    this.notesOn.push(noteNumber)
+  }
+
+  noteOff (noteNumber) {
+    this.props.dispatch(Actions.noteOff(noteNumber))
+
+    this.notesOn = this.notesOn.filter((note) => {
+      return note !== noteNumber
+    })
+
+    if (this.notesOn.length === 0) {
+      this.props.eventEmitter.emit('NOTE_OFF', noteNumber)
+    } else {
+      let lastNotePlayed = this.notesOn[this.notesOn.length - 1]
+      this.props.dispatch(Actions.noteOn(lastNotePlayed))
+    }
   }
 
   // Populates black and white key arrays with midi note number data.
@@ -132,8 +170,8 @@ class Keyboard extends React.Component {
                     key={key.note || Math.random()}
                     data-key={key.note}
                     data-on={this.isKeyOn(key)}
-                    onMouseDown={this.handleMouseDown.bind(this)}
-                    onMouseUp={this.handleMouseUp.bind(this)}
+                    onMouseDown={this.onMouseDown.bind(this)}
+                    onMouseUp={this.onMouseUp.bind(this)}
                     className='key'
                     data-midi={key.midi} />
                 )
@@ -148,8 +186,8 @@ class Keyboard extends React.Component {
                     key={key.note || Math.random()}
                     data-key={key.note}
                     data-on={this.isKeyOn(key)}
-                    onMouseDown={this.handleMouseDown.bind(this)}
-                    onMouseUp={this.handleMouseUp.bind(this)}
+                    onMouseDown={this.onMouseDown.bind(this)}
+                    onMouseUp={this.onMouseUp.bind(this)}
                     className={this.blackKeyClassName(key)}
                     data-midi={key.midi} />
                 )
