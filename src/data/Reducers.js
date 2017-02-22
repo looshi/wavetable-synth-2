@@ -66,9 +66,10 @@ function initializeState (URL) {
     time: URL.ct || 50
   }
 
-  // Keyboard, notes are represented as object keys, { 22: 'on', 23: 'off' ... }.
+  // Keyboard, notes are represented as object keys, { 24: 'on', 25: 'off' ... }.
+  // 24 is the lowest note.
   Keyboard = {}
-  for (let i = 1; i <= 88; i++) {
+  for (let i = 24; i <= 88 + 24; i++) {
     Keyboard[i] = 'off'
   }
 
@@ -174,6 +175,7 @@ function KeyboardReducer (state, action) {
 
   switch (action.type) {
     case 'NOTE_ON':
+      console.log('note on!', action.note)
       state[action.note] = 'on'
       return Object.assign({}, state)
     case 'NOTE_OFF':

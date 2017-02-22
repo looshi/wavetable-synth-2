@@ -29,7 +29,7 @@ class Presets extends React.Component {
     return (
       <div className='preset-list-container'>
         <Select
-          className={'preset-list color-' + this.props.color.split('#')[1]}
+          className={'preset-list'}
           value={Number(this.props.presetId)}
           clearable={false}
           searchable={false}

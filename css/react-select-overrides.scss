@@ -5,14 +5,17 @@ $blue: #0047B4;
 
 
 /* Presets */
-.preset-list-container {
+.preset-list-container,
+.midi-input-container {
   display: inline-block;
   width: 200px;
   float: right;
   border: 3px solid white;
   margin-top: 2px;
+  margin-left: 12px;
 }
-.Select.preset-list {
+.Select.preset-list,
+.Select.midi-input-list {
   .Select-value-label {
     color: #fff;
   }

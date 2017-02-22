@@ -50,33 +50,36 @@ class Keyboard extends React.Component {
     document.addEventListener('keydown', (event) => {
       if (!this.keydown) {
         this.keydown = true
-        const key = keys[event.key]
-        this.props.dispatch(Actions.noteOn(key))
-        this.props.eventEmitter.emit('NOTE_ON', key)
+        const midiNote = keys[event.key] + 23
+        this.props.dispatch(Actions.noteOn(midiNote))
+        this.props.eventEmitter.emit('NOTE_ON', midiNote)
       }
     })
 
     document.addEventListener('keyup', (event) => {
       this.keydown = false
-      const key = keys[event.key]
-      this.props.dispatch(Actions.noteOff(key))
-      this.props.eventEmitter.emit('NOTE_OFF', key)
+      const midiNote = keys[event.key] + 23
+      this.props.dispatch(Actions.noteOff(midiNote))
+      this.props.eventEmitter.emit('NOTE_OFF', midiNote)
     })
   }
 
-  handleKeyDown (event) {
-    const key = event.target.getAttribute('data-key')
-    this.props.dispatch(Actions.noteOn(key))
-    this.props.eventEmitter.emit('NOTE_ON', key)
+  handleMouseDown (event) {
+    const midiNote = event.target.getAttribute('data-midi')
+    this.props.dispatch(Actions.noteOn(midiNote))
+    this.props.eventEmitter.emit('NOTE_ON', midiNote)
   }
 
-  handleKeyUp (event) {
-    const key = event.target.getAttribute('data-key')
-    this.props.dispatch(Actions.noteOff(key))
-    this.props.eventEmitter.emit('NOTE_OFF', key)
+  handleMouseUp (event) {
+    const midiNote = event.target.getAttribute('data-midi')
+    this.props.dispatch(Actions.noteOff(midiNote))
+    this.props.eventEmitter.emit('NOTE_OFF', midiNote)
   }
 
   // Populates black and white key arrays with midi note number data.
+  // The key numbers start at 24 which is "C0", the second octave of MIDI notes.
+  // This is quite low, and usually the lowest key on a keyboard, but not the
+  // lowest actual MIDI note, for example ableton shows C-1 and C-1 lower octaves.
   drawKeys () {
     let blackKeys = [1, 3, 6, 8, 10]
     let keys = {
@@ -84,11 +87,11 @@ class Keyboard extends React.Component {
       white: []
     }
     let note = 0
-    for (var octave = 0; octave < 5; octave++) {
+    for (var octave = 0; octave < 7; octave++) {
       for (var i = 0; i <= 11; i++) {
         note = note + 1
         var key = {
-          midi: i + (12 * octave) + 36,
+          midi: i + (12 * octave) + 24,
           note: note
         }
         if (blackKeys.indexOf(i) !== -1) {
@@ -113,7 +116,7 @@ class Keyboard extends React.Component {
   }
 
   isKeyOn (key) {
-    return this.props.Keyboard[key.note] === 'on'
+    return this.props.Keyboard[key.midi] === 'on'
   }
 
   render () {
@@ -129,8 +132,8 @@ class Keyboard extends React.Component {
                     key={key.note || Math.random()}
                     data-key={key.note}
                     data-on={this.isKeyOn(key)}
-                    onMouseDown={this.handleKeyDown.bind(this)}
-                    onMouseUp={this.handleKeyUp.bind(this)}
+                    onMouseDown={this.handleMouseDown.bind(this)}
+                    onMouseUp={this.handleMouseUp.bind(this)}
                     className='key'
                     data-midi={key.midi} />
                 )
@@ -145,8 +148,8 @@ class Keyboard extends React.Component {
                     key={key.note || Math.random()}
                     data-key={key.note}
                     data-on={this.isKeyOn(key)}
-                    onMouseDown={this.handleKeyDown.bind(this)}
-                    onMouseUp={this.handleKeyUp.bind(this)}
+                    onMouseDown={this.handleMouseDown.bind(this)}
+                    onMouseUp={this.handleMouseUp.bind(this)}
                     className={this.blackKeyClassName(key)}
                     data-midi={key.midi} />
                 )

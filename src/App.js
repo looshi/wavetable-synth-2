@@ -8,6 +8,7 @@ import ChorusView from './views/Effects/ChorusView.js'
 import AmpView from './views/Filter/AmpView.js'
 import LFOView from './views/LFO/LFOView.js'
 import Presets from './views/Presets/Presets.js'
+import MidiInput from './views/Midi/MidiInput.js'
 import {connect} from 'react-redux'
 
 import Synth from './audio/Synth.js'
@@ -45,9 +46,8 @@ class App extends React.Component {
                 max={100}
                 step={1}
                 value={this.props.Master.volume} />
-              <Presets
-                color={'#ffffff'}
-                presetId={this.props.Master.presetId} />
+              <MidiInput eventEmitter={eventEmitter} />
+              <Presets presetId={this.props.Master.presetId} />
             </div>
 
           </header>

@@ -1,0 +1,102 @@
+/*
+MidiInput
+Selects a device from available MIDI input devices.
+*/
+import React from 'react'
+import Select from 'react-select'
+import {connect} from 'react-redux'
+import Actions from '../../data/Actions.js'
+
+class MidiInput extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      options: [{ label: 'Select MIDI device', value: -1 }],
+      selectedInput: -1
+    }
+    navigator.requestMIDIAccess().then(this.onMidiInit.bind(this), this.onMidiError)
+  }
+
+  onMidiInit (midiAccess) {
+    let options = this.state.options
+    let inputs = midiAccess.inputs.values()
+    let hasSelectedInput = false
+    for (var input of inputs) {
+      input.onmidimessage = this.onMidiMessage.bind(this)
+      options.push({label: input.name, value: input.id})
+      // Select the first MIDI input found by default.
+      if (!hasSelectedInput) {
+        this.setState({ selectedInput: input.id })
+        hasSelectedInput = true
+      }
+    }
+    this.setState({ options })
+  }
+
+  onMidiError () {
+
+  }
+  onInputChanged (e) {
+    this.setState({ selectedInput: e.value })
+  }
+
+  handleKeyDown (key) {
+    this.props.dispatch(Actions.noteOn(key))
+    this.props.eventEmitter.emit('NOTE_ON', key)
+  }
+
+  handleKeyUp (key) {
+    this.props.dispatch(Actions.noteOff(key))
+    this.props.eventEmitter.emit('NOTE_OFF', key)
+  }
+
+  onMidiMessage (e) {
+    // Only listen to the selected MIDI device.
+    if (e.target.id !== this.state.selectedInput) {
+      return
+    }
+
+    var cmd = e.data[0] >> 4
+    // var channel = e.data[0] & 0xf
+    // channel = channel + 1  //  TODO, why is zero ch 1, is only my akai ?
+    // var timeStamp = e.timeStamp
+    // var receivedTime = e.receivedTime
+    var noteNumber = e.data[1]
+    var velocity = 0
+
+    if (e.data.length > 2) {
+      velocity = e.data[2]
+    }
+
+    if (cmd === 8 || ((cmd === 9) && (velocity === 0))) {
+      // NOTE OFF MIDI noteon with velocity=0 is the same as noteoff
+      this.handleKeyUp(noteNumber)
+    } else if (cmd === 9) {
+      // NOTE ON
+      console.log('note ', noteNumber)
+      this.handleKeyDown(noteNumber)
+    } else if (cmd === 11) {
+      // CONTROLLER
+    } else if (cmd === 12) {
+      // PROGRAM CHANGE
+    } else {
+      // SYSEX
+    }
+  }
+
+  render () {
+    return (
+      <div className='midi-input-container'>
+        <Select
+          className={'midi-input-list'}
+          value={this.state.selectedInput}
+          clearable={false}
+          searchable={false}
+          options={this.state.options}
+          onChange={this.onInputChanged.bind(this)} />
+      </div>
+    )
+  }
+}
+
+export default connect()(MidiInput)
