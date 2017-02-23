@@ -31,43 +31,55 @@ const LFODestinations = [
   {id: '14', label: 'LFO 3', moduleId: 'l3', property: 'amount'}
 ]
 
+// Converts string url values into Number values.
+// Sets a default if no url value is present.
+function urlVal (val, defaultValue) {
+  if (val === 0) {
+    return 0
+  } else if (!val) {
+    return defaultValue
+  } else {
+    return Number(val)
+  }
+}
+
 function initializeState (URL) {
   // Master.
   Master = {
     id: 'master',
-    volume: URL.mv || 25,
-    presetId: URL.p || 'Custom'
+    volume: urlVal(URL.mv, 25),
+    presetId: urlVal(URL.p, -1)
   }
 
   // Filter.
   // Sustain is Hz value. Attack, Decay and Release are time in seconds.
   Filter = {
     id: 'filter',
-    freq: URL.ff || 50,
-    res: URL.fr || 20,
-    attack: URL.fa || 1,
-    decay: URL.fd || 5,
-    sustain: URL.fs || 50,
-    release: URL.fre || 2
+    freq: urlVal(URL.ff, 50),
+    res: urlVal(URL.fr, 20),
+    attack: urlVal(URL.fa, 1),
+    decay: urlVal(URL.fd, 5),
+    sustain: urlVal(URL.fs, 50),
+    release: urlVal(URL.fre, 2)
   }
 
   // Amp.
   Amp = {
     id: 'amp',
-    attack: URL.aa || 12,
-    decay: URL.ad || 50,
-    sustain: URL.as || 30,
-    release: URL.ar || 20
+    attack: urlVal(URL.aa, 12),
+    decay: urlVal(URL.ad, 50),
+    sustain: urlVal(URL.as, 30),
+    release: urlVal(URL.ar, 20)
   }
 
   // Effects.
   Effects = {
     id: 'effects',
-    chorusAmount: URL.ca || 50,
-    chorusTime: URL.ct || 50,
-    glide: URL.g || 20,
-    arpIsOn: URL.ao === 1,   // Arp on if 1 (true), else arp is off (false).
-    arpTempo: URL.at || 100
+    chorusAmount: urlVal(URL.ca, 50),
+    chorusTime: urlVal(URL.ct, 50),
+    glide: urlVal(URL.g, 20),
+    arpIsOn: URL.ao === 1,   // Boolean. 1 = on, 0 = off.
+    arpTempo: urlVal(URL.at, 100)
   }
 
   // Keyboard, notes are represented as object keys, { 24: 'on', 25: 'off' ... }.
@@ -118,15 +130,13 @@ function initOscillator (URL, name, id, color) {
     id,
     fileA: URL[id + 'fa'] || 'dbass',
     fileB: URL[id + 'fb'] || 'cheeze',
-    audioBufferA: null,
-    audioBufferB: null,
     channelDataA: [],
     channelDataB: [],
     computedChannelData: [],
     algorithm: URL[id + 'al'] || 'p',
-    amount: URL[id + 'a'] || 75,
-    detune: URL[id + 'd'] || 0,
-    octave: URL[id + 'o'] || 0,
+    amount: urlVal(URL[id + 'a'], 75),
+    detune: urlVal(URL[id + 'd'], 0),
+    octave: urlVal(URL[id + 'o'], 0),
     note: 0, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
     color,
     waveFiles: OSC_WAV_FILES,
@@ -368,10 +378,8 @@ function OscillatorsReducer (state, action) {
         if (osc.id === action.id) {
           // Update the A or B channel data and audio buffer on load.
           if (action.side === 'A') {
-            osc.audioBufferA = action.audioBuffer
             osc.channelDataA = action.channelData
           } else if (action.side === 'B') {
-            osc.audioBufferB = action.audioBuffer
             osc.channelDataB = action.channelData
           }
           osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm)

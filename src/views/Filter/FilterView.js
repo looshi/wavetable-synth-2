@@ -12,7 +12,8 @@ class FilterView extends React.Component {
   onSliderChange (event) {
     const {id} = this.props
     const name = event.target.getAttribute('data-name')
-    const action = Actions.filterSliderChanged(id, event.target.value, name)
+    const value = Number(event.target.value)
+    const action = Actions.filterSliderChanged(id, value, name)
     this.props.dispatch(action)
   }
 
@@ -77,6 +78,15 @@ class FilterView extends React.Component {
       </div>
     )
   }
+}
+
+FilterView.propTypes = {
+  freq: React.PropTypes.number,
+  res: React.PropTypes.number,
+  attack: React.PropTypes.number,
+  decay: React.PropTypes.number,
+  sustain: React.PropTypes.number,
+  release: React.PropTypes.number
 }
 
 export default connect()(FilterView)

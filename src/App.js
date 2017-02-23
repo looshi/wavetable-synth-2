@@ -62,8 +62,6 @@ class App extends React.Component {
                     fileA={oscillator.fileA}
                     fileB={oscillator.fileB}
                     algorithm={oscillator.algorithm}
-                    audioBufferA={oscillator.audioBufferA}
-                    audioBufferB={oscillator.audioBufferB}
                     channelDataA={oscillator.channelDataA}
                     channelDataB={oscillator.channelDataB}
                     computedChannelData={oscillator.computedChannelData}
@@ -95,8 +93,8 @@ class App extends React.Component {
                 sustain={this.props.Amp.sustain}
                 release={this.props.Amp.release} />
               <EffectsView
-                amount={this.props.Effects.chorusAmount}
-                time={this.props.Effects.chorusTime}
+                chorusAmount={this.props.Effects.chorusAmount}
+                chorusTime={this.props.Effects.chorusTime}
                 glide={this.props.Effects.glide}
                 arpTempo={this.props.Effects.arpTempo}
                 arpIsOn={this.props.Effects.arpIsOn} />

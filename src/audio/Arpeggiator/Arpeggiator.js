@@ -24,8 +24,8 @@ export default class Arpeggiator {
     this.nextNoteTime = 0.0     // when the next note is due.
     this.noteResolution = 0     // 0 == 16th, 1 == 8th, 2 == quarter note
 
-    // This should be equal to the Amp Filter sustain ?
-    this.noteLength = 0.001      // length of 'beep' (in seconds)
+    // Amp attack + decay + sustain
+    this._noteLength = 1      // length of 'beep' (in seconds)
 
     this.last16thNoteDrawn = -1 // the last 'box' we drew on the screen
     this.notesInQueue = []      // the notes that have been put into the web audio,
@@ -71,11 +71,11 @@ export default class Arpeggiator {
     //   osc.frequency.value = 220.0
     // }
     // osc.start(time)
-    // osc.stop(time + this.noteLength)
+    // osc.stop(time + this._noteLength)
     this.filterEnvelopeOn(time)
-    this.filterEnvelopeOff(time + this.noteLength)
+    this.filterEnvelopeOff(time + this._noteLength)
     this.ampEnvelopeOn(time)
-    this.ampEnvelopeOff(time + this.noteLength)
+    this.ampEnvelopeOff(time + this._noteLength)
   }
 
   scheduler () {
@@ -83,6 +83,11 @@ export default class Arpeggiator {
       this.scheduleNote(this.current16thNote, this.nextNoteTime)
       this.nextNote()
     }
+  }
+
+  set noteLength (val) {
+    this._noteLength = (val / 6400)
+    console.log('note length', val, this._noteLength)
   }
 
   set isOn (val = false) {

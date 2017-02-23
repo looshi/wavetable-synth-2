@@ -15,7 +15,7 @@ class HorizontalSlider extends React.Component {
 
   handleChange (e) {
     const {id, name} = this.props
-    let action = Actions.sliderChanged(id, e.target.value, name)
+    let action = Actions.sliderChanged(id, Number(e.target.value), name)
     this.props.dispatch(action)
   }
 

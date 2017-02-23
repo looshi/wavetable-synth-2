@@ -31,7 +31,7 @@ class Presets extends React.Component {
       <div className='preset-list-container'>
         <Select
           className={'preset-list'}
-          value={Number(this.props.presetId)}
+          value={this.props.presetId}
           placeholder={'Select Preset'}
           clearable={false}
           searchable={false}
@@ -40,6 +40,9 @@ class Presets extends React.Component {
       </div>
     )
   }
+}
+Presets.propTypes = {
+  presetId: React.PropTypes.number
 }
 
 export default connect()(Presets)

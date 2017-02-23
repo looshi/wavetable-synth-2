@@ -12,7 +12,7 @@ class AmpView extends React.Component {
   onSliderChange (event) {
     const {id} = this.props
     const name = event.target.getAttribute('data-name')
-    const action = Actions.ampSliderChanged(id, event.target.value, name)
+    const action = Actions.ampSliderChanged(id, Number(event.target.value), name)
     this.props.dispatch(action)
   }
 
@@ -59,6 +59,13 @@ class AmpView extends React.Component {
       </div>
     )
   }
+}
+
+AmpView.propTypes = {
+  attack: React.PropTypes.number,
+  decay: React.PropTypes.number,
+  sustain: React.PropTypes.number,
+  release: React.PropTypes.number
 }
 
 export default connect()(AmpView)

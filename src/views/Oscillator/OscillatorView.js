@@ -103,7 +103,15 @@ class OscillatorView extends React.Component {
 OscillatorView.propTypes = {
   waveData: React.PropTypes.array,
   width: React.PropTypes.number,
-  height: React.PropTypes.number
+  height: React.PropTypes.number,
+  detune: React.PropTypes.number,
+  octave: React.PropTypes.number,
+  amount: React.PropTypes.number,
+  // channelDataA: React.PropTypes.array, ?
+  // channelDataB: React.PropTypes.array,
+  files: React.PropTypes.array,
+  fileA: React.PropTypes.string,
+  fileB: React.PropTypes.string,
 }
 OscillatorView.defaultProps = {
   waveData: [],

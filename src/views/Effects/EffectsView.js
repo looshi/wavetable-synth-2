@@ -13,17 +13,18 @@ class EffectsView extends React.Component {
   onChorusChange (event) {
     const {id} = this.props
     const name = event.target.getAttribute('data-name')
-    const action = Actions.chorusSliderChanged(id, event.target.value, name)
+    const value = Number(event.target.value)
+    const action = Actions.chorusSliderChanged(id, value, name)
     this.props.dispatch(action)
   }
 
   onGlideChange (event) {
-    const action = Actions.glideChanged(event.target.value)
+    const action = Actions.glideChanged(Number(event.target.value))
     this.props.dispatch(action)
   }
 
   onArpTempoChange (event) {
-    let action = Actions.arpTempoChanged(event.target.value)
+    let action = Actions.arpTempoChanged(Number(event.target.value))
     this.props.dispatch(action)
   }
 
@@ -41,7 +42,7 @@ class EffectsView extends React.Component {
               max={100}
               step={1}
               onChange={this.onChorusChange.bind(this)}
-              value={this.props.amount} />
+              value={this.props.chorusAmount} />
             <VerticalSlider
               className='short'
               name='chorus-time'
@@ -50,7 +51,7 @@ class EffectsView extends React.Component {
               max={100}
               step={1}
               onChange={this.onChorusChange.bind(this)}
-              value={this.props.time} />
+              value={this.props.chorusTime} />
             <VerticalSlider
               className='short'
               name='glide'
@@ -76,6 +77,14 @@ class EffectsView extends React.Component {
       </div>
     )
   }
+}
+
+EffectsView.propTypes = {
+  arpTempo: React.PropTypes.number,
+  arpIsOn: React.PropTypes.bool,
+  glide: React.PropTypes.number,
+  chorusTime: React.PropTypes.number,
+  chorusAmount: React.PropTypes.number
 }
 
 export default connect()(EffectsView)

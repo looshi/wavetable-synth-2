@@ -201,17 +201,32 @@ class Synth extends React.Component {
       this.filterEnvelopeOff(this.props.audioContext.currentTime)
     })
 
+    // Chorus properties.
     observeStore(store, 'Effects.chorusAmount', (amount) => {
       this.chorus.amount = amount
     })
     observeStore(store, 'Effects.chorusTime', (time) => {
       this.chorus.time = time
     })
+
+    //  Arpeggiator properties.
     observeStore(store, 'Effects.arpIsOn', (isOn) => {
       this.Arpeggiator.isOn = isOn
     })
     observeStore(store, 'Effects.arpTempo', (tempo) => {
       this.Arpeggiator.tempo = tempo
+    })
+    observeStore(store, 'Amp.decay', (decay) => {
+      let {attack, sustain} = this.props.Amp
+      this.Arpeggiator.noteLength =  attack + decay + sustain
+    })
+    observeStore(store, 'Amp.attack', (attack) => {
+      let {decay, sustain} = this.props.Amp
+      this.Arpeggiator.noteLength = attack + decay + sustain
+    })
+    observeStore(store, 'Amp.sustain', (sustain) => {
+      let {attack, decay} = this.props.Amp
+      this.Arpeggiator.noteLength = attack + decay + sustain
     })
   }
 
