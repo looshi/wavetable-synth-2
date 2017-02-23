@@ -65,7 +65,9 @@ function initializeState (URL) {
     id: 'effects',
     chorusAmount: URL.ca || 50,
     chorusTime: URL.ct || 50,
-    glide: URL.g || 20
+    glide: URL.g || 20,
+    arpIsOn: URL.ao || true,
+    arpTempo: URL.at || 100
   }
 
   // Keyboard, notes are represented as object keys, { 24: 'on', 25: 'off' ... }.
@@ -259,6 +261,14 @@ function EffectsReducer (state, action) {
     case 'GLIDE_CHANGED':
       state.glide = action.value
       updateURL('g', action.value)
+      return Object.assign({}, state)
+    case 'ARP_TEMPO_CHANGED':
+      state.arpTempo = action.value
+      updateURL('at', action.value)
+      return Object.assign({}, state)
+    case 'ARP_IS_ON':
+      state.arpIsOn = action.value
+      updateURL('ao', action.value)
       return Object.assign({}, state)
     default:
       return state

@@ -21,6 +21,19 @@ class ChorusView extends React.Component {
     this.props.dispatch(action)
   }
 
+  onArpTempoChange (event) {
+    let action
+    if (event.target.value === 0) {
+      action = Actions.arpIsOn(false)
+      this.props.dispatch(action)
+    } else {
+      action = Actions.arpIsOn(true)
+      this.props.dispatch(action)
+      action = Actions.arpTempoChanged(event.target.value)
+      this.props.dispatch(action)
+    }
+  }
+
   render () {
     return (
       <div className='module'>
@@ -54,6 +67,15 @@ class ChorusView extends React.Component {
               step={1}
               onChange={this.onGlideChange.bind(this)}
               value={this.props.glide} />
+            <VerticalSlider
+              className='short'
+              name='arpTempo'
+              label='arp tempo'
+              min={0}
+              max={160}
+              step={1}
+              onChange={this.onArpTempoChange.bind(this)}
+              value={this.props.arpTempo} />
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@ class WaveLine extends React.Component {
       this.hasInitialized = true
       return true
     }
-    if (!nextProps.channelData[17]) {
+    if (!nextProps.channelData[17] && nextProps.channelData[17] !== 0) {
       return false
     }
     // Check every 100th sample ( about 6 times ) to see if the data has changed.

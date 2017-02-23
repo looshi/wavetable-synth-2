@@ -21,7 +21,8 @@ module.exports = function () {
         {test: /\.js/, loaders: ['babel-loader'], exclude: /node_modules/},
         {test: /\.css$/, loaders: ['style-loader', 'css-loader']},
         {test: /\.scss$/, loaders: ['style-loader', 'css-loader', 'sass-loader']},
-        {test: /\.png/, loaders: ['file-loader']}
+        {test: /\.png/, loaders: ['file-loader']},
+        {test: /\.worker\.js$/, loaders: ['worker-loader', 'babel-loader']}
       ]
     }
   }

@@ -45,6 +45,7 @@
     "style-loader": "^0.13.1",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.2.0",
-    "webpack-validator": "2.3.0"
+    "webpack-validator": "2.3.0",
+    "worker-loader": "^0.7.1"
   }
 }

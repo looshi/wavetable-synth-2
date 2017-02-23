@@ -45,7 +45,7 @@ Actions.sliderChanged = function sliderChanged (id, value, name) {
   }
 }
 
-Actions.glideChanged = function oscGlideChanged(value) {
+Actions.glideChanged = function oscGlideChanged (value) {
   return { type: 'GLIDE_CHANGED', value }
 }
 
@@ -59,9 +59,16 @@ Actions.ampSliderChanged = function ampSliderChanged (id, value, name) {
   return { type: 'AMP_SLIDER_CHANGED', id, value, name }
 }
 
+// Effects
 // A Chorus value has changed.
 Actions.chorusSliderChanged = function chorusSliderChanged (id, value, name) {
   return { type: 'CHORUS_SLIDER_CHANGED', id, value, name }
+}
+Actions.arpTempoChanged = function arpTempoChanged (value) {
+  return { type: 'ARP_TEMPO_CHANGED', value }
+}
+Actions.arpIsOn = function arpIsOn (value) {
+  return { type: 'ARP_IS_ON', value }
 }
 
 // LFO shape changed.

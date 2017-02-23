@@ -9,6 +9,7 @@ import {connect} from 'react-redux'
 import Oscillator from './Oscillator.js'
 import Chorus from './Chorus.js'
 import LFO from './LFO.js'
+import Arpeggiator from './Arpeggiator/Arpeggiator.js'
 import observeStore from '../data/ObserveStore'
 import {limit} from '../helpers/helpers.js'
 
@@ -45,6 +46,16 @@ class Synth extends React.Component {
     this.chorus.amount = this.props.Effects.chorusAmount
     this.chorus.time = this.props.Effects.chorusTime
 
+    // Arpeggiator
+    let options = {
+      audioContext,
+      filterEnvelopeOn: this.filterEnvelopeOn.bind(this),
+      filterEnvelopeOff: this.filterEnvelopeOff.bind(this),
+      ampEnvelopeOn: this.ampEnvelopeOn.bind(this),
+      ampEnvelopeOff: this.ampEnvelopeOff.bind(this)
+    }
+    this.Arpeggiator = new Arpeggiator(options)
+
     // Connections
     this.oscillatorsBus.connect(this.biquadFilter)
     this.biquadFilter.connect(this.postFilter)
@@ -56,11 +67,11 @@ class Synth extends React.Component {
     this.vcaGain.connect(this.masterGain)
     this.masterGain.connect(audioContext.destination)
 
-    this.startListeners(eventEmitter, props.store)
-
     // LFOs
     this.LFOs = []
     this.initLFOs(this.props)
+
+    this.startListeners(eventEmitter, props.store)
   }
 
   initOscillators (props) {
@@ -182,12 +193,12 @@ class Synth extends React.Component {
   startListeners (eventEmitter, store) {
     // Keyboard note on / off events.
     eventEmitter.on('NOTE_ON', () => {
-      this.ampEnvelopeOn()
-      this.filterEnvelopeOn()
+      this.ampEnvelopeOn(this.props.audioContext.currentTime)
+      this.filterEnvelopeOn(this.props.audioContext.currentTime)
     })
     eventEmitter.on('NOTE_OFF', () => {
-      this.ampEnvelopeOff()
-      this.filterEnvelopeOff()
+      this.ampEnvelopeOff(this.props.audioContext.currentTime)
+      this.filterEnvelopeOff(this.props.audioContext.currentTime)
     })
 
     observeStore(store, 'Effects.chorusAmount', (amount) => {
@@ -196,10 +207,15 @@ class Synth extends React.Component {
     observeStore(store, 'Effects.chorusTime', (time) => {
       this.chorus.time = time
     })
+    observeStore(store, 'Effects.arpIsOn', (isOn) => {
+      this.Arpeggiator.isOn = isOn
+    })
+    observeStore(store, 'Effects.arpTempo', (tempo) => {
+      this.Arpeggiator.tempo = tempo
+    })
   }
 
-  filterEnvelopeOn () {
-    let now = this.props.audioContext.currentTime
+  filterEnvelopeOn (now) {
     let {frequency} = this.biquadFilter
     let {attack, decay, sustain, freq} = this.props.Filter
 
@@ -209,33 +225,29 @@ class Synth extends React.Component {
     sustain = limit(60, 20000, sustain * 100)
     freq = limit(60, 20000, freq * 100)
 
-    frequency.cancelScheduledValues(0)
+    frequency.cancelScheduledValues(now)
     frequency.setValueAtTime(60, now)
     frequency.linearRampToValueAtTime(freq, now + attack)
     frequency.linearRampToValueAtTime(sustain, now + attack + decay)
   }
 
-  filterEnvelopeOff () {
-    this.biquadFilter.frequency.cancelScheduledValues(0)
-    let now = this.props.audioContext.currentTime
-    let {frequency} = this.biquadFilter
+  filterEnvelopeOff (now) {
     let {release} = this.props.Filter
-    release = release / 50
-    frequency.cancelScheduledValues(0)
-    frequency.setValueAtTime(frequency.value, now)
-    frequency.linearRampToValueAtTime(60, now + release)
+    release = limit(0.02, 1, release / 50)
+    this.biquadFilter.frequency.cancelScheduledValues(now)
+    this.biquadFilter.frequency.setValueAtTime(this.biquadFilter.frequency.value, now)
+    this.biquadFilter.frequency.linearRampToValueAtTime(60, now + release)
   }
 
-  ampEnvelopeOn () {
-    let now = this.props.audioContext.currentTime
+  ampEnvelopeOn (now) {
     let {gain} = this.vcaGain
     let {attack, decay, sustain} = this.props.Amp
     attack = limit(0.001, 1, attack / 100)
     decay = decay / 100
     sustain = sustain / 100
-    // // Prevent clicking by fading out very fast, then fading back up.
+    // Prevent clicking by fading out very fast, then fading back up.
     let clickOffset = 0.001
-    gain.cancelScheduledValues(0)
+    gain.cancelScheduledValues(now)
     gain.setValueAtTime(gain.value, now)
     gain.linearRampToValueAtTime(0, now + clickOffset)
     clickOffset += 0.001
@@ -244,12 +256,11 @@ class Synth extends React.Component {
     gain.linearRampToValueAtTime(sustain, now + attack + decay + clickOffset)
   }
 
-  ampEnvelopeOff () {
-    let now = this.props.audioContext.currentTime
+  ampEnvelopeOff (now) {
     let {gain} = this.vcaGain
     let {release} = this.props.Amp
-    release = limit(0.001, 1, release / 100)
-    gain.cancelScheduledValues(0)
+    release = limit(0.02, 1, release / 100)
+    gain.cancelScheduledValues(now)
     gain.setValueAtTime(gain.value, now)
     gain.linearRampToValueAtTime(0, now + release)
   }
