@@ -81,7 +81,10 @@ export default class Oscillator {
     this.wavSource.detune.cancelScheduledValues(0)
 
     // Randomize glide slightly so it's different for each osc.
-    let glideTime = this._glide + Math.random() * 0.02
+    let glideTime = 0
+    if (this._glide > 0.1) {
+      glideTime = this._glide + Math.random() * 0.02
+    }
 
     this.wavSource.detune.linearRampToValueAtTime(next, now + glideTime)
   }
