@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import queryString from 'query-string'
+import {limit} from '../helpers/helpers.js'
 
 let Master = {}
 let Filter = {}
@@ -311,13 +312,13 @@ function computeWaveform (channelDataA, channelDataB, algorithm) {
 
   return channelDataB.map(function (data, index) {
     if (algorithm === 'p') {
-      return channelDataA[index] + channelDataB[index]
+      return limit(-1, 1, channelDataA[index] + channelDataB[index])
     } else if (algorithm === 'm') {
-      return channelDataA[index] - channelDataB[index]
+      return limit(-1, 1, channelDataA[index] - channelDataB[index])
     } else if (algorithm === 'd') {
-      return channelDataA[index] / channelDataB[index]
+      return limit(-1, 1, channelDataA[index] / (channelDataB[index] * 2))
     } else if (algorithm === 'x') {
-      return channelDataA[index] * channelDataB[index]
+      return limit(-1, 1, channelDataA[index] * channelDataB[index])
     }
   })
 }

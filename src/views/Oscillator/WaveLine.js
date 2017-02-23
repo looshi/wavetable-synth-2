@@ -14,8 +14,6 @@ class WaveLine extends React.Component {
   }
 
   shouldComponentUpdate (nextProps, nextState) {
-    // Don't redraw unless the wave has changed.  Assume the 17th amplitude
-    // value is different for all our wavs vs. comparing the whole array.
     if (!this.hasInitialized) {
       this.hasInitialized = true
       return true
@@ -23,7 +21,14 @@ class WaveLine extends React.Component {
     if (!nextProps.channelData[17]) {
       return false
     }
-    return nextProps.channelData[17] !== this.props.channelData[17]
+    // Check every 100th sample ( about 6 times ) to see if the data has changed.
+    let shouldUpdate = true
+    for (var i = 0; i < nextProps.channelData; i += 100) {
+      if (nextProps.channelData[i] !== this.props.channelData[i]) {
+        shouldUpdate = false
+      }
+    }
+    return shouldUpdate
   }
 
   componentDidUpdate () {
