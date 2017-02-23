@@ -98,7 +98,8 @@ class App extends React.Component {
                 amount={this.props.Effects.chorusAmount}
                 time={this.props.Effects.chorusTime}
                 glide={this.props.Effects.glide}
-                arpTempo={this.props.Effects.arpTempo} />
+                arpTempo={this.props.Effects.arpTempo}
+                arpIsOn={this.props.Effects.arpIsOn} />
             </div>
             <div>
               {

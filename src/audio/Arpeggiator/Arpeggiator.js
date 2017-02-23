@@ -23,7 +23,9 @@ export default class Arpeggiator {
                                 // with next interval (in case the timer is late)
     this.nextNoteTime = 0.0     // when the next note is due.
     this.noteResolution = 0     // 0 == 16th, 1 == 8th, 2 == quarter note
-    this.noteLength = 1      // length of 'beep' (in seconds)
+
+    // This should be equal to the Amp Filter sustain ?
+    this.noteLength = 0.001      // length of 'beep' (in seconds)
 
     this.last16thNoteDrawn = -1 // the last 'box' we drew on the screen
     this.notesInQueue = []      // the notes that have been put into the web audio,
@@ -34,8 +36,6 @@ export default class Arpeggiator {
     this.timerWorker.onmessage = (e) => {
       if (e.data === 'tick') {
         this.scheduler()
-      } else {
-        console.log('message: ' + e.data)
       }
     }
     this.timerWorker.postMessage({ 'interval': this.lookahead })

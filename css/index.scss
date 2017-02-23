@@ -94,10 +94,15 @@ h1 {
   height: 34px;
   display: inline-block;
   color: $blue;
-  font-size: 20px;
+  font-size: 16px;
+  line-height: 34px;
   vertical-align: middle;
-  &:hover {
+  text-align: center;
+
+  &:hover, &.selected {
     cursor: pointer;
+    color: #fff;
+    background-color: $blue;
   }
   &.algorithm-button {
     margin-left: 23px;
@@ -238,5 +243,20 @@ h1 {
   }
   .Select-arrow-zone {
     padding-right: 15px;
+  }
+}
+
+/* Arpeggiator Buttons */
+.arpeggiator-switch {
+  width: 34px;
+  display: inline-block;
+  margin-left: 32px;
+  vertical-align: bottom;
+  .arp-switch-label {
+    padding-bottom: 28px;
+    text-align: center;
+  }
+  .toggle-button:first-child{
+    margin-bottom: 12px;
   }
 }

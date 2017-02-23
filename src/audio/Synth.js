@@ -217,52 +217,47 @@ class Synth extends React.Component {
 
   filterEnvelopeOn (now) {
     let {frequency} = this.biquadFilter
+    frequency.value = 500
     let {attack, decay, sustain, freq} = this.props.Filter
-
     attack = limit(0.001, 1, attack / 50)
-    decay = decay / 50
+    decay = limit(0.001, 1, decay / 50)
     sustain = (sustain / 100) * freq // Sustain is a percentage of freq.
     sustain = limit(60, 20000, sustain * 100)
     freq = limit(60, 20000, freq * 100)
 
     frequency.cancelScheduledValues(now)
-    frequency.setValueAtTime(60, now)
-    frequency.linearRampToValueAtTime(freq, now + attack)
-    frequency.linearRampToValueAtTime(sustain, now + attack + decay)
+    frequency.setTargetAtTime(freq, now, attack)
+    frequency.setTargetAtTime(sustain, now + attack, decay)
   }
 
   filterEnvelopeOff (now) {
     let {release} = this.props.Filter
+    let {frequency} = this.biquadFilter
     release = limit(0.02, 1, release / 50)
-    this.biquadFilter.frequency.cancelScheduledValues(now)
-    this.biquadFilter.frequency.setValueAtTime(this.biquadFilter.frequency.value, now)
-    this.biquadFilter.frequency.linearRampToValueAtTime(60, now + release)
+
+    frequency.cancelScheduledValues(now)
+    frequency.setTargetAtTime(60, now, release)
   }
 
   ampEnvelopeOn (now) {
     let {gain} = this.vcaGain
     let {attack, decay, sustain} = this.props.Amp
-    attack = limit(0.001, 1, attack / 100)
-    decay = decay / 100
-    sustain = sustain / 100
-    // Prevent clicking by fading out very fast, then fading back up.
-    let clickOffset = 0.001
+    attack = limit(0.003, 1, attack / 100)
+    decay = limit(0.001, 1, decay / 100)
+    sustain = limit(0.001, 1, sustain / 100)
+
     gain.cancelScheduledValues(now)
-    gain.setValueAtTime(gain.value, now)
-    gain.linearRampToValueAtTime(0, now + clickOffset)
-    clickOffset += 0.001
-    gain.setValueAtTime(0, now + clickOffset)
-    gain.linearRampToValueAtTime(1, now + attack + clickOffset)
-    gain.linearRampToValueAtTime(sustain, now + attack + decay + clickOffset)
+    gain.setTargetAtTime(1, now, attack)
+    gain.setTargetAtTime(sustain, now + attack, decay)
   }
 
   ampEnvelopeOff (now) {
     let {gain} = this.vcaGain
     let {release} = this.props.Amp
     release = limit(0.02, 1, release / 100)
+
     gain.cancelScheduledValues(now)
-    gain.setValueAtTime(gain.value, now)
-    gain.linearRampToValueAtTime(0, now + release)
+    gain.setTargetAtTime(0, now, release)
   }
 
   componentDidUpdate (prevProps, prevState) {

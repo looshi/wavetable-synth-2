@@ -66,7 +66,7 @@ function initializeState (URL) {
     chorusAmount: URL.ca || 50,
     chorusTime: URL.ct || 50,
     glide: URL.g || 20,
-    arpIsOn: URL.ao || true,
+    arpIsOn: URL.ao === 1,   // Arp on if 1 (true), else arp is off (false).
     arpTempo: URL.at || 100
   }
 
@@ -268,7 +268,8 @@ function EffectsReducer (state, action) {
       return Object.assign({}, state)
     case 'ARP_IS_ON':
       state.arpIsOn = action.value
-      updateURL('ao', action.value)
+      let urlValue = state.arpIsOn ? 1 : 0
+      updateURL('ao', urlValue)
       return Object.assign({}, state)
     default:
       return state

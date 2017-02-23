@@ -6,8 +6,9 @@ import React from 'react'
 import {connect} from 'react-redux'
 import VerticalSlider from '../Components/VerticalSlider.js'
 import Actions from '../../data/Actions.js'
+import ArpeggiatorSwitch from './ArpeggiatorSwitch'
 
-class ChorusView extends React.Component {
+class EffectsView extends React.Component {
 
   onChorusChange (event) {
     const {id} = this.props
@@ -22,16 +23,8 @@ class ChorusView extends React.Component {
   }
 
   onArpTempoChange (event) {
-    let action
-    if (event.target.value === 0) {
-      action = Actions.arpIsOn(false)
-      this.props.dispatch(action)
-    } else {
-      action = Actions.arpIsOn(true)
-      this.props.dispatch(action)
-      action = Actions.arpTempoChanged(event.target.value)
-      this.props.dispatch(action)
-    }
+    let action = Actions.arpTempoChanged(event.target.value)
+    this.props.dispatch(action)
   }
 
   render () {
@@ -67,6 +60,8 @@ class ChorusView extends React.Component {
               step={1}
               onChange={this.onGlideChange.bind(this)}
               value={this.props.glide} />
+            <ArpeggiatorSwitch
+              arpIsOn={this.props.arpIsOn} />
             <VerticalSlider
               className='short'
               name='arpTempo'
@@ -83,4 +78,4 @@ class ChorusView extends React.Component {
   }
 }
 
-export default connect()(ChorusView)
+export default connect()(EffectsView)
