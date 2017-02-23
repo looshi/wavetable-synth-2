@@ -3,11 +3,14 @@ WaveLine
 Displays a waveform graphic.
 */
 import React from 'react'
+import {lerp} from '../../helpers/helpers.js'
 
 class WaveLine extends React.Component {
   constructor (props) {
     super(props)
     this.hasInitialized = false
+    this.newData = []
+    this.oldData = []
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -24,12 +27,9 @@ class WaveLine extends React.Component {
   }
 
   componentDidUpdate () {
-    this.drawWaveForm()
-  }
-
-  drawWaveForm () {
     let {channelData, width, height} = this.props
-    let sampledWaveData = []
+    this.oldData = this.newData
+    this.newData = []
     let step = 1
 
     // Add some margins and padding.
@@ -58,27 +58,47 @@ class WaveLine extends React.Component {
       pixelValue = Math.floor((channelData[Math.ceil(index)] * -padHeight / 2) + padHeight / 2)
       pixelValue = clamp(pixelValue)
       index = index + step
-      sampledWaveData.push(pixelValue)
+      this.newData.push(pixelValue)
     }
 
     const context = this.refs.canvas.getContext('2d')
     context.clearRect(0, 0, width, height)
-    context.beginPath()
+    this.drawWave(context, width, height, marginLeft, marginTop)
+  }
+
+  drawWave (context, width, height, marginLeft, marginTop) {
+    let time = 0
+    let yValue = 0
+    let self = this
     context.lineWidth = 3
     context.strokeStyle = this.props.color
 
-    for (var i = 0; i < sampledWaveData.length; i++) {
-      let x = i + marginLeft
-      if (sampledWaveData[i - 1]) {
-        context.moveTo(x - 1, sampledWaveData[i - 1] + marginTop)
-      }
+    function step () {
+      if (time < 1) {
+        context.clearRect(0, 0, width, height)
+        context.beginPath()
 
-      if (sampledWaveData[i + 1]) {
-        context.lineTo(x, sampledWaveData[i + 1] + marginTop)
+        for (var i = 0; i < self.newData.length; i++) {
+          let x = i + marginLeft
+          if (self.newData[i - 1]) {
+            yValue = lerp(self.oldData[i - 1], self.newData[i - 1], time)
+            context.moveTo(x - 1, yValue + marginTop)
+          }
+
+          if (self.newData[i + 1]) {
+            yValue = lerp(self.oldData[i + 1], self.newData[i + 1], time)
+            context.lineTo(x, yValue + marginTop)
+          }
+        }
+        context.stroke()
+        context.closePath()
+        time += 0.1
+
+        window.requestAnimationFrame(step)
       }
     }
 
-    context.stroke()
+    window.requestAnimationFrame(step)
   }
 
   render () {
@@ -98,7 +118,6 @@ class WaveLine extends React.Component {
   }
 }
 WaveLine.propTypes = {
-  // waveData: React.PropTypes.ArrayBuffer,
   width: React.PropTypes.number,
   height: React.PropTypes.number
 }
