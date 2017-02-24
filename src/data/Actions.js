@@ -85,13 +85,20 @@ Actions.lfoRateChanged = function sliderChanged (id, rate, destination) {
   return { type: 'LFO_RATE_CHANGED', id, rate, destination }
 }
 
-// Keyboard note on.
+// Keyboard note on.  Oscillators respond to these and play notes.
 Actions.noteOn = function noteOn (note) {
   return { type: 'NOTE_ON', note }
 }
 // Keyboard note off.
 Actions.noteOff = function noteOff (note) {
   return { type: 'NOTE_OFF', note }
+}
+// Highlight a keyboard note.  Oscillators do not respond to these actions.
+Actions.keyboardNoteShow = function noteOff (note) {
+  return { type: 'KEYBOARD_NOTE_SHOW', note }
+}
+Actions.keyboardNoteHide = function noteOff (note) {
+  return { type: 'KEYBOARD_NOTE_HIDE', note }
 }
 
 // Re-initializes the entire state based on the current url hash.

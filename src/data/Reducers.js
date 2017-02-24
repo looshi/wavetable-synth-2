@@ -189,6 +189,12 @@ function KeyboardReducer (state, action) {
   state = state || initialState.Keyboard
 
   switch (action.type) {
+    case 'KEYBOARD_NOTE_SHOW':
+      state[action.note] = 'on'
+      return Object.assign({}, state)
+    case 'KEYBOARD_NOTE_HIDE':
+      state[action.note] = 'off'
+      return Object.assign({}, state)
     case 'NOTE_ON':
       state[action.note] = 'on'
       return Object.assign({}, state)

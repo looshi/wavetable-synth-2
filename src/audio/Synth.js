@@ -12,6 +12,7 @@ import LFO from './LFO.js'
 import Arpeggiator from './Arpeggiator/Arpeggiator.js'
 import observeStore from '../data/ObserveStore'
 import {limit} from '../helpers/helpers.js'
+import Actions from '../data/Actions.js'
 
 class Synth extends React.Component {
   constructor (props, context) {
@@ -190,12 +191,12 @@ class Synth extends React.Component {
     }
   }
 
-  // Stores the notes played in the last two seconds from the last note played.
+  // Stores the notes played in the last few seconds from the last note played.
   // The notes will played in the order recieved by the arpeggiator.
   // Modeled after how the Akai Ax60 collects notes for its arpeggiator.
   collectArpNotes (noteNumber) {
     this.ArpNotes = this.ArpNotes.filter((note) => {
-      return note.time > Date.now() - 2000
+      return note.time > Date.now() - 4000
     })
     this.ArpNotes.push({noteNumber, time: Date.now()})
 
@@ -243,21 +244,23 @@ class Synth extends React.Component {
     })
     // Arpeggiator events.  These notes are scheduled in the near future.
     eventEmitter.on('ARP_NOTE_ON', (time, noteNumber) => {
+      this.props.dispatch(Actions.keyboardNoteShow(noteNumber))
       this.ampEnvelopeOn(time)
       this.filterEnvelopeOn(time)
       this.oscillators.map((osc) => {
         osc.scheduleNote(time, noteNumber)
       })
     })
-    eventEmitter.on('ARP_NOTE_OFF', (time) => {
+    eventEmitter.on('ARP_NOTE_OFF', (time, noteNumber) => {
+      setTimeout(() => {
+        this.props.dispatch(Actions.keyboardNoteHide(noteNumber))
+      }, 50)
       this.ampEnvelopeOff(time)
       this.filterEnvelopeOff(time)
     })
     // Collects the recent notes played when the ARP is ON to form a sequence.
     eventEmitter.on('ARP_COLLECT_NOTE', (noteNumber) => {
-      if (this.Arpeggiator.isOn) {
-        this.collectArpNotes(noteNumber)
-      }
+      this.collectArpNotes(noteNumber)
     })
   }
 
