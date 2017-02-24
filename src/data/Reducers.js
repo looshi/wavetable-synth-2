@@ -382,7 +382,10 @@ function OscillatorsReducer (state, action) {
           } else if (action.side === 'B') {
             osc.channelDataB = action.channelData
           }
-          osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm)
+          // When both files have loaded, compute the combined waveform.
+          if (osc.channelDataA.length && osc.channelDataB.length) {
+            osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm)
+          }
         }
         return osc
       })

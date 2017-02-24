@@ -111,7 +111,7 @@ OscillatorView.propTypes = {
   // channelDataB: React.PropTypes.array,
   files: React.PropTypes.array,
   fileA: React.PropTypes.string,
-  fileB: React.PropTypes.string,
+  fileB: React.PropTypes.string
 }
 OscillatorView.defaultProps = {
   waveData: [],

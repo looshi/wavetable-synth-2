@@ -8,27 +8,27 @@ import {lerp} from '../../helpers/helpers.js'
 class WaveLine extends React.Component {
   constructor (props) {
     super(props)
-    this.hasInitialized = false
     this.newData = []
     this.oldData = []
+    for (var i = 0; i < 600; i++) {
+      this.newData[i] = 0
+    }
   }
 
   shouldComponentUpdate (nextProps, nextState) {
-    if (!this.hasInitialized) {
-      this.hasInitialized = true
-      return true
-    }
-    if (!nextProps.channelData[17] && nextProps.channelData[17] !== 0) {
+    // Don't render unless the wave has a number at this location ( it should ).
+    if (nextProps.channelData[17] !== 0 && !nextProps.channelData[17]) {
       return false
     }
-    // Check every 100th sample ( about 6 times ) to see if the data has changed.
-    let shouldUpdate = true
-    for (var i = 0; i < nextProps.channelData; i += 100) {
+
+    // Check every 100th sample ( about 6 times ) to see if the data changed.
+    let hasChanged = false
+    for (var i = 0; i < nextProps.channelData.length; i += 100) {
       if (nextProps.channelData[i] !== this.props.channelData[i]) {
-        shouldUpdate = false
+        hasChanged = true
       }
     }
-    return shouldUpdate
+    return hasChanged
   }
 
   componentDidUpdate () {
@@ -85,12 +85,12 @@ class WaveLine extends React.Component {
 
         for (var i = 0; i < self.newData.length; i++) {
           let x = i + marginLeft
-          if (self.newData[i - 1]) {
+          if (self.newData[i - 1] === 0 || self.newData[i - 1]) {
             yValue = lerp(self.oldData[i - 1], self.newData[i - 1], time)
             context.moveTo(x - 1, yValue + marginTop)
           }
 
-          if (self.newData[i + 1]) {
+          if (self.newData[i + 1] === 0 || self.newData[i + 1]) {
             yValue = lerp(self.oldData[i + 1], self.newData[i + 1], time)
             context.lineTo(x, yValue + marginTop)
           }

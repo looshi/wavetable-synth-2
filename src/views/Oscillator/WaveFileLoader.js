@@ -15,7 +15,6 @@ class WaveFileLoader extends React.Component {
     this.state = {
       options: []
     }
-    this.hasLoaded = false
   }
 
   componentWillUpdate (nextProps, nextState) {
@@ -27,9 +26,9 @@ class WaveFileLoader extends React.Component {
       this.setState({options})
     }
 
-    if (!this.hasLoaded || this.props.selectedFile !== nextProps.selectedFile) {
+    // Wait until the file list is ready.
+    if (this.props.files.length) {
       this.loadWaveFile(nextProps.selectedFile)
-      this.hasLoaded = true
     }
   }
 
