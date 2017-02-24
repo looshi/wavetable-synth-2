@@ -448,6 +448,9 @@ const appReducer = combineReducers({
 const Reducers = (state, action) => {
   if (action.type === 'LOAD_PRESET_URL_DATA') {
     let urlData = queryString.parse(window.location.hash)
+    // Persist the arpeggiator values.
+    urlData.at = state.Effects.arpTempo
+    urlData.ao = state.Effects.arpIsOn ? '1' : '0'
     state = initializeState(urlData)
     state.Master.presetId = action.presetId
   }
