@@ -96,6 +96,8 @@ class Keyboard extends React.Component {
     if (this.notesOn.length === 0) {
       this.props.eventEmitter.emit('NOTE_ON', noteNumber)
     }
+    // Notify the Arpeggiator if its on.
+    this.props.eventEmitter.emit('ARP_COLLECT_NOTE', noteNumber)
     this.notesOn.push(noteNumber)
   }
 

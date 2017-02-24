@@ -78,7 +78,7 @@ function initializeState (URL) {
     chorusAmount: urlVal(URL.ca, 50),
     chorusTime: urlVal(URL.ct, 50),
     glide: urlVal(URL.g, 20),
-    arpIsOn: URL.ao === 1,   // Boolean. 1 = on, 0 = off.
+    arpIsOn: URL.ao === '1',   // Boolean. 1 = on, 0 = off.
     arpTempo: urlVal(URL.at, 100)
   }
 

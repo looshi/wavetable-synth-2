@@ -49,6 +49,8 @@ class MidiInput extends React.Component {
     if (this.notesOn.length === 0) {
       this.props.eventEmitter.emit('NOTE_ON', noteNumber)
     }
+    // Collect the note for the arpeggiator.
+    this.props.eventEmitter.emit('ARP_COLLECT_NOTE', noteNumber)
     this.notesOn.push(noteNumber)
   }
 

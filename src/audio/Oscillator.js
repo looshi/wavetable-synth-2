@@ -68,25 +68,35 @@ export default class Oscillator {
     this._glide = val / 100
   }
 
-  updatePitch () {
+  scheduleNote (time, noteNumber) {
+    this._note = noteNumber
+    this.updatePitch(time)
+  }
+
+  updatePitch (now = this.audioContext.currentTime) {
     if (!this.wavSource || !this._note) return
-    let next = Number(this._detune) + this._note * 100 // Note value * 100 cents per note.
+    let next = this._detune + this._note * 100 // Note value * 100 cents per note.
     next += this._octave * 100 * 12 // 100 cents * 12 notes = 1 octave
     // Manually do some tuning :
     next = next - 200 // lower by two notes
     next = next - 3600 // lower by three octaves
-
     // Schedule glide based on the current glide amount.
-    let now = this.audioContext.currentTime
     this.wavSource.detune.cancelScheduledValues(0)
+
+    // Add some subtle drift to each osc.
+    next += Math.random() * 6
 
     // Randomize glide slightly so it's different for each osc.
     let glideTime = 0
-    if (this._glide > 0.1) {
-      glideTime = this._glide + Math.random() * 0.02
+    if (this._glide > 0.01) {
+      glideTime = this._glide + Math.random() * 0.001
     }
 
-    this.wavSource.detune.linearRampToValueAtTime(next, now + glideTime)
+    if (this._glide > 0) {
+      this.wavSource.detune.linearRampToValueAtTime(next, now + glideTime)
+    } else {
+      this.wavSource.detune.setValueAtTime(next, now)
+    }
   }
 
   set computedChannelData (data) {

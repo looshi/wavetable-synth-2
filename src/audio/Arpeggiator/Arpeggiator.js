@@ -8,12 +8,13 @@ import TimerWorker from './TimerWorker.worker.js'
 export default class Arpeggiator {
   constructor (options) {
     this.audioContext = options.audioContext
+    this.eventEmitter = options.eventEmitter
     this.filterEnvelopeOn = options.filterEnvelopeOn
     this.filterEnvelopeOff = options.filterEnvelopeOff
     this.ampEnvelopeOn = options.ampEnvelopeOn
     this.ampEnvelopeOff = options.ampEnvelopeOff
 
-    this.isPlaying = false
+    this._isOn = false
     this.startTime = 0           // The start time of the entire sequence.
     this.current16thNote        // What note is currently last scheduled?
     this.tempo = 80.0          // tempo (in beats per minute)
@@ -28,7 +29,7 @@ export default class Arpeggiator {
     this._noteLength = 1      // length of 'beep' (in seconds)
 
     this.last16thNoteDrawn = -1 // the last 'box' we drew on the screen
-    this.notesInQueue = []      // the notes that have been put into the web audio,
+    this._notes = []      // the notes that have been put into the web audio,
                                 // and may or may not have played yet. {note, time}
 
     // The Web Worker used to fire timer messages
@@ -48,34 +49,23 @@ export default class Arpeggiator {
     this.nextNoteTime += 0.25 * secondsPerBeat    // Add beat length to last beat time
 
     this.current16thNote++    // Advance the beat number, wrap to zero
-    if (this.current16thNote === 16) {
+    if (this.current16thNote > this._notes.length - 1) {
       this.current16thNote = 0
     }
   }
 
   scheduleNote (beatNumber, time) {
-    // push the note on the queue, even if we're not playing.
-    // this.notesInQueue.push({ note: beatNumber, time: time })
-
     if ((this.noteResolution === 1) && (beatNumber % 2)) return // we're not playing non-8th 16th notes
     if ((this.noteResolution === 2) && (beatNumber % 4)) return // we're not playing non-quarter 8th notes
 
-    // // create an oscillator
-    // var osc = this.audioContext.createOscillator()
-    // osc.connect(this.audioContext.destination)
-    // if (beatNumber % 16 === 0) {
-    //   osc.frequency.value = 880.0
-    // } else if (beatNumber % 4 === 0) {
-    //   osc.frequency.value = 440.0
-    // } else {
-    //   osc.frequency.value = 220.0
-    // }
-    // osc.start(time)
-    // osc.stop(time + this._noteLength)
-    this.filterEnvelopeOn(time)
-    this.filterEnvelopeOff(time + this._noteLength)
-    this.ampEnvelopeOn(time)
-    this.ampEnvelopeOff(time + this._noteLength)
+    let currentNote = null
+    if (this._notes.length) {
+      currentNote = this._notes[beatNumber]
+    }
+    if (currentNote) {
+      this.eventEmitter.emit('ARP_NOTE_ON', time, currentNote)
+      this.eventEmitter.emit('ARP_NOTE_OFF', time + this._noteLength, currentNote)
+    }
   }
 
   scheduler () {
@@ -85,21 +75,27 @@ export default class Arpeggiator {
     }
   }
 
+  set notes (val) {
+    this._notes = val
+  }
+
   set noteLength (val) {
-    this._noteLength = (val / 6400)
-    console.log('note length', val, this._noteLength)
+    this._noteLength = (val / 800)
   }
 
   set isOn (val = false) {
-    this.isPlaying = val
+    this._isOn = val
 
-    if (this.isPlaying) { // start playing
+    if (this._isOn) { // start playing
       this.current16thNote = 0
       this.nextNoteTime = this.audioContext.currentTime
       this.timerWorker.postMessage('start')
     } else {
       this.timerWorker.postMessage('stop')
     }
+  }
+  get isOn () {
+    return this._isOn
   }
 
 }

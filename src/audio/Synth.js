@@ -49,12 +49,12 @@ class Synth extends React.Component {
     // Arpeggiator
     let options = {
       audioContext,
-      filterEnvelopeOn: this.filterEnvelopeOn.bind(this),
-      filterEnvelopeOff: this.filterEnvelopeOff.bind(this),
+      eventEmitter: eventEmitter,
       ampEnvelopeOn: this.ampEnvelopeOn.bind(this),
       ampEnvelopeOff: this.ampEnvelopeOff.bind(this)
     }
     this.Arpeggiator = new Arpeggiator(options)
+    this.ArpNotes = []
 
     // Connections
     this.oscillatorsBus.connect(this.biquadFilter)
@@ -190,13 +190,26 @@ class Synth extends React.Component {
     }
   }
 
+  // Stores the notes played in the last two seconds from the last note played.
+  // The notes will played in the order recieved by the arpeggiator.
+  // Modeled after how the Akai Ax60 collects notes for its arpeggiator.
+  collectArpNotes (noteNumber) {
+    this.ArpNotes = this.ArpNotes.filter((note) => {
+      return note.time > Date.now() - 2000
+    })
+    this.ArpNotes.push({noteNumber, time: Date.now()})
+
+    let notes = this.ArpNotes.map((n) => n.noteNumber)
+    this.Arpeggiator.notes = notes
+  }
+
   startListeners (eventEmitter, store) {
-    // Keyboard note on / off events.
-    eventEmitter.on('NOTE_ON', () => {
+    // Keyboard note on / off events.  These should happen "now" = currentTime.
+    eventEmitter.on('NOTE_ON', (noteNumber) => {
       this.ampEnvelopeOn(this.props.audioContext.currentTime)
       this.filterEnvelopeOn(this.props.audioContext.currentTime)
     })
-    eventEmitter.on('NOTE_OFF', () => {
+    eventEmitter.on('NOTE_OFF', (noteNumber) => {
       this.ampEnvelopeOff(this.props.audioContext.currentTime)
       this.filterEnvelopeOff(this.props.audioContext.currentTime)
     })
@@ -218,7 +231,7 @@ class Synth extends React.Component {
     })
     observeStore(store, 'Amp.decay', (decay) => {
       let {attack, sustain} = this.props.Amp
-      this.Arpeggiator.noteLength =  attack + decay + sustain
+      this.Arpeggiator.noteLength = attack + decay + sustain
     })
     observeStore(store, 'Amp.attack', (attack) => {
       let {decay, sustain} = this.props.Amp
@@ -228,14 +241,32 @@ class Synth extends React.Component {
       let {attack, decay} = this.props.Amp
       this.Arpeggiator.noteLength = attack + decay + sustain
     })
+    // Arpeggiator events.  These notes are scheduled in the near future.
+    eventEmitter.on('ARP_NOTE_ON', (time, noteNumber) => {
+      this.ampEnvelopeOn(time)
+      this.filterEnvelopeOn(time)
+      this.oscillators.map((osc) => {
+        osc.scheduleNote(time, noteNumber)
+      })
+    })
+    eventEmitter.on('ARP_NOTE_OFF', (time) => {
+      this.ampEnvelopeOff(time)
+      this.filterEnvelopeOff(time)
+    })
+    // Collects the recent notes played when the ARP is ON to form a sequence.
+    eventEmitter.on('ARP_COLLECT_NOTE', (noteNumber) => {
+      if (this.Arpeggiator.isOn) {
+        this.collectArpNotes(noteNumber)
+      }
+    })
   }
 
   filterEnvelopeOn (now) {
     let {frequency} = this.biquadFilter
-    frequency.value = 500
+
     let {attack, decay, sustain, freq} = this.props.Filter
-    attack = limit(0.001, 1, attack / 50)
-    decay = limit(0.001, 1, decay / 50)
+    attack = limit(0.001, 1, attack / 100)
+    decay = limit(0.001, 1, decay / 100)
     sustain = (sustain / 100) * freq // Sustain is a percentage of freq.
     sustain = limit(60, 20000, sustain * 100)
     freq = limit(60, 20000, freq * 100)
