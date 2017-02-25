@@ -67,7 +67,7 @@ class EffectsView extends React.Component {
               className='short'
               name='arpTempo'
               label='arp tempo'
-              min={0}
+              min={10}
               max={160}
               step={1}
               onChange={this.onArpTempoChange.bind(this)}

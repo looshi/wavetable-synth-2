@@ -57,47 +57,19 @@ class App extends React.Component {
                 return (
                   <OscillatorView
                     key={oscillator.id}
-                    id={oscillator.id}
-                    name={oscillator.name}
-                    fileA={oscillator.fileA}
-                    fileB={oscillator.fileB}
-                    algorithm={oscillator.algorithm}
-                    channelDataA={oscillator.channelDataA}
-                    channelDataB={oscillator.channelDataB}
-                    computedChannelData={oscillator.computedChannelData}
-                    note={oscillator.note}
-                    detune={oscillator.detune}
-                    octave={oscillator.octave}
-                    amount={oscillator.amount}
-                    color={oscillator.color}
                     audioContext={audioContext}
-                    files={oscillator.waveFiles} />
+                    {...oscillator} />
                 )
               })
             }
 
             <div>
               <FilterView
-                id={this.props.Filter.id}
-                freq={this.props.Filter.freq}
-                res={this.props.Filter.res}
-                attack={this.props.Filter.attack}
-                decay={this.props.Filter.decay}
-                sustain={this.props.Filter.sustain}
-                release={this.props.Filter.release}
-                />
+                {...this.props.Filter} />
               <AmpView
-                id={this.props.Amp.id}
-                attack={this.props.Amp.attack}
-                decay={this.props.Amp.decay}
-                sustain={this.props.Amp.sustain}
-                release={this.props.Amp.release} />
+                {...this.props.Amp} />
               <EffectsView
-                chorusAmount={this.props.Effects.chorusAmount}
-                chorusTime={this.props.Effects.chorusTime}
-                glide={this.props.Effects.glide}
-                arpTempo={this.props.Effects.arpTempo}
-                arpIsOn={this.props.Effects.arpIsOn} />
+                {...this.props.Effects} />
             </div>
             <div>
               {
@@ -105,13 +77,7 @@ class App extends React.Component {
                   return (
                     <LFOView
                       key={LFO.id}
-                      id={LFO.id}
-                      name={LFO.name}
-                      shape={LFO.shape}
-                      amount={LFO.amount}
-                      rate={LFO.rate}
-                      destination={LFO.destination}
-                      destinations={LFO.destinations} />
+                      {...LFO} />
                   )
                 })
               }

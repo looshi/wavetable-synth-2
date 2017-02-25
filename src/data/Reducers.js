@@ -139,7 +139,7 @@ function initOscillator (URL, name, id, color) {
     octave: urlVal(URL[id + 'o'], 0),
     note: 0, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
     color,
-    waveFiles: OSC_WAV_FILES,
+    files: OSC_WAV_FILES,
     glide: URL.g || 20
   }
 }
@@ -357,8 +357,8 @@ function OscillatorsReducer (state, action) {
     case 'WAVE_FILE_LIST_LOADED':
       state = state.map(function (osc) {
         OSC_WAV_FILES = action.files
-        if (!osc.waveFiles.length) {
-          osc.waveFiles = [...action.files] // Only set this once per page load.
+        if (!osc.files.length) {
+          osc.files = [...action.files] // Only set this once per page load.
         }
         return osc
       })
