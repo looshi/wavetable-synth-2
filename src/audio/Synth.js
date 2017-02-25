@@ -24,6 +24,14 @@ class Synth extends React.Component {
     this.vcaGain = audioContext.createGain()
     this.vcaGain.gain.value = 0
 
+    // Limiter
+    this.limiter = audioContext.createDynamicsCompressor()
+    this.limiter.threshold.value = 0.0
+    this.limiter.knee.value = 0.0
+    this.limiter.ratio.value = 20.0
+    this.limiter.attack.value = 0.005
+    this.limiter.release.value = 0.050
+
     // Oscillators bus
     this.oscillatorsBus = audioContext.createGain()
     this.oscillatorsBus.gain.value = 1
@@ -66,7 +74,8 @@ class Synth extends React.Component {
     this.vcaGain.connect(this.chorus.inputRight)
     this.chorus.connect(this.masterGain)
     this.vcaGain.connect(this.masterGain)
-    this.masterGain.connect(audioContext.destination)
+    this.masterGain.connect(this.limiter)
+    this.limiter.connect(audioContext.destination)
 
     // LFOs
     this.LFOs = []
