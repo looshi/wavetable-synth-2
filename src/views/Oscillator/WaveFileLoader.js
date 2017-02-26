@@ -42,15 +42,27 @@ class WaveFileLoader extends React.Component {
     const {id, side, audioContext, dispatch} = this.props
     const filePath = baseUrl + fileName + '.wav'
 
-    axios.get(filePath, { responseType: 'arraybuffer' })
-      .then(function (response) {
-        // Extract the data to draw each waveform.
-        audioContext.decodeAudioData(response.data).then(function (buffer) {
-          const channelData = buffer.getChannelData(0)
-          let action = Actions.waveFileLoadCompleted(id, side, buffer, channelData)
-          dispatch(action)
+    if (fileName.toLowerCase().indexOf('noise') !== -1) {
+      // Generate some noise, don't bother to load and parse a file.
+      // The "noise.wav" is actually not noise, it's just another wavetable
+      // file renamed to "noise.wav" so it shows up as an option in the dropdown.
+      let channelData = new Float32Array(44100)
+      for (var i = 0; i < 44100; i++) {
+        channelData[i] = Math.random()
+      }
+      let action = Actions.waveFileLoadCompleted(id, side, channelData)
+      dispatch(action)
+    } else {
+      axios.get(filePath, { responseType: 'arraybuffer' })
+        .then(function (response) {
+          // Extract the data to draw each waveform.
+          audioContext.decodeAudioData(response.data).then(function (buffer) {
+            let channelData = buffer.getChannelData(0)
+            let action = Actions.waveFileLoadCompleted(id, side, channelData)
+            dispatch(action)
+          })
         })
-      })
+    }
   }
 
   render () {

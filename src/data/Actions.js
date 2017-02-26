@@ -16,12 +16,11 @@ Actions.waveFileLoadStarted = function waveFileLoadStarted (id, side, file) {
 }
 
 // An oscillator wave file has been loaded.
-Actions.waveFileLoadCompleted = function waveFileLoadCompleted (id, side, audioBuffer, channelData) {
+Actions.waveFileLoadCompleted = function waveFileLoadCompleted (id, side, channelData) {
   return {
     type: 'WAVE_FILE_LOAD_COMPLETED',
     id,
     side,           // This will be either 'A' or 'B'.
-    audioBuffer,    // The AudioBuffer object.
     channelData    // Compressed array of wave data for use in graphics.
   }
 }

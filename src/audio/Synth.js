@@ -2,12 +2,13 @@
 Synth
 Contains all the audio components which comprise the synth.
 Nodes are connected in this order :
-Oscillators -> Osc Bus -> Filter -> postFilter -> VCA -> Master
+Oscillators -> Osc Bus -> Distortion (subtle) -> Filter -> VCA -> Master
 */
 import React from 'react'
 import {connect} from 'react-redux'
 import Oscillator from './Oscillator.js'
 import Chorus from './Chorus.js'
+import Filter from './Filter.js'
 import LFO from './LFO.js'
 import Arpeggiator from './Arpeggiator/Arpeggiator.js'
 import observeStore from '../data/ObserveStore'
@@ -32,6 +33,11 @@ class Synth extends React.Component {
     this.limiter.attack.value = 0.005
     this.limiter.release.value = 0.050
 
+    // Distortion
+    this.distortion = audioContext.createWaveShaper()
+    this.distortion.curve = this.makeDistortionCurve()
+    this.distortion.oversample = '4x'
+
     // Oscillators bus
     this.oscillatorsBus = audioContext.createGain()
     this.oscillatorsBus.gain.value = 1
@@ -39,16 +45,7 @@ class Synth extends React.Component {
     this.initOscillators(this.props)
 
     // Filter
-    this.biquadFilter = audioContext.createBiquadFilter()
-    this.biquadFilter.type = 'lowpass'
-    this.biquadFilter.frequency.value = 0
-    this.biquadFilter.gain.value = 5000  // We can add a slider for this.
-
-    // The filter LFO targets this postFilter.
-    this.postFilter = audioContext.createBiquadFilter()
-    this.postFilter.type = 'lowpass'
-    this.postFilter.frequency.value = 10000
-    this.postFilter.gain.value = 5000
+    this.biquadFilter = new Filter(audioContext)
 
     // Chorus
     this.chorus = new Chorus(audioContext, props.store)
@@ -66,14 +63,15 @@ class Synth extends React.Component {
     this.ArpNotes = []
 
     // Connections
-    this.oscillatorsBus.connect(this.biquadFilter)
-    this.biquadFilter.connect(this.postFilter)
-    this.postFilter.connect(this.vcaGain)
+    this.oscillatorsBus.connect(this.distortion)
+    this.distortion.connect(this.biquadFilter.input)
+    this.biquadFilter.output.connect(this.vcaGain)
 
     this.vcaGain.connect(this.chorus.inputLeft)
     this.vcaGain.connect(this.chorus.inputRight)
     this.chorus.connect(this.masterGain)
     this.vcaGain.connect(this.masterGain)
+
     this.masterGain.connect(this.limiter)
     this.limiter.connect(audioContext.destination)
 
@@ -168,8 +166,10 @@ class Synth extends React.Component {
       lfo.connect(this.oscillatorsBus.gain, 0.04)
     }
     if (id === 'filter') {
-      lfo.connect(this.biquadFilter.detune, 50)
-      this.biquadFilter.connect(lfo.lfoInputAmount)
+      // Have to do this for each filter instance.
+      this.biquadFilter.filters.forEach((filter) => {
+        lfo.connect(filter.detune, 50, true)
+      })
     }
     if (id === 'oscAll') {
       this.oscillators.map((osc) => {
@@ -205,7 +205,7 @@ class Synth extends React.Component {
   // Modeled after how the Akai Ax60 collects notes for its arpeggiator.
   collectArpNotes (noteNumber) {
     this.ArpNotes = this.ArpNotes.filter((note) => {
-      return note.time > Date.now() - 4000
+      return note.time > Date.now() - 5000
     })
     this.ArpNotes.push({noteNumber, time: Date.now()})
 
@@ -274,8 +274,6 @@ class Synth extends React.Component {
   }
 
   filterEnvelopeOn (now) {
-    let {frequency} = this.biquadFilter
-
     let {attack, decay, sustain, freq} = this.props.Filter
     attack = limit(0.001, 1, attack / 100)
     decay = limit(0.001, 1, decay / 100)
@@ -283,18 +281,17 @@ class Synth extends React.Component {
     sustain = limit(60, 20000, sustain * 100)
     freq = limit(60, 20000, freq * 100)
 
-    frequency.cancelScheduledValues(now)
-    frequency.setTargetAtTime(freq, now, attack)
-    frequency.setTargetAtTime(sustain, now + attack, decay)
+    this.biquadFilter.cancelScheduledValues(now)
+    this.biquadFilter.setTargetAtTime(freq, now, attack)
+    this.biquadFilter.setTargetAtTime(sustain, now + attack, decay)
   }
 
   filterEnvelopeOff (now) {
     let {release} = this.props.Filter
-    let {frequency} = this.biquadFilter
     release = limit(0.02, 1, release / 50)
 
-    frequency.cancelScheduledValues(now)
-    frequency.setTargetAtTime(60, now, release)
+    this.biquadFilter.cancelScheduledValues(now)
+    this.biquadFilter.setTargetAtTime(60, now, release)
   }
 
   ampEnvelopeOn (now) {
@@ -323,11 +320,24 @@ class Synth extends React.Component {
     this.masterGain.gain.value = limit(0, 1, this.props.Master.volume / 100)
 
     // Filter Res ( freq is set in envelopOn event )
-    this.biquadFilter.Q.value = this.props.Filter.res / 3
+    this.biquadFilter.Q = this.props.Filter.res
   }
 
   render () {
     return null
+  }
+
+  // http://www.carbon111.com/waveshaping1.html
+  // f(x)=(arctan x)/pi
+  makeDistortionCurve (amount) {
+    let nSamples = 44100
+    let curve = new Float32Array(nSamples)
+    let x
+    for (var i = 0; i < nSamples; ++i) {
+      x = i * 2 / nSamples - 1
+      curve[i] = Math.atan(x) / (Math.PI / 2)
+    }
+    return curve
   }
 }
 
