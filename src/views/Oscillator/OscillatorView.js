@@ -109,7 +109,7 @@ OscillatorView.propTypes = {
   amount: React.PropTypes.number,
   // channelDataA: React.PropTypes.array, ?
   // channelDataB: React.PropTypes.array,
-  files: React.PropTypes.array,
+  files: React.PropTypes.object,
   fileA: React.PropTypes.string,
   fileB: React.PropTypes.string
 }

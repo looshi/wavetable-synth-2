@@ -16,19 +16,18 @@ import HorizontalSlider from './views/Components/HorizontalSlider.js'
 import Keyboard from './views/Keyboard/Keyboard.js'
 import EventEmitter from 'event-emitter'
 
+import WaveTableData from './data/WaveTableData.json'
+
 const audioContext = new AudioContext()
 const eventEmitter = new EventEmitter()
 
 class App extends React.Component {
   constructor (props) {
     super(props)
-    let wavsURL = 'http://davedave.us/wavetable-synth/wavefiles.php'
-    wavsURL += '?rand=' + Math.random().toString()  // Bust annoying long cache on my server.
-    axios.get(wavsURL, { responseType: 'json' })
-      .then(function (response) {
-        let action = Actions.waveFileListLoaded(response.data)
-        props.dispatch(action)
-      })
+    axios.get(WaveTableData).then(function (response) {
+      let action = Actions.waveFileListLoaded(response.data)
+      props.dispatch(action)
+    })
   }
 
   render () {

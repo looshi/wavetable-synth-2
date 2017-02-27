@@ -10,7 +10,7 @@ let Keyboard = {}
 
 // The list of waveforms should only be loaded once when the page loads,
 // not reloaded each time a preset changes.
-let OSC_WAV_FILES = []
+let OSC_WAV_FILES = {}
 
 // LFOs
 const LFODestinations = [
@@ -357,8 +357,10 @@ function OscillatorsReducer (state, action) {
     case 'WAVE_FILE_LIST_LOADED':
       state = state.map(function (osc) {
         OSC_WAV_FILES = action.files
-        if (!osc.files.length) {
-          osc.files = [...action.files] // Only set this once per page load.
+        let hasLoaded = Object.keys(osc.files).length > 0
+         // Only set the wavetable data once per page load.
+        if (!hasLoaded) {
+          osc.files = Object.assign({}, action.files)
         }
         return osc
       })
