@@ -88,18 +88,18 @@ class App extends React.Component {
             <Keyboard
               eventEmitter={eventEmitter}
               Keyboard={this.props.Keyboard} />
-
-            <Synth
-              store={this.props.store}
-              eventEmitter={eventEmitter}
-              audioContext={audioContext}
-              Master={this.props.Master}
-              Filter={this.props.Filter}
-              Effects={this.props.Effects}
-              Amp={this.props.Amp}
-              Oscillators={this.props.Oscillators}
-              LFOs={this.props.LFOs} />
           </footer>
+
+          <Synth
+            store={this.props.store}
+            eventEmitter={eventEmitter}
+            audioContext={audioContext}
+            Master={this.props.Master}
+            Filter={this.props.Filter}
+            Effects={this.props.Effects}
+            Amp={this.props.Amp}
+            Oscillators={this.props.Oscillators}
+            LFOs={this.props.LFOs} />
         </div>
       </div>
     )

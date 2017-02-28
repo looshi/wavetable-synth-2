@@ -62,6 +62,12 @@ footer {
   background-color: #353744;
   color: white;
   left: calc(50% - 510px);
+  /*
+    This Fixes a bad issue in Chrome when scrolling.
+    The fixed position keyboard  has to be re-rendered completely on scroll
+    which causes notice-able stuttering in audio playback when ARP is on.
+  */
+  transform: translate3d(0, 0, 0);
 }
 
 
