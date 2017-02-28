@@ -160,17 +160,28 @@ class Synth extends React.Component {
   // Route LFOs to targets.
   routeLFO (lfo, destination) {
     lfo.disconnect()
+    // Disconnect the LFO from any oscillators ( if it was set to any ).
+    this.oscillators.map((osc) => {
+      osc.disconnectPitchFromLFO(lfo)
+      osc.disconnectAmountFromLFO(lfo)
+    })
+
     let id = destination.moduleId
 
+    // LFO to Amp.
     if (id === 'amp') {
       lfo.connect(this.oscillatorsBus.gain, 0.04)
     }
+
+    // LFO to Filter.
     if (id === 'filter') {
       // Have to do this for each filter instance.
       this.biquadFilter.filters.forEach((filter) => {
-        lfo.connect(filter.detune, 50, true)
+        lfo.connect(filter.detune, 50)
       })
     }
+
+    // LFO to oscillator detune and amount.
     if (id === 'oscAll') {
       this.oscillators.map((osc) => {
         osc.connectPitchToLFO(lfo, true)
@@ -185,18 +196,19 @@ class Synth extends React.Component {
       }
     }
 
-    if (id === 'chorus') {
-      if (destination.property === 'time') {
-        lfo.connect(this.chorus.lfoInputTime, 0.001)
-      } else if (destination.property === 'amount') {
-        lfo.connect(this.chorus.lfoInputAmount, 0.01)
+    // LFO to Effects.
+    if (id === 'effects') {
+      if (destination.property === 'chorusTime') {
+        lfo.connect(this.chorus.lfoInputTime, 0.01)
+      } else if (destination.property === 'chorusAmount') {
+        lfo.connect(this.chorus.lfoInputAmount, 0.05)
       }
     }
 
-    // LFO to LFO mappings.  Sort of works.
+    // LFO to LFO.
     if (id && id[0] === 'l') {
-      let targetLFO = this.LFOs.find((osc) => osc.id === id)
-      lfo.connect(targetLFO.lfoInputFrequency, 1, true)
+      let targetLFO = this.LFOs.find((l) => l.id === id)
+      lfo.connect(targetLFO.lfoInputFrequency, 1)
     }
   }
 

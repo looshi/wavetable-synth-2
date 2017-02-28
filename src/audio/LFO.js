@@ -7,10 +7,6 @@ for affecting gain values, mulitiplier should be quite small, around .001.
 let lfo = new LFO(options)
 let multiplier = 0.001
 lfo.connect(node.audioParam, multiplier)
-
-When the LFO is connected to the filter, clicking can be heard if the LFO
-gain is greater than the current filter frequency.  I don't know how to
-adjust the LFO gain automatically in accordance with the filter.
 */
 
 export default class LFO {
@@ -43,12 +39,9 @@ export default class LFO {
     this.updateShape(shape)
   }
 
-  connect (destination, multiplier, persist = false) {
+  connect (destination, multiplier) {
     this.lfoGain.gain.value = this._value * multiplier
     this.multiplier = multiplier
-    if (!persist) {
-      this.init(this.lfo.frequency.value, this._shape, this.lfoGain.gain.value)
-    }
     this.lfoGain.connect(destination)
   }
 

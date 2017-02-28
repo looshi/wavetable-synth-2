@@ -10,10 +10,11 @@ export default class Oscillator {
     this._detune = props.detune
     this._octave = props.octave
     this._note = props._note
-    this._lfoPitch = null
-    this._persistLFO = false
-    this._lfoAmount = null
     this._glide = Number(props.glide) / 100
+
+    // LFOs attached to this oscillator.
+    this.pitchLFOs = []
+    this.amountLFOs = []
 
     this.output = props.output
     this.audioContext = props.audioContext
@@ -22,26 +23,34 @@ export default class Oscillator {
     this.gainNode.connect(this.output)
   }
 
-  // Will connect immediately, but later on if the waveform is loaded
-  // it will connect again below.
-  // Only one LFO can be set on page load, however multiple LFOs can be
-  // set after page load.  TODO : allow multiple on page load.
-  // 'persist' parameter fixes an issue in setting LFO from filter to volume -
-  // Very loud pops happen when a note is on and setting lfo to volume.
   connectPitchToLFO (lfo, persist = false) {
-    this._lfoPitch = lfo
-    this._persistLFO = persist
     if (this.wavSource) {
-      this._lfoPitch.connect(this.wavSource.detune, 10, persist)
+      // Connect now if wave is loaded.
+      lfo.connect(this.wavSource.detune, 10, persist)
+    }
+    this.pitchLFOs.push(lfo)
+  }
+
+  disconnectPitchFromLFO (lfo) {
+    lfo.disconnect()
+    this.pitchLFOs = this.pitchLFOs.filter((_lfo) => {
+      return _lfo.id !== lfo.id
+    })
+  }
+
+  connectAmountToLFO (lfo) {
+    this.amountLFOs.push(lfo)
+    if (this.wavSource) {
+      // Connect now if wave is loaded.
+      lfo.connect(this.gainNode.gain, 0.01)
     }
   }
 
-  connectAmountToLFO (lfo, persist = false) {
-    this._lfoAmount = lfo
-    this._persistLFO = persist
-    if (this.wavSource) {
-      this._lfoAmount.connect(this.gainNode.gain, 0.01, persist)
-    }
+  disconnectAmountFromLFO (lfo) {
+    lfo.disconnect()
+    this.amountLFOs = this.amountLFOs.filter((_lfo) => {
+      return _lfo.id !== lfo.id
+    })
   }
 
   // Limits gain between zero and 1.
@@ -128,12 +137,14 @@ export default class Oscillator {
     this.wavSource._started = true
     this.wavSource.connect(this.gainNode)
 
-    if (this._lfoPitch) {
-      this._lfoPitch.connect(this.wavSource.detune, 10, this._persistLFO)
-    }
-    if (this._lfoAmount) {
-      this._lfoAmount.connect(this.gainNode.gain, 0.01)
-    }
+    // Reconnect lfos to the new wavSource instance (if any were connected).
+    this.pitchLFOs.forEach((lfo) => {
+      lfo.connect(this.wavSource.detune, 10)
+    })
+    this.amountLFOs.forEach((lfo) => {
+      lfo.connect(this.gainNode.gain, 0.01, 10)
+    })
+
     this.updatePitch()
   }
 
