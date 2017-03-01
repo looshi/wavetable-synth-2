@@ -9,6 +9,8 @@ let multiplier = 0.001
 lfo.connect(node.audioParam, multiplier)
 */
 
+import Coefficients from '../data/Coefficients.js'
+
 export default class LFO {
   constructor (props) {
     this.name = props.name
@@ -62,7 +64,7 @@ export default class LFO {
   }
 
   updateRate (val) {
-    this.lfo.frequency.value = (val / 10) * this.freqMultiplier
+    this.lfo.frequency.value = (val * val / 500) * this.freqMultiplier * 3
   }
 
   set amount (val) {
@@ -72,7 +74,6 @@ export default class LFO {
 
   updateAmount () {
     this.lfoGain.gain.value = this._value * this.multiplier
-    console.log('amount', this.lfoGain.gain.value)
   }
 
   set shape (val) {
@@ -99,47 +100,42 @@ export default class LFO {
     if (shape === 'random') {
       let waveData = this.generateRandomShape()
       this.lfo.setPeriodicWave(waveData)
-      this.freqMultiplier = 0.0325
+      this.freqMultiplier = 0.01
       this.updateRate(this._frequency)
     } else if (shape === 'square') {
-      let waveData = this.generateSmoothSquareShape()
+      let waveData = this.generateSquareShape()
       this.lfo.setPeriodicWave(waveData)
+      this.freqMultiplier = 1
+      this.updateRate(this._frequency)
+    } else if (shape === 'sawtooth') {
+      let waveData = this.generateSawtoothShape()
+      this.lfo.setPeriodicWave(waveData)
+      this.freqMultiplier = 1
       this.updateRate(this._frequency)
     } else {
+      // We use the default triangle shape only right now.
       this.lfo.type = shape
       this.freqMultiplier = 1
       this.updateRate(this._frequency)
     }
   }
 
-  generateRandomShape () {
-    let waveData = [0]
-    for (let i = 0; i < 48; i++) {
-      if (Math.random() < 0.5) {
-        waveData.push(0)
-      } else {
-        waveData.push(1)
-      }
-    }
-    let real = new Float32Array(waveData)
-    let imag = new Float32Array(waveData.length)
-    waveData = this.audioContext.createPeriodicWave(real, imag)
-    return waveData
+  generateSquareShape () {
+    let real = new Float32Array(Coefficients.square.real)
+    let imag = new Float32Array(Coefficients.square.imag)
+    return this.audioContext.createPeriodicWave(real, imag)
   }
 
-  generateSmoothSquareShape () {
-    let waveData = [0, 1, .8, .5]
-    // for (let i = 0; i < 20; i++) {
-    //   let val = (Math.sin(i) * 2)
-    //   if (val > 1) val = 1
-    //   if (val < 0) val = 0
-    //   waveData[i] = val
-    // }
-    console.log('smooth sq', waveData)
-    let real = new Float32Array(waveData)
-    let imag = new Float32Array(waveData.length)
-    waveData = this.audioContext.createPeriodicWave(real, imag)
-    return waveData
+  generateSawtoothShape () {
+    let real = new Float32Array(Coefficients.sawtooth.real)
+    let imag = new Float32Array(Coefficients.sawtooth.imag)
+    return this.audioContext.createPeriodicWave(real, imag)
+  }
+
+  generateRandomShape () {
+    let real = new Float32Array(Coefficients.noise.real)
+    let imag = new Float32Array(Coefficients.noise.imag)
+    return this.audioContext.createPeriodicWave(real, imag)
   }
 }
 
