@@ -60,10 +60,10 @@ header {
 footer {
   position: fixed;
   bottom: 0;
-  height: 100px;
+  height: 134px;
   padding: 1px 0 1px 1px;
   width: 1020px;
-  background-color: #353744;
+  background-color: $blue;
   color: white;
   left: calc(50% - 510px);
   /*
@@ -72,8 +72,43 @@ footer {
     which causes notice-able stuttering in audio playback when ARP is on.
   */
   transform: translate3d(0, 0, 0);
+  .footer-info {
+    padding: 4px;
+  }
+  p {
+    font-size: 12px;
+    display: inline-block;
+    vertical-align: super;
+    margin: 0 12px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+  }
+  a {
+    color: white;
+  }
 }
 
+.share-button-row {
+  display: inline-block;
+  .share-button-container {
+    display: inline-block;
+  }
+  .share-button {
+    display: inline-block;
+    border: 1px solid $blue;
+    border-radius: 24px;
+    &:hover {
+      cursor: pointer;
+      border: 1px solid white;
+    }
+  }
+  .share-count {
+    display: inline-block;
+    vertical-align: top;
+    padding: 5px 8px 0 4px;
+    font-size: 12px;
+  }
+}
 
 h1 {
   font-size: 30px;

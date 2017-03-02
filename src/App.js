@@ -7,6 +7,7 @@ import FilterView from './views/Filter/FilterView.js'
 import EffectsView from './views/Effects/EffectsView.js'
 import AmpView from './views/Filter/AmpView.js'
 import LFOView from './views/LFO/LFOView.js'
+import ShareButtonRow from './views/ShareButtons/ShareButtonRow.js'
 import Presets from './views/Presets/Presets.js'
 import MidiInput from './views/Midi/MidiInput.js'
 import {connect} from 'react-redux'
@@ -110,6 +111,15 @@ class App extends React.Component {
             <Keyboard
               eventEmitter={eventEmitter}
               Keyboard={this.props.Keyboard} />
+            <div className='footer-info'>
+              <ShareButtonRow />
+              <p>Made By Elegant Borzoi and Jordan</p>
+              <p>
+                <a href='https://github.com/looshi/wavetable-synth-2'>
+                  View Source Code on Github
+                </a>
+              </p>
+            </div>
           </footer>
 
           <Synth
