@@ -7,6 +7,7 @@ import Select from 'react-select'
 import {connect} from 'react-redux'
 import PresetData from '../../data/PresetData.js'
 import Actions from '../../data/Actions.js'
+import _ from 'lodash'
 
 class Presets extends React.Component {
   constructor (props) {
@@ -15,6 +16,7 @@ class Presets extends React.Component {
       let label = preset.name + ' by ' + preset.author
       return {label, value: preset.id}
     })
+    options = _.orderBy(options, 'label', 'asc')
     options.unshift({ label: 'Select Preset', value: -1, disabled: true })
     this.state = { options }
   }
