@@ -10,11 +10,18 @@ import Actions from '../../data/Actions.js'
 class MidiInput extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {
-      options: [{ label: 'Select MIDI device', value: -1, disabled: true }],
-      selectedInput: -1
+    if (navigator.requestMIDIAccess) {
+      navigator.requestMIDIAccess().then(this.onMidiInit.bind(this), this.onMidiError)
+      this.state = {
+        options: [{ label: 'Select MIDI device', value: -1, disabled: true }],
+        selectedInput: -1
+      }
+    } else {
+      this.state = {
+        options: [{ label: 'MIDI not supported, try Chrome', value: -1, disabled: true }],
+        selectedInput: -1
+      }
     }
-    navigator.requestMIDIAccess().then(this.onMidiInit.bind(this), this.onMidiError)
     this.notesOn = []
   }
 

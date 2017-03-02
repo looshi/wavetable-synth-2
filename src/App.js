@@ -18,8 +18,12 @@ import EventEmitter from 'event-emitter'
 
 import WaveTableData from './data/WaveTableData.json'
 
-const audioContext = new AudioContext()
+let audioContext
 const eventEmitter = new EventEmitter()
+
+if (window.AudioContext) {
+  audioContext = new AudioContext()
+}
 
 class App extends React.Component {
   constructor (props) {
@@ -31,9 +35,27 @@ class App extends React.Component {
   }
 
   render () {
+    // Shows a message if no audio support in the browser.
+    if (!window.AudioContext) {
+      return (
+        <div>
+          <h1 style={{textAlign: 'center'}}>Bummer, this browser doesn't support audio.</h1>
+          <h1 style={{textAlign: 'center'}}>Try this synth in Chrome.</h1>
+        </div>
+      )
+    }
+    // Shows a message if not Chrome.
+    const isChrome = !!window.chrome && !!window.chrome.webstore
     return (
       <div>
         <div className='scroll-container'>
+          {!isChrome &&
+            <div>
+              <h1 className='text-center'>
+                Try this synth in Chrome for better audio quality and MIDI support.
+              </h1>
+            </div>
+          }
           <header>
             <div>
               <h1>Dog Synth</h1>
@@ -81,7 +103,7 @@ class App extends React.Component {
                 })
               }
             </div>
-            <div className='scroll-footer'>&nbsp;</div>
+            <div className='scroll-footer' />
           </div>
 
           <footer>
