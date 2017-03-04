@@ -37,6 +37,7 @@
     "lodash": "^4.14.1",
     "node-sass": "^4.5.0",
     "query-string": "^4.3.1",
+    "react-modal": "^1.7.1",
     "react-select": "^1.0.0-rc.3",
     "react-share": "^1.12.1",
     "rimraf": "^2.5.4",

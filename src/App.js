@@ -10,6 +10,8 @@ import LFOView from './views/LFO/LFOView.js'
 import ShareButtonRow from './views/ShareButtons/ShareButtonRow.js'
 import Presets from './views/Presets/Presets.js'
 import MidiInput from './views/Midi/MidiInput.js'
+import SavePatchModal from './views/Modals/SavePatchModal.js'
+import AboutModal from './views/Modals/AboutModal.js'
 import {connect} from 'react-redux'
 
 import Synth from './audio/Synth.js'
@@ -33,6 +35,23 @@ class App extends React.Component {
       let action = Actions.waveFileListLoaded(response.data)
       props.dispatch(action)
     })
+    this.state = {
+      isSavePatchModalOpen: false,
+      isAboutModalOpen: false
+    }
+  }
+
+  onOpenSavePatchModal () {
+    this.setState({isSavePatchModalOpen: true})
+  }
+  onCloseSavePatchModal () {
+    this.setState({isSavePatchModalOpen: false})
+  }
+  onOpenAboutModal () {
+    this.setState({isAboutModalOpen: true})
+  }
+  onCloseAboutModal () {
+    this.setState({isAboutModalOpen: false})
   }
 
   render () {
@@ -112,6 +131,8 @@ class App extends React.Component {
               eventEmitter={eventEmitter}
               Keyboard={this.props.Keyboard} />
             <div className='footer-info'>
+              <a onClick={this.onOpenAboutModal.bind(this)}>About</a>
+              <a onClick={this.onOpenSavePatchModal.bind(this)}>Save Patch</a>
               <ShareButtonRow />
               <p>Made By Elegant Borzoi and Jordan</p>
               <p>
@@ -121,6 +142,14 @@ class App extends React.Component {
               </p>
             </div>
           </footer>
+
+          <SavePatchModal
+            isOpen={this.state.isSavePatchModalOpen}
+            onClose={this.onCloseSavePatchModal.bind(this)} />
+
+          <AboutModal
+            isOpen={this.state.isAboutModalOpen}
+            onClose={this.onCloseAboutModal.bind(this)} />
 
           <Synth
             store={this.props.store}
