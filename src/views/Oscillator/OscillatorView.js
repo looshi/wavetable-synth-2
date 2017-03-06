@@ -9,8 +9,30 @@ import WaveFileLoader from './WaveFileLoader.js'
 import WaveLine from './WaveLine.js'
 import AlgorithmSwitch from './AlgorithmSwitch.js'
 import HorizontalSlider from '../Components/HorizontalSlider.js'
+import {connect} from 'react-redux'
+import Actions from '../../data/Actions.js'
 
 class OscillatorView extends React.Component {
+
+  onCyclesChanged (e) {
+    let action = Actions.oscCyclesChanged(this.props.id, Number(e.target.value))
+    this.props.dispatch(action)
+  }
+
+  onDetuneChanged (e) {
+    let action = Actions.oscDetuneChanged(this.props.id, Number(e.target.value))
+    this.props.dispatch(action)
+  }
+
+  onOctaveChanged (e) {
+    let action = Actions.oscOctaveChanged(this.props.id, Number(e.target.value))
+    this.props.dispatch(action)
+  }
+
+  onAmountChanged (e) {
+    let action = Actions.onAmountChanged(this.props.id, Number(e.target.value))
+    this.props.dispatch(action)
+  }
 
   render () {
     const colorStyle = {
@@ -68,11 +90,22 @@ class OscillatorView extends React.Component {
           <div className='oscillator-sliders'>
             <HorizontalSlider
               id={this.props.id}
+              name='cycles'
+              label='cycles'
+              min={1}
+              max={1024}
+              step={1}
+              onChange={this.onCyclesChanged.bind(this)}
+              color={this.props.color}
+              value={this.props.cycles} />
+            <HorizontalSlider
+              id={this.props.id}
               name='detune'
               label='detune'
               min={-12}
               max={12}
               step={1}
+              onChange={this.onDetuneChanged.bind(this)}
               color={this.props.color}
               value={this.props.detune} />
             <HorizontalSlider
@@ -82,6 +115,7 @@ class OscillatorView extends React.Component {
               min={-3}
               max={3}
               step={1}
+              onChange={this.onOctaveChanged.bind(this)}
               color={this.props.color}
               value={this.props.octave} />
             <HorizontalSlider
@@ -91,6 +125,7 @@ class OscillatorView extends React.Component {
               min={0}
               max={100}
               step={1}
+              onChange={this.onAmountChanged.bind(this)}
               color={this.props.color}
               value={this.props.amount} />
           </div>
@@ -119,4 +154,4 @@ OscillatorView.defaultProps = {
   height: 200
 }
 
-export default OscillatorView
+export default connect()(OscillatorView)

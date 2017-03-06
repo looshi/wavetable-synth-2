@@ -53,6 +53,10 @@ class App extends React.Component {
   onCloseAboutModal () {
     this.setState({isAboutModalOpen: false})
   }
+  onMasterGainChanged (e) {
+    let action = Actions.masterGainChanged(e.target.value)
+    this.props.dispatch(action)
+  }
 
   render () {
     // Shows a message if no audio support in the browser.
@@ -86,6 +90,7 @@ class App extends React.Component {
                 min={0}
                 max={100}
                 step={1}
+                onChange={this.onMasterGainChanged.bind(this)}
                 value={this.props.Master.volume} />
               <MidiInput eventEmitter={eventEmitter} />
               <Presets presetId={this.props.Master.presetId} />

@@ -34,14 +34,24 @@ Actions.oscAlgorithmChanged = function oscAlgorithmChanged (id, algorithm) {
   }
 }
 
-// An oscillator detune has changed.
-Actions.sliderChanged = function sliderChanged (id, value, name) {
-  return {
-    type: 'SLIDER_CHANGED',
-    id,
-    value,
-    name
-  }
+Actions.oscCyclesChanged = function oscCyclesChanged (id, value) {
+  return {type: 'OSC_CYCLES_CHANGED', id, value}
+}
+
+Actions.oscDetuneChanged = function oscDetuneChanged (id, value) {
+  return {type: 'OSC_DETUNE_CHANGED', id, value}
+}
+
+Actions.oscOctaveChanged = function oscDetuneChanged (id, value) {
+  return {type: 'OSC_OCTAVE_CHANGED', id, value}
+}
+
+Actions.onAmountChanged = function onAmountChanged (id, value) {
+  return {type: 'OSC_AMOUNT_CHANGED', id, value}
+}
+
+Actions.masterGainChanged = function masterGainChanged (value) {
+  return {type: 'MASTER_GAIN_CHANGED', value}
 }
 
 Actions.glideChanged = function oscGlideChanged (value) {

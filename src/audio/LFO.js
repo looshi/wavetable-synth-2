@@ -138,12 +138,3 @@ export default class LFO {
     return this.audioContext.createPeriodicWave(real, imag)
   }
 }
-
-// might be better than default triangle ?  :
-// let waveData = [0, 1]
-
-// console.log('smooth sq', waveData)
-// let real = new Float32Array(waveData)
-// let imag = new Float32Array(waveData.length)
-// waveData = this.audioContext.createPeriodicWave(real, imag)
-// return waveData

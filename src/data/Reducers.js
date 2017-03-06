@@ -134,6 +134,7 @@ function initOscillator (URL, name, id, color) {
     channelDataB: [],
     computedChannelData: [],
     algorithm: URL[id + 'al'] || 'p',
+    cycles: urlVal(URL[id + 'c'], 1),
     amount: urlVal(URL[id + 'a'], 75),
     detune: urlVal(URL[id + 'd'], 0),
     octave: urlVal(URL[id + 'o'], 0),
@@ -172,14 +173,10 @@ let initialState = initializeState(urlData)
 function MasterReducer (state, action) {
   state = state || initialState.Master
   switch (action.type) {
-    case 'SLIDER_CHANGED':
-      if (action.id === 'master') {
-        state.volume = action.value
-        updateURL('mv', action.value)
-        return Object.assign({}, state)
-      } else {
-        return state
-      }
+    case 'MASTER_GAIN_CHANGED':
+      state.volume = Number(action.value)
+      updateURL('mv', action.value)
+      return Object.assign({}, state)
     default:
       return state
   }
@@ -337,17 +334,37 @@ function computeWaveform (channelDataA, channelDataB, algorithm) {
     return []
   }
 
-  return channelDataB.map(function (data, index) {
-    if (algorithm === 'p') {
-      return limit(-1, 1, channelDataA[index] + channelDataB[index])
-    } else if (algorithm === 'm') {
-      return limit(-1, 1, channelDataA[index] - channelDataB[index])
-    } else if (algorithm === 'd') {
-      return limit(-1, 1, channelDataA[index] / (channelDataB[index] * 2))
-    } else if (algorithm === 'x') {
-      return limit(-1, 1, channelDataA[index] * channelDataB[index])
-    }
-  })
+  let cycles = 256 // 1 can be min. 1024 might be a good max.
+  let samplesCount = (600 * cycles) // - (overlap * cycles)
+  let interpolatedData = new Float32Array(samplesCount * 2)
+  let time = 0
+
+  // Interpolate from A to B.
+  for (let i = 0; i < samplesCount; i++) {
+    time = i / samplesCount
+    interpolatedData[i] = slerp(channelDataA[i % 600], channelDataB[i % 600], time, algorithm)
+  }
+
+  // Interpolate from B to A ( mirrors the previous ).
+  for (let k = samplesCount; k < samplesCount * 2; k++) {
+    time = (k - samplesCount) / (samplesCount)  // Time starts at half way point.
+    interpolatedData[k] = slerp(channelDataB[k % 600], channelDataA[k % 600], time, algorithm)
+  }
+  return interpolatedData
+}
+
+// Modified lerp function based on algorithm chosen.
+// The 'minus' algorithm uses the normal lerp function.
+function slerp (v0, v1, t, algorithm) {
+  if (algorithm === 'p') {
+    return limit(-1, 1, v0 * (1 + t) + v1 * t) || 0.00001
+  } else if (algorithm === 'm') {
+    return limit(-1, 1, v0 * (1 - t) + v1 * t) || 0.00001 // Normal lerp function.
+  } else if (algorithm === 'd') {
+    return limit(-1, 1, v0 * (1 / t) + v1 * t) || 0.00001
+  } else if (algorithm === 'x') {
+    return limit(-1, 1, v0 * (1 * t) + v1 * t) || 0.00001
+  }
 }
 
 function OscillatorsReducer (state, action) {
@@ -399,7 +416,7 @@ function OscillatorsReducer (state, action) {
       })
       return [...state]
 
-    // The +, -, /, * selected operator was changed.
+    // The +, -, /, * selected operator was changed, or the number of cycles changed.
     case 'OSC_ALGORITHM_CHANGED':
       state = state.map(function (osc) {
         if (osc.id === action.id) {
@@ -420,11 +437,44 @@ function OscillatorsReducer (state, action) {
       return [...state]
 
     // Updates local osc values, detune, octave, and amt.
-    case 'SLIDER_CHANGED':
+    case 'OSC_CYCLES_CHANGED':
       state = state.map(function (osc) {
         if (osc.id === action.id) {
-          osc[action.name] = action.value
-          const paramName = osc.id + action.name[0] // id + first letter of param.
+          osc.cycles = action.value
+          const paramName = osc.id + 'c' // id + first letter of param.
+          updateURL(paramName, action.value)
+        }
+        return osc
+      })
+      return [...state]
+
+    case 'OSC_DETUNE_CHANGED':
+      state = state.map(function (osc) {
+        if (osc.id === action.id) {
+          osc.detune = action.value
+          const paramName = osc.id + 'd' // id + first letter of param.
+          updateURL(paramName, action.value)
+        }
+        return osc
+      })
+      return [...state]
+
+    case 'OSC_OCTAVE_CHANGED':
+      state = state.map(function (osc) {
+        if (osc.id === action.id) {
+          osc.octave = action.value
+          const paramName = osc.id + 'o' // id + first letter of param.
+          updateURL(paramName, action.value)
+        }
+        return osc
+      })
+      return [...state]
+
+    case 'OSC_AMOUNT_CHANGED':
+      state = state.map(function (osc) {
+        if (osc.id === action.id) {
+          osc.amount = action.value
+          const paramName = osc.id + 'a' // id + first letter of param.
           updateURL(paramName, action.value)
         }
         return osc
