@@ -44,7 +44,7 @@ class WaveFileLoader extends React.Component {
       // of noise here.  All other waves are 600 samples long.
       let channelData = new Float32Array(44100)
       for (var i = 0; i < 44100; i++) {
-        channelData[i] = Math.random()
+        channelData[i] = Math.random() * 2 - 1
       }
       let action = Actions.waveFileLoadCompleted(id, side, channelData)
       dispatch(action)

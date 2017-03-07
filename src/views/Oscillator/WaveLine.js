@@ -23,7 +23,15 @@ class WaveLine extends React.Component {
 
     // Check every 100th sample ( about 6 times ) to see if the data changed.
     let hasChanged = false
-    for (var i = 0; i < nextProps.channelData.length; i += 100) {
+    let longestLength = 0
+
+    if (this.props.channelData.length > nextProps.channelData.length) {
+      longestLength = this.props.channelData.length
+    } else {
+      longestLength = nextProps.channelData.length
+    }
+
+    for (var i = 0; i < longestLength; i += 100) {
       if (nextProps.channelData[i] !== this.props.channelData[i]) {
         hasChanged = true
       }
@@ -67,15 +75,17 @@ class WaveLine extends React.Component {
     }
 
     const context = this.refs.canvas.getContext('2d')
+    let lineWidth = channelData.length < (4 * 600) ? 3 : 2
+
     context.clearRect(0, 0, width, height)
-    this.drawWave(context, width, height, marginLeft, marginTop)
+    this.drawWave(context, width, height, marginLeft, marginTop, lineWidth)
   }
 
-  drawWave (context, width, height, marginLeft, marginTop) {
+  drawWave (context, width, height, marginLeft, marginTop, lineWidth) {
     let time = 0
     let yValue = 0
     let self = this
-    context.lineWidth = 3
+    context.lineWidth = lineWidth
     context.strokeStyle = this.props.color
 
     function step () {

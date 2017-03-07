@@ -329,13 +329,12 @@ function LFOsReducer (state, action) {
 }
 
 // Update the computed waveform based on the current algorithm.
-function computeWaveform (channelDataA, channelDataB, algorithm) {
+function computeWaveform (channelDataA, channelDataB, algorithm, cycles) {
   if (!channelDataA || !channelDataB || !algorithm) {
     return []
   }
 
-  let cycles = 256 // 1 can be min. 1024 might be a good max.
-  let samplesCount = (600 * cycles) // - (overlap * cycles)
+  let samplesCount = (600 * cycles)
   let interpolatedData = new Float32Array(samplesCount * 2)
   let time = 0
 
@@ -350,6 +349,7 @@ function computeWaveform (channelDataA, channelDataB, algorithm) {
     time = (k - samplesCount) / (samplesCount)  // Time starts at half way point.
     interpolatedData[k] = slerp(channelDataB[k % 600], channelDataA[k % 600], time, algorithm)
   }
+
   return interpolatedData
 }
 
@@ -357,13 +357,16 @@ function computeWaveform (channelDataA, channelDataB, algorithm) {
 // The 'minus' algorithm uses the normal lerp function.
 function slerp (v0, v1, t, algorithm) {
   if (algorithm === 'p') {
-    return limit(-1, 1, v0 * (1 + t) + v1 * t) || 0.00001
-  } else if (algorithm === 'm') {
     return limit(-1, 1, v0 * (1 - t) + v1 * t) || 0.00001 // Normal lerp function.
+  } else if (algorithm === 'm') {
+    t = Math.pow(t, 5)
+    return limit(-1, 1, v0 * (1 - t) + v1 * t) || 0.00001
   } else if (algorithm === 'd') {
-    return limit(-1, 1, v0 * (1 / t) + v1 * t) || 0.00001
+    t = Math.pow(t, 20)
+    return limit(-1, 1, v0 * (1 - t) + v1 * t) || 0.00001
   } else if (algorithm === 'x') {
-    return limit(-1, 1, v0 * (1 * t) + v1 * t) || 0.00001
+    t = Math.log(t + 1)
+    return limit(-1, 1, v0 * (1 + t) + v1 * t) || 0.00001
   }
 }
 
@@ -407,9 +410,12 @@ function OscillatorsReducer (state, action) {
           } else if (action.side === 'B') {
             osc.channelDataB = action.channelData
           }
-          // When both files have loaded, compute the combined waveform.
-          if (osc.channelDataA.length && osc.channelDataB.length) {
-            osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm)
+          // If both are noise, just return noise.
+          if (osc.fileA === 'noise' && osc.fileB === 'noise') {
+            osc.computedChannelData = osc.channelDataA
+          } else if (osc.channelDataA.length && osc.channelDataB.length) {
+            // When both files have loaded, compute the combined waveform.
+            osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm, osc.cycles)
           }
         }
         return osc
@@ -422,8 +428,12 @@ function OscillatorsReducer (state, action) {
         if (osc.id === action.id) {
           osc.algorithm = action.algorithm
           updateURL(osc.id + 'al', action.algorithm)
+          if (osc.fileA === 'noise' && osc.fileB === 'noise') {
+            osc.computedChannelData = osc.channelDataA
+          } else {
+            osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm, osc.cycles)
+          }
         }
-        osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm)
         return osc
       })
       return [...state]
@@ -439,11 +449,17 @@ function OscillatorsReducer (state, action) {
     // Updates local osc values, detune, octave, and amt.
     case 'OSC_CYCLES_CHANGED':
       state = state.map(function (osc) {
-        if (osc.id === action.id) {
+        if (osc.id === action.id && osc.cycles !== action.value) {
           osc.cycles = action.value
           const paramName = osc.id + 'c' // id + first letter of param.
           updateURL(paramName, action.value)
+          if (osc.fileA === 'noise' && osc.fileB === 'noise') {
+            osc.computedChannelData = osc.channelDataA
+          } else {
+            osc.computedChannelData = computeWaveform(osc.channelDataA, osc.channelDataB, osc.algorithm, osc.cycles)
+          }
         }
+
         return osc
       })
       return [...state]

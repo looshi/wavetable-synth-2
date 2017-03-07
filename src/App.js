@@ -82,7 +82,7 @@ class App extends React.Component {
           }
           <header>
             <div>
-              <h1>Dog Synth</h1>
+              <h1>Wavetable</h1>
               <HorizontalSlider
                 id='master'
                 name='master gain'
@@ -139,7 +139,6 @@ class App extends React.Component {
               <a onClick={this.onOpenAboutModal.bind(this)}>About</a>
               <a onClick={this.onOpenSavePatchModal.bind(this)}>Save Patch</a>
               <ShareButtonRow />
-              <p>Made By Elegant Borzoi and Jordan</p>
               <p>
                 <a href='https://github.com/looshi/wavetable-synth-2'>
                   View Source Code on Github

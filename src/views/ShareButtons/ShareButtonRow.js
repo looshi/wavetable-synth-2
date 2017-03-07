@@ -37,12 +37,13 @@ const ShareButtonRow = React.createClass({
               size={24}
               round />
           </FacebookShareButton>
-
+        {/*
           <FacebookShareCount
             url={shareUrl}
             className='share-count'>
             {count => count}
           </FacebookShareCount>
+        */}
         </div>
 
         <div className='share-button-container'>

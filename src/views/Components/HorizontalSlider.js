@@ -4,7 +4,6 @@ Label, slider, and number value.
 */
 import React from 'react'
 import {connect} from 'react-redux'
-import Actions from '../../data/Actions.js'
 import {lerp} from '../../helpers/helpers.js'
 
 class HorizontalSlider extends React.Component {

@@ -11,12 +11,19 @@ import AlgorithmSwitch from './AlgorithmSwitch.js'
 import HorizontalSlider from '../Components/HorizontalSlider.js'
 import {connect} from 'react-redux'
 import Actions from '../../data/Actions.js'
+import _ from 'lodash'
 
 class OscillatorView extends React.Component {
+  constructor (props) {
+    super(props)
+    this.debouncedAction = _.debounce((id, value) => {
+      let action = Actions.oscCyclesChanged(id, value)
+      this.props.dispatch(action)
+    }, 200)
+  }
 
   onCyclesChanged (e) {
-    let action = Actions.oscCyclesChanged(this.props.id, Number(e.target.value))
-    this.props.dispatch(action)
+    this.debouncedAction(this.props.id, Number(e.target.value))
   }
 
   onDetuneChanged (e) {
@@ -90,16 +97,6 @@ class OscillatorView extends React.Component {
           <div className='oscillator-sliders'>
             <HorizontalSlider
               id={this.props.id}
-              name='cycles'
-              label='cycles'
-              min={1}
-              max={1024}
-              step={1}
-              onChange={this.onCyclesChanged.bind(this)}
-              color={this.props.color}
-              value={this.props.cycles} />
-            <HorizontalSlider
-              id={this.props.id}
               name='detune'
               label='detune'
               min={-12}
@@ -128,6 +125,16 @@ class OscillatorView extends React.Component {
               onChange={this.onAmountChanged.bind(this)}
               color={this.props.color}
               value={this.props.amount} />
+            <HorizontalSlider
+              id={this.props.id}
+              name='cycles'
+              label='cycles'
+              min={1}
+              max={1024}
+              step={1}
+              onChange={this.onCyclesChanged.bind(this)}
+              color={this.props.color}
+              value={this.props.cycles} />
           </div>
 
         </div>
