@@ -203,4 +203,9 @@ class Keyboard extends React.Component {
 
 }
 
+Keyboard.propTypes = {
+  eventEmitter: React.PropTypes.object,
+  Keyboard: React.PropTypes.object
+}
+
 export default connect()(Keyboard)

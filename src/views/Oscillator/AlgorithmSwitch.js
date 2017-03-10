@@ -60,4 +60,10 @@ class AlgorithmSwitch extends React.Component {
   }
 }
 
+AlgorithmSwitch.propTypes = {
+  algorithm: React.PropTypes.string,
+  id: React.PropTypes.string,
+  color: React.PropTypes.string
+}
+
 export default connect()(AlgorithmSwitch)

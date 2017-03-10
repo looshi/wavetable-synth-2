@@ -65,4 +65,12 @@ class HorizontalSlider extends React.Component {
   }
 }
 
+HorizontalSlider.propTypes = {
+  min: React.PropTypes.number,
+  max: React.PropTypes.number,
+  value: React.PropTypes.number,
+  onChange: React.PropTypes.func,
+  label: React.PropTypes.string
+}
+
 export default connect()(HorizontalSlider)

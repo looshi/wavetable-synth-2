@@ -24,3 +24,8 @@ export default class AboutModal extends React.Component {
     )
   }
 }
+
+AboutModal.propTypes = {
+  isOpen: React.PropTypes.bool,
+  onClose: React.PropTypes.func
+}

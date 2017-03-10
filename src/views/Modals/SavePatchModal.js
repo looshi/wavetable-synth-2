@@ -26,3 +26,8 @@ export default class SavePatchModal extends React.Component {
     )
   }
 }
+
+SavePatchModal.propTypes = {
+  isOpen: React.PropTypes.bool,
+  onClose: React.PropTypes.func
+}

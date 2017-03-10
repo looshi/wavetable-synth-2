@@ -124,4 +124,8 @@ class MidiInput extends React.Component {
   }
 }
 
+MidiInput.propTypes = {
+  eventEmitter: React.PropTypes.object
+}
+
 export default connect()(MidiInput)

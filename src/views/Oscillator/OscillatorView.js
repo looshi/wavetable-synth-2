@@ -149,8 +149,8 @@ OscillatorView.propTypes = {
   detune: React.PropTypes.number,
   octave: React.PropTypes.number,
   amount: React.PropTypes.number,
-  // channelDataA: React.PropTypes.array, ?
-  // channelDataB: React.PropTypes.array,
+  channelDataA: React.PropTypes.object, // Float32Array
+  channelDataB: React.PropTypes.object, // Float32Array
   files: React.PropTypes.object,
   fileA: React.PropTypes.string,
   fileB: React.PropTypes.string
