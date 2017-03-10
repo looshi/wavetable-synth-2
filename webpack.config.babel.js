@@ -1,6 +1,7 @@
 'use strict'
 
 const webpackValidator = require('webpack-validator')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const resolve = require('path').resolve
 module.exports = function () {
   let config = {
@@ -9,7 +10,7 @@ module.exports = function () {
     output: {
       path: resolve('dist'),
       filename: 'bundle.js',
-      publicPath: '/dist/'
+      publicPath: './dist/'
     },
 
     // 'eval' Eval will display the babel transpiled code.
@@ -20,12 +21,29 @@ module.exports = function () {
       loaders: [
         {test: /\.js/, loaders: ['babel-loader'], exclude: /node_modules/},
         {test: /\.css$/, loaders: ['style-loader', 'css-loader']},
-        {test: /\.scss$/, loaders: ['style-loader', 'css-loader', 'sass-loader']},
+        // {test: /\.scss$/, loaders: ['style-loader', 'css-loader', 'sass-loader']},
+        {
+          test: /\.scss$/,
+          use: ExtractTextPlugin.extract({
+            use: [
+              {
+                loader: 'css-loader',
+                options: {
+                  modules: true
+                }
+              },
+              'sass-loader'
+            ]
+          })
+        },
         {test: /\.png/, loaders: ['file-loader']},
         {test: /\.json/, loaders: ['file-loader']},
         {test: /\.worker\.js$/, loaders: ['worker-loader', 'babel-loader']}
       ]
-    }
+    },
+    plugins: [
+      new ExtractTextPlugin('[name].css')
+    ]
   }
-  return webpackValidator(config)
+  return config
 }
