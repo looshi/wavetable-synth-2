@@ -83,6 +83,7 @@ class App extends React.Component {
           <header>
             <div>
               <h1>Wavetable</h1>
+              <a onClick={this.onOpenAboutModal.bind(this)}>About</a>
               <HorizontalSlider
                 id='master'
                 name='master gain'

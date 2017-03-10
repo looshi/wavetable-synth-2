@@ -21,6 +21,11 @@ p {
   }
 }
 
+h2 {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
 .scroll-container {
   padding: 0;
   margin: 0;
@@ -44,9 +49,19 @@ header {
     margin: 0;
     padding: 0;
   }
+  a {
+    margin-left: 22px;
+    margin-top: 13px;
+    vertical-align: top;
+    display: inline-block;
+    text-decoration: underline;
+    &:hover {
+      cursor: pointer;
+    }
+  }
   .horizontal-slider {
     display: inline-block;
-    margin: -14px 0 0 92px;
+    margin: -14px 0 0 58px;
     vertical-align: middle;
     .slider-label {
       width: 53px;
