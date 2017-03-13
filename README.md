@@ -1,19 +1,15 @@
 # Wavetable Synth
 
-install:
+Install:
 ```
 git clone https://github.com/looshi/wavetable-synth-2.git
 npm install
 ```
-build:
+Run locally:
 ```
-npm run build:dev -s
+npm run dev
 ```
-build and watch:
+Build:
 ```
-npm run build:dev -s -- --watch
-```
-run webpack server:
-```
-npm run dev -- --watch
+npm run build
 ```
