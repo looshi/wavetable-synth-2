@@ -21,12 +21,8 @@ import EventEmitter from 'event-emitter'
 
 import WaveTableData from './data/WaveTableData.json'
 
-let audioContext
-const eventEmitter = new EventEmitter()
 
-if (window.AudioContext) {
-  audioContext = new AudioContext()
-}
+const eventEmitter = new EventEmitter()
 
 class App extends React.Component {
   constructor (props) {
@@ -68,18 +64,13 @@ class App extends React.Component {
         </div>
       )
     }
-    // Shows a message if not Chrome.
-    const isChrome = !!window.chrome && !!window.chrome.webstore
+    const { audioContext } = this.props;
+
+
+
     return (
       <div>
         <div className='scroll-container'>
-          {!isChrome &&
-            <div>
-              <h1 className='text-center'>
-                Try this synth in Chrome for better audio quality and MIDI support.
-              </h1>
-            </div>
-          }
           <header>
             <div>
               <h1>Wavetable</h1>
