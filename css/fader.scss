@@ -1,3 +1,5 @@
+$blue: #0047B4;
+
 .fader {
   -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
   width: 180px; /* Specific width is required for Firefox. */
@@ -30,7 +32,7 @@
   width: 16px;
   border-radius: 16px;
   cursor: pointer;
-  background: #fff;
+  background: $blue;
   margin-top: -7px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
   /* box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
 }

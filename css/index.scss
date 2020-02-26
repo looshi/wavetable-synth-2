@@ -36,6 +36,7 @@ h2 {
   background-color: $blue;
   padding: 24px 36px;
   color: white;
+  font-size: 24px;
 }
 
 .scroll-container {
@@ -50,12 +51,12 @@ h2 {
 }
 
 header {
-  height: 48px;
-  width: 996px;
-  background-color: $blue;
-  color: white;
+  width: 960px;
+  background-color: white;
+  color: $blue;
   margin: 0 auto;
   padding: 4px 12px;
+
   h1 {
     display: inline-block;
     margin: 0;
@@ -71,13 +72,13 @@ header {
       cursor: pointer;
     }
   }
-  .horizontal-slider {
-    display: inline-block;
-    margin: -14px 0 0 58px;
-    vertical-align: middle;
-    .slider-label {
-      width: 53px;
-    }
+
+  .header-controls {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 24px 0 0 0;
+    align-items: center;
   }
 }
 
@@ -331,15 +332,15 @@ h1 {
 }
 
 /* Arpeggiator Buttons */
+.arp-switch-label {
+  margin-bottom: 12px;
+  text-align: center;
+  display:block;
+}
+
 .arpeggiator-switch {
-  width: 34px;
-  display: inline-block;
-  margin-left: 32px;
+  display: flex;
   vertical-align: bottom;
-  .arp-switch-label {
-    padding-bottom: 28px;
-    text-align: center;
-  }
   .toggle-button:first-child{
     margin-bottom: 12px;
   }

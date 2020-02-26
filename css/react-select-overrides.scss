@@ -10,7 +10,7 @@ $blue: #0047B4;
   display: inline-block;
   width: 200px;
   float: right;
-  border: 3px solid white;
+  border: 3px solid $blue;
   margin-top: 2px;
   margin-left: 12px;
 
@@ -18,10 +18,10 @@ $blue: #0047B4;
 .Select.preset-list,
 .Select.midi-input-list {
   .Select-value-label {
-    color: #fff;
+    color: $blue;
   }
   .Select-arrow {
-    border-color: #fff transparent transparent;
+    border-color: $blue transparent transparent;
   }
 }
 .Select-placeholder {

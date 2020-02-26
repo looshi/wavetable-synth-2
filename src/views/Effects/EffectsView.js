@@ -6,7 +6,9 @@ import React from 'react'
 import {connect} from 'react-redux'
 import VerticalSlider from '../Components/VerticalSlider.js'
 import Actions from '../../data/Actions.js'
-import ArpeggiatorSwitch from './ArpeggiatorSwitch'
+
+
+
 
 class EffectsView extends React.Component {
 
@@ -20,11 +22,6 @@ class EffectsView extends React.Component {
 
   onGlideChange (event) {
     const action = Actions.glideChanged(Number(event.target.value))
-    this.props.dispatch(action)
-  }
-
-  onArpTempoChange (event) {
-    let action = Actions.arpTempoChanged(Number(event.target.value))
     this.props.dispatch(action)
   }
 
@@ -61,17 +58,7 @@ class EffectsView extends React.Component {
               step={1}
               onChange={this.onGlideChange.bind(this)}
               value={this.props.glide} />
-            <ArpeggiatorSwitch
-              arpIsOn={this.props.arpIsOn} />
-            <VerticalSlider
-              className='short'
-              name='arpTempo'
-              label='arp tempo'
-              min={10}
-              max={160}
-              step={1}
-              onChange={this.onArpTempoChange.bind(this)}
-              value={this.props.arpTempo} />
+
           </div>
         </div>
       </div>

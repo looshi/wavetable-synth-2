@@ -29,10 +29,12 @@ class ArpeggiatorSwitch extends React.Component {
   render () {
     let selected = this.props.arpIsOn
     return (
-      <div onClick={this.onArpValueChanged.bind(this)} className='arpeggiator-switch'>
-        <div data-name={'on'} className={this.buttonClassName(true, selected)}>ON</div>
-        <div data-name={'off'} className={this.buttonClassName(false, selected)}>OFF</div>
-        <div className='arp-switch-label'>arp</div>
+      <div>
+        <div className='arp-switch-label'>arpeggiator</div>
+          <div onClick={this.onArpValueChanged.bind(this)} className='arpeggiator-switch'>
+            <div data-name={'on'} className={this.buttonClassName(true, selected)}>ON</div>
+            <div data-name={'off'} className={this.buttonClassName(false, selected)}>OFF</div>
+        </div>
       </div>
     )
   }

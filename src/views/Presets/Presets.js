@@ -29,7 +29,6 @@ class Presets extends React.Component {
   }
 
   render () {
-    console.log("options --->", this.props.presetId, this.state.options);
     return (
       <div className='preset-list-container'>
         <Select

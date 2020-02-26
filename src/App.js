@@ -16,6 +16,7 @@ import {connect} from 'react-redux'
 
 import Synth from './audio/Synth.js'
 import HorizontalSlider from './views/Components/HorizontalSlider.js'
+import ArpeggiatorSwitch from './views/Effects/ArpeggiatorSwitch'
 import Keyboard from './views/Keyboard/Keyboard.js'
 import EventEmitter from 'event-emitter'
 
@@ -53,6 +54,10 @@ class App extends React.Component {
     let action = Actions.masterGainChanged(e.target.value)
     this.props.dispatch(action)
   }
+  onArpTempoChange (event) {
+    let action = Actions.arpTempoChanged(Number(event.target.value))
+    this.props.dispatch(action)
+  }
 
   render () {
     // Shows a message if no audio support in the browser.
@@ -75,6 +80,11 @@ class App extends React.Component {
             <div>
               <h1>Wavetable</h1>
               <a onClick={this.onOpenAboutModal.bind(this)}>About</a>
+
+              <MidiInput eventEmitter={eventEmitter} />
+              <Presets presetId={this.props.Master.presetId} />
+            </div>
+            <div className="header-controls">
               <HorizontalSlider
                 id='master'
                 name='master gain'
@@ -84,11 +94,19 @@ class App extends React.Component {
                 step={1}
                 onChange={this.onMasterGainChanged.bind(this)}
                 value={this.props.Master.volume} />
-              <MidiInput eventEmitter={eventEmitter} />
-              <Presets presetId={this.props.Master.presetId} />
+              <ArpeggiatorSwitch
+                arpIsOn={this.props.Effects.arpIsOn} />
+              <HorizontalSlider
+                name='arpTempo'
+                label='arp tempo'
+                min={10}
+                max={160}
+                step={1}
+                onChange={this.onArpTempoChange.bind(this)}
+                value={this.props.Effects.arpTempo} />
             </div>
-
           </header>
+
           <div className='scroll-contents'>
             {
               this.props.Oscillators.map((oscillator) => {

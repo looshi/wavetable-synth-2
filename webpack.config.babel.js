@@ -9,7 +9,8 @@ module.exports = function () {
     output: {
       path: resolve('dist'),
       filename: 'bundle.js',
-      publicPath: '/dist/'
+      // change this to './dist/' for production build, '/dist/' for local host.
+      publicPath: './dist/'
     },
 
     // 'eval' Eval will display the babel transpiled code.
