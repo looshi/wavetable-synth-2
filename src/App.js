@@ -21,7 +21,7 @@ import ArpeggiatorSwitch from './views/Effects/ArpeggiatorSwitch'
 import Keyboard from './views/Keyboard/Keyboard.js'
 import EventEmitter from 'event-emitter'
 
-import WaveTableData from './data/WaveTableData.json'
+const WaveTableDataUrl = './data/WaveTableData.json'
 
 
 const eventEmitter = new EventEmitter()
@@ -29,7 +29,7 @@ const eventEmitter = new EventEmitter()
 class App extends React.Component {
   constructor(props) {
     super(props)
-    axios.get(WaveTableData).then(function (response) {
+    axios.get(WaveTableDataUrl).then(function (response) {
       let action = Actions.waveFileListLoaded(response.data)
       props.dispatch(action)
     })

@@ -38,7 +38,6 @@ const renderApp = () => {
       <App
         store={store}
         audioContext={audioContext}
-        createAudioContext={createAudioContext}
       />
     </Provider>,
     document.getElementById('root')

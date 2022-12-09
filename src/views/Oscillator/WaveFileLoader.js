@@ -66,13 +66,14 @@ class WaveFileLoader extends React.Component {
     // Seems okay to pass in "value" via props.selectedFile.
     // To inspect the dropdown CSS add this handler to stop js and prevent
     // the dropdown from closing : onBlur={() => { debugger } } .
+    if (!this.props.selectedFile || !this.state.options) return null;
     return (
       <div>
+
         <Select
           className={'wave-file-loader color-' + this.props.color.split('#')[1]}
-          value={this.props.selectedFile}
-          clearable={false}
-          searchable={false}
+          defaultValue={this.props.selectedFile}
+
           options={this.state.options}
           onChange={this.onFileSelected.bind(this)} />
       </div>
