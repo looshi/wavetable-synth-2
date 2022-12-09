@@ -3,25 +3,26 @@ Dropdown, shows a list of files.
 On select, loads the file.
 */
 import React from 'react'
+import PropTypes from 'prop-types'
 import Select from 'react-select'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import Actions from '../../data/Actions.js'
 
 class WaveFileLoader extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       options: []
     }
   }
 
-  componentWillUpdate (nextProps, nextState) {
+  componentWillUpdate(nextProps, nextState) {
     if (this.props.files !== nextProps.files) {
       let options = Object.keys(nextProps.files).map((file) => {
         let fileName = file.split('.')[0]
         return { value: fileName, label: file.split('.')[0] }
       })
-      this.setState({options})
+      this.setState({ options })
     }
 
     // Wait until the file list is ready.
@@ -30,14 +31,14 @@ class WaveFileLoader extends React.Component {
     }
   }
 
-  onFileSelected (e) {
-    const {id, side, dispatch} = this.props
+  onFileSelected(e) {
+    const { id, side, dispatch } = this.props
     let action = Actions.waveFileLoadStarted(id, side, e.value)
     dispatch(action)
   }
 
-  loadWaveFile (fileName) {
-    const {id, side, dispatch} = this.props
+  loadWaveFile(fileName) {
+    const { id, side, dispatch } = this.props
 
     if (fileName.toLowerCase().indexOf('noise') !== -1) {
       // 600 is too short for a white noise osc, so we generate 1 second
@@ -59,7 +60,7 @@ class WaveFileLoader extends React.Component {
     }
   }
 
-  render () {
+  render() {
     // Can't pass "options" via props.  "options" must be a reference to state.options.
     // Otherwise, react-select component will lose selected value in list.
     // Seems okay to pass in "value" via props.selectedFile.
@@ -79,8 +80,8 @@ class WaveFileLoader extends React.Component {
   }
 }
 WaveFileLoader.propTypes = {
-  files: React.PropTypes.object,
-  id: React.PropTypes.string
+  files: PropTypes.object,
+  id: PropTypes.string
 }
 WaveFileLoader.defaultProps = {
   files: []

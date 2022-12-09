@@ -5,16 +5,17 @@ Combines two waveforms and calculates a new waveform based on the selected
 operator.
 */
 import React from 'react'
+import PropTypes from 'prop-types'
 import WaveFileLoader from './WaveFileLoader.js'
 import WaveLine from './WaveLine.js'
 import AlgorithmSwitch from './AlgorithmSwitch.js'
 import HorizontalSlider from '../Components/HorizontalSlider.js'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import Actions from '../../data/Actions.js'
 import _ from 'lodash'
 
 class OscillatorView extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.debouncedAction = _.debounce((id, value) => {
       let action = Actions.oscCyclesChanged(id, value)
@@ -22,26 +23,26 @@ class OscillatorView extends React.Component {
     }, 200)
   }
 
-  onCyclesChanged (e) {
+  onCyclesChanged(e) {
     this.debouncedAction(this.props.id, Number(e.target.value))
   }
 
-  onDetuneChanged (e) {
+  onDetuneChanged(e) {
     let action = Actions.oscDetuneChanged(this.props.id, Number(e.target.value))
     this.props.dispatch(action)
   }
 
-  onOctaveChanged (e) {
+  onOctaveChanged(e) {
     let action = Actions.oscOctaveChanged(this.props.id, Number(e.target.value))
     this.props.dispatch(action)
   }
 
-  onAmountChanged (e) {
+  onAmountChanged(e) {
     let action = Actions.onAmountChanged(this.props.id, Number(e.target.value))
     this.props.dispatch(action)
   }
 
-  render () {
+  render() {
     const colorStyle = {
       color: this.props.color
     }
@@ -143,17 +144,17 @@ class OscillatorView extends React.Component {
   }
 }
 OscillatorView.propTypes = {
-  waveData: React.PropTypes.array,
-  width: React.PropTypes.number,
-  height: React.PropTypes.number,
-  detune: React.PropTypes.number,
-  octave: React.PropTypes.number,
-  amount: React.PropTypes.number,
-  channelDataA: React.PropTypes.object, // Float32Array
-  channelDataB: React.PropTypes.object, // Float32Array
-  files: React.PropTypes.object,
-  fileA: React.PropTypes.string,
-  fileB: React.PropTypes.string
+  waveData: PropTypes.array,
+  width: PropTypes.number,
+  height: PropTypes.number,
+  detune: PropTypes.number,
+  octave: PropTypes.number,
+  amount: PropTypes.number,
+  channelDataA: PropTypes.object, // Float32Array
+  channelDataB: PropTypes.object, // Float32Array
+  files: PropTypes.object,
+  fileA: PropTypes.string,
+  fileB: PropTypes.string
 }
 OscillatorView.defaultProps = {
   waveData: [],

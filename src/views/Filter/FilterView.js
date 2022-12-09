@@ -3,21 +3,22 @@ FilterView
 UI controls for the filter.
 */
 import React from 'react'
-import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import VerticalSlider from '../Components/VerticalSlider.js'
 import Actions from '../../data/Actions.js'
 
 class FilterView extends React.Component {
 
-  onSliderChange (event) {
-    const {id} = this.props
+  onSliderChange(event) {
+    const { id } = this.props
     const name = event.target.getAttribute('data-name')
     const value = Number(event.target.value)
     const action = Actions.filterSliderChanged(id, value, name)
     this.props.dispatch(action)
   }
 
-  render () {
+  render() {
     return (
       <div className='module'>
         <h1>Filter</h1>
@@ -81,12 +82,12 @@ class FilterView extends React.Component {
 }
 
 FilterView.propTypes = {
-  freq: React.PropTypes.number,
-  res: React.PropTypes.number,
-  attack: React.PropTypes.number,
-  decay: React.PropTypes.number,
-  sustain: React.PropTypes.number,
-  release: React.PropTypes.number
+  freq: PropTypes.number,
+  res: PropTypes.number,
+  attack: PropTypes.number,
+  decay: PropTypes.number,
+  sustain: PropTypes.number,
+  release: PropTypes.number
 }
 
 export default connect()(FilterView)

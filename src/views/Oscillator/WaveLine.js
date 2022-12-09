@@ -3,10 +3,11 @@ WaveLine
 Displays a waveform graphic.
 */
 import React from 'react'
-import {lerp} from '../../helpers/helpers.js'
+import PropTypes from 'prop-types'
+import { lerp } from '../../helpers/helpers.js'
 
 class WaveLine extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.newData = []
     this.oldData = []
@@ -15,7 +16,7 @@ class WaveLine extends React.Component {
     }
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     // Don't render unless the wave has a number at this location ( it should ).
     if (nextProps.channelData[17] !== 0 && !nextProps.channelData[17]) {
       return false
@@ -39,8 +40,8 @@ class WaveLine extends React.Component {
     return hasChanged
   }
 
-  componentDidUpdate () {
-    let {channelData, width, height} = this.props
+  componentDidUpdate() {
+    let { channelData, width, height } = this.props
     this.oldData = this.newData
     this.newData = []
     let step = 1
@@ -57,7 +58,7 @@ class WaveLine extends React.Component {
     }
 
     // Clamp the pixels so they don't go beyond upper or lower bounds.
-    function clamp (val) {
+    function clamp(val) {
       if (val > padHeight) return padHeight - 1
       if (val < 0) return 1
       return val
@@ -81,14 +82,14 @@ class WaveLine extends React.Component {
     this.drawWave(context, width, height, marginLeft, marginTop, lineWidth)
   }
 
-  drawWave (context, width, height, marginLeft, marginTop, lineWidth) {
+  drawWave(context, width, height, marginLeft, marginTop, lineWidth) {
     let time = 0
     let yValue = 0
     let self = this
     context.lineWidth = lineWidth
     context.strokeStyle = this.props.color
 
-    function step () {
+    function step() {
       if (time < 1) {
         context.clearRect(0, 0, width, height)
         context.beginPath()
@@ -116,7 +117,7 @@ class WaveLine extends React.Component {
     window.requestAnimationFrame(step)
   }
 
-  render () {
+  render() {
     const boxStyle = {
       width: this.props.width,
       height: this.props.height,
@@ -133,8 +134,8 @@ class WaveLine extends React.Component {
   }
 }
 WaveLine.propTypes = {
-  width: React.PropTypes.number,
-  height: React.PropTypes.number
+  width: PropTypes.number,
+  height: PropTypes.number
 }
 WaveLine.defaultProps = {
   waveData: [],

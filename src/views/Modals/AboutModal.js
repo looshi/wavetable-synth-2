@@ -2,12 +2,13 @@
 AboutModal
 */
 import React from 'react'
+import PropTypes from 'prop-types'
 import ReactModal from 'react-modal'
 import interpolatedWaves from '../../../images/interpolated-waves.png'
 
 export default class AboutModal extends React.Component {
 
-  render () {
+  render() {
     return (
       <div className='module'>
         <ReactModal
@@ -36,6 +37,6 @@ export default class AboutModal extends React.Component {
 }
 
 AboutModal.propTypes = {
-  isOpen: React.PropTypes.bool,
-  onClose: React.PropTypes.func
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func
 }

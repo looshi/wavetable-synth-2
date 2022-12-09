@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
@@ -18,7 +19,7 @@ const createAudioContext = () => {
 }
 
 const renderApp = () => {
-  if(!audioContext){
+  if (!audioContext) {
     return render(
       <div className="get-started">
         <h1>Welcome to Wavetable synth!</h1>

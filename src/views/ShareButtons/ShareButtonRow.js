@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {
   ShareButtons,
   ShareCounts,
@@ -21,7 +22,7 @@ const ShareButtonRow = React.createClass({
   shouldComponentUpdate: function (nextProps, nextState) {
     return false
   },
-  render () {
+  render() {
     const shareUrl = 'http://davedave.us/wavetable-synth/'
     const title = 'Wavetable Synth'
     const shareImage = 'http://davedave.us/wavetable-synth/images/share-image.png'
@@ -37,7 +38,7 @@ const ShareButtonRow = React.createClass({
               size={24}
               round />
           </FacebookShareButton>
-        {/*
+          {/*
           <FacebookShareCount
             url={shareUrl}
             className='share-count'>

@@ -2,11 +2,12 @@
 SavePatchModal
 */
 import React from 'react'
+import PropTypes from 'prop-types'
 import ReactModal from 'react-modal'
 
 export default class SavePatchModal extends React.Component {
 
-  render () {
+  render() {
     return (
       <div>
         <ReactModal
@@ -28,6 +29,6 @@ export default class SavePatchModal extends React.Component {
 }
 
 SavePatchModal.propTypes = {
-  isOpen: React.PropTypes.bool,
-  onClose: React.PropTypes.func
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func
 }

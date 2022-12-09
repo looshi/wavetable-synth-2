@@ -3,17 +3,18 @@ Keyboard
 Sends note on / off events.
 */
 import React from 'react'
-import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import Actions from '../../data/Actions.js'
 import _ from 'lodash'
 
 class Keyboard extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.notesOn = []
   }
 
-  componentDidMount () {
+  componentDidMount() {
     let keys = {
       'z': 1,
       'x': 2,
@@ -79,16 +80,16 @@ class Keyboard extends React.Component {
     })
   }
 
-  onMouseDown (event) {
+  onMouseDown(event) {
     const noteNumber = event.target.getAttribute('data-midi')
     this.noteOn(noteNumber)
   }
-  onMouseUp (event) {
+  onMouseUp(event) {
     const noteNumber = event.target.getAttribute('data-midi')
     this.noteOff(noteNumber)
   }
 
-  noteOn (noteNumber) {
+  noteOn(noteNumber) {
     // Changes pitch.
     this.props.dispatch(Actions.noteOn(noteNumber))
 
@@ -101,7 +102,7 @@ class Keyboard extends React.Component {
     this.notesOn.push(noteNumber)
   }
 
-  noteOff (noteNumber) {
+  noteOff(noteNumber) {
     this.props.dispatch(Actions.noteOff(noteNumber))
 
     this.notesOn = this.notesOn.filter((note) => {
@@ -120,7 +121,7 @@ class Keyboard extends React.Component {
   // The key numbers start at 24 which is "C0", the second octave of MIDI notes.
   // This is quite low, and usually the lowest key on a keyboard, but not the
   // lowest actual MIDI note, for example ableton shows C-1 and C-1 lower octaves.
-  drawKeys () {
+  drawKeys() {
     let blackKeys = [1, 3, 6, 8, 10]
     let keys = {
       black: [],
@@ -149,18 +150,18 @@ class Keyboard extends React.Component {
     return keys
   }
 
-  blackKeyClassName (key) {
+  blackKeyClassName(key) {
     let className = 'key black-key'
     if (key.isSpacer) className += ' spacer'
     return className
   }
 
-  isKeyOn (key) {
+  isKeyOn(key) {
     return this.props.Keyboard[key.midi] === 'on'
   }
 
-  render () {
-    let {black, white} = this.drawKeys()
+  render() {
+    let { black, white } = this.drawKeys()
     return (
       <div className='keyboard-container'>
         <div className='keyboard'>
@@ -204,8 +205,8 @@ class Keyboard extends React.Component {
 }
 
 Keyboard.propTypes = {
-  eventEmitter: React.PropTypes.object,
-  Keyboard: React.PropTypes.object
+  eventEmitter: PropTypes.object,
+  Keyboard: PropTypes.object
 }
 
 export default connect()(Keyboard)
