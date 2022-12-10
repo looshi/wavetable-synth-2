@@ -15,7 +15,7 @@ export default class AboutModal extends React.Component {
           </div>
           <div>
             <h2 className='text-center'>How to use</h2>
-            <p>Play the keyboard keys to trigger notes, or click on the piano keys at the bottom of your screen.   To make sequences, turn the arpeggiator ON at the top of the screen.  Click in a quick sequence of notes and it will be looped by the arpeggiator when ON.  The arpeggiator will play all notes from the last 5 seconds.  Midi input is also supported. </p>
+            <p>Play the keyboard keys to trigger notes, or click on the piano keys at the bottom of your screen.  The arpeggiator will play all notes from the last 5 seconds.  Turn the arpeggiator ON and play a couple of notes to make sequences.</p>
             <h2 className='text-center'>Wavetable Synthesis</h2>
             <p>Wavetable synthesis refers to the technique of interpolating from one array of samples ( a "table" ), to another over time. This technique made it possible for digital synthesizers of the 1980s to generate complex and evolving sounds using very little processing power and memory.
               One of the first wavetable synthesizers was the PPG Wave <a href="https://en.wikipedia.org/wiki/PPG_Wave">en.wikipedia.org/wiki/PPG_Wav</a> used by many bands at the time such Depeche Mode.</p>
