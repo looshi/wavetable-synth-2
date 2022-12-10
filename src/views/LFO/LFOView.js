@@ -79,6 +79,9 @@ class LFOView extends React.Component {
 
   render() {
     let selected = this.props.shape
+
+    const oscDestValue = this.state.options.find(o => o.value === this.props.destination.id)
+
     return (
       <div className='module lfo'>
         <h1>LFO {this.props.name}</h1>
@@ -113,8 +116,16 @@ class LFOView extends React.Component {
         </div>
         <div className='destination-selector'>
           <Select
-            className='lfo-destination'
-            value={this.props.destination.id}
+            classNames={{
+              container: () => 'lfo-destination',
+              control: () => 'control',
+              valueContainer: () => 'value-container',
+              singleValue: () => 'single-value',
+              input: () => 'input',
+              menu: () => 'menu',
+              indicatorsContainer: () => 'indicators-container'
+            }}
+            value={this.state.options.find(o => o.value === oscDestValue)}
             clearable={false}
             searchable={false}
             options={this.state.options}

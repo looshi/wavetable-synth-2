@@ -60,20 +60,30 @@ class WaveFileLoader extends React.Component {
     }
   }
 
+
+
   render() {
-    // Can't pass "options" via props.  "options" must be a reference to state.options.
-    // Otherwise, react-select component will lose selected value in list.
-    // Seems okay to pass in "value" via props.selectedFile.
-    // To inspect the dropdown CSS add this handler to stop js and prevent
-    // the dropdown from closing : onBlur={() => { debugger } } .
-    if (!this.props.selectedFile || !this.state.options) return null;
+    const options = [
+      { value: 'chocolate', label: 'Chocolate' },
+      { value: 'strawberry', label: 'Strawberry' },
+      { value: 'vanilla', label: 'Vanilla' }
+    ]
+
+    const val = this.state.options.find(o => o.label === this.props.selectedFile)
+
     return (
       <div>
-
         <Select
-          className={'wave-file-loader color-' + this.props.color.split('#')[1]}
-          defaultValue={this.props.selectedFile}
-
+          classNames={{
+            container: () => 'wave-file-loader-container',
+            control: () => 'wave-file-loader color-' + this.props.color.split('#')[1],
+            valueContainer: () => 'value-container',
+            singleValue: () => 'single-value',
+            input: () => 'input',
+            menu: () => 'menu',
+            indicatorsContainer: () => 'indicators-container'
+          }}
+          value={val}
           options={this.state.options}
           onChange={this.onFileSelected.bind(this)} />
       </div>

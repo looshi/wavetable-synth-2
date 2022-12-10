@@ -30,9 +30,10 @@ h2 {
   padding: 80px;
   text-align: center;
   max-width: 600px;
-  margin:0 auto;
+  margin: 0 auto;
 }
-.get-started button{
+
+.get-started button {
   background-color: $blue;
   padding: 24px 36px;
   color: white;
@@ -62,12 +63,14 @@ header {
     margin: 0;
     padding: 0;
   }
+
   a {
     margin-left: 22px;
     margin-top: 13px;
     vertical-align: top;
     display: inline-block;
     text-decoration: underline;
+
     &:hover {
       cursor: pointer;
     }
@@ -76,9 +79,10 @@ header {
   .header-controls {
     display: flex;
     justify-content: space-between;
-    margin: 0;
+    margin: 0 auto;
     padding: 24px 0 0 0;
     align-items: center;
+    width: 800px;
   }
 }
 
@@ -86,6 +90,7 @@ header {
   width: 960px;
   margin: 0 auto 40px;
   padding-left: 20px;
+
   /* Pads the bottom so the controls can scroll above the keyboard. */
   .scroll-footer {
     height: 280px;
@@ -107,20 +112,25 @@ footer {
     which causes notice-able stuttering in audio playback when ARP is on.
   */
   transform: translate3d(0, 0, 0);
+
   .footer-info {
     padding: 4px;
     text-align: right;
   }
-  a, p {
+
+  a,
+  p {
     font-size: 12px;
     display: inline-block;
     margin: 0 12px 0 0;
     font-weight: 400;
     letter-spacing: 0.06em;
   }
+
   a {
     color: white;
     text-decoration: underline;
+
     &:hover {
       cursor: pointer;
     }
@@ -129,19 +139,23 @@ footer {
 
 .share-button-row {
   display: inline-block;
+
   .share-button-container {
     display: inline-block;
   }
+
   .share-button {
     display: inline-block;
     border: 1px solid $blue;
     border-radius: 24px;
-        vertical-align: middle;
+    vertical-align: middle;
+
     &:hover {
       cursor: pointer;
       border: 1px solid white;
     }
   }
+
   .share-count {
     display: inline-block;
     vertical-align: top;
@@ -169,7 +183,7 @@ h1 {
 }
 
 .module {
-  display:inline-block;
+  display: inline-block;
   width: 300px;
   margin-right: 20px;
 }
@@ -184,11 +198,13 @@ h1 {
   vertical-align: middle;
   text-align: center;
 
-  &:hover, &.selected {
+  &:hover,
+  &.selected {
     cursor: pointer;
     color: #fff;
     background-color: $blue;
   }
+
   &.algorithm-button {
     margin-left: 23px;
   }
@@ -197,33 +213,44 @@ h1 {
 
   @for $i from 1 through length($colors-list) {
     $current-color: nth($colors-list, $i);
-    $y: (-7 + $i * 46) + px;
+    $y: (-7 + $i * 46)+px;
 
     &.plus.color-#{$current-color} {
       background: url('../images/operator-btns.png');
       background-position: 411px $y;
-      &:hover, &.selected {
+
+      &:hover,
+      &.selected {
         background-position: 147px $y;
       }
     }
+
     &.minus.color-#{$current-color} {
       background: url('../images/operator-btns.png');
       background-position: 288px $y;
-      &:hover, &.selected {
+
+      &:hover,
+      &.selected {
         background-position: 39px $y;
       }
     }
+
     &.divide.color-#{$current-color} {
       background: url('../images/operator-btns.png');
       background-position: 349px $y;
-      &:hover, &.selected {
+
+      &:hover,
+      &.selected {
         background-position: 93px $y;
       }
     }
+
     &.multiply.color-#{$current-color} {
       background: url('../images/operator-btns.png');
       background-position: 471px $y;
-      &:hover, &.selected {
+
+      &:hover,
+      &.selected {
         background-position: 201px $y;
       }
     }
@@ -234,27 +261,39 @@ h1 {
   width: 52px;
   height: 52px;
   background: url('../images/lfo-shape-btns.png');
+
   &.random {
     background-position: 74px -66px;
-    &:hover, &.selected {
+
+    &:hover,
+    &.selected {
       background-position: 207px -67px;
     }
   }
+
   &.triangle {
     background-position: 138px -1px;
-    &:hover, &.selected {
+
+    &:hover,
+    &.selected {
       background-position: -1px -1px;
     }
   }
+
   &.sawtooth {
     background-position: 72px -1px;
-    &:hover, &.selected {
+
+    &:hover,
+    &.selected {
       background-position: -67px -1px;
     }
   }
+
   &.square {
     background-position: 137px 57px;
-    &:hover, &.selected {
+
+    &:hover,
+    &.selected {
       background-position: -1px 53px;
     }
   }
@@ -263,6 +302,7 @@ h1 {
 .algorithm-switch {
   margin: 20px 0;
 }
+
 .combine-prompt {
   font-size: 16px;
   display: inline-block;
@@ -273,17 +313,21 @@ h1 {
 .oscillator-sliders {
   margin: 16px 0 0 0;
 }
+
 .horizontal-slider {
   margin: 6px 0 0 0;
+
   .slider-label {
     display: inline-block;
     width: 80px;
   }
+
   .slider-value {
     display: inline-block;
     text-align: right;
     width: 34px;
   }
+
   input {
     display: inline-block;
     width: 180px;
@@ -301,8 +345,10 @@ h1 {
 .asdr-sliders {
   display: inline-block;
   margin-left: 38px;
+
   .vertical-slider {
     width: 10px;
+
     .vertical-slider-container {
       margin-left: -7px;
     }
@@ -311,21 +357,25 @@ h1 {
 
 // LFOs
 .lfo {
-  .shape-switch{
+  .shape-switch {
     width: 142px;
     display: inline-block;
     vertical-align: top;
     margin: 25px 16px;
+
     .wave-label {
       text-align: center;
     }
   }
+
   .sliders {
     display: inline-block;
   }
+
   .toggle-button {
     margin: 8px;
   }
+
   .Select-arrow-zone {
     padding-right: 15px;
   }
@@ -335,13 +385,14 @@ h1 {
 .arp-switch-label {
   margin-bottom: 12px;
   text-align: center;
-  display:block;
+  display: block;
 }
 
 .arpeggiator-switch {
   display: flex;
   vertical-align: bottom;
-  .toggle-button:first-child{
+
+  .toggle-button:first-child {
     margin-bottom: 12px;
   }
 }
@@ -352,14 +403,17 @@ h1 {
     float: right;
     padding: 10px;
     font-size: 16px;
+
     &:hover {
       cursor: pointer;
     }
   }
+
   p {
     text-align: center;
     max-width: 500px;
     margin: 12px auto;
+
     &.inverted {
       border: 3px solid $blue;
       word-wrap: break-word;
@@ -367,6 +421,7 @@ h1 {
       max-width: 436px;
     }
   }
+
   img {
     margin: 0 auto;
     display: block;

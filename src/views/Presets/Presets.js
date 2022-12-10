@@ -32,9 +32,11 @@ class Presets extends React.Component {
   render() {
     return (
       <div className='preset-list-container'>
+
+
         <Select
           className={'preset-list'}
-          value={this.props.presetId}
+          value={this.state.options.find(o => o.value === this.props.presetId)}
           placeholder={'Select Preset'}
           clearable={false}
           searchable={false}
