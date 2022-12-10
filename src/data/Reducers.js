@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import queryString from 'query-string'
-import {limit} from '../helpers/helpers.js'
+import { limit } from '../helpers/helpers.js'
 
 let Master = {}
 let Filter = {}
@@ -14,26 +14,26 @@ let OSC_WAV_FILES = {}
 
 // LFOs
 const LFODestinations = [
-  {id: '-1', label: 'None'},
-  {id: '0', label: 'Amp', moduleId: 'amp', property: 'gain'},
-  {id: '1', label: 'Filter', moduleId: 'filter', property: 'freq'},
-  {id: '6', label: 'Osc ALL Pitch', moduleId: 'oscAll', property: 'detune'},
-  {id: '3', label: 'Osc 1 Pitch', moduleId: 'o1', property: 'detune'},
-  {id: '4', label: 'Osc 2 Pitch', moduleId: 'o2', property: 'detune'},
-  {id: '5', label: 'Osc 3 Pitch', moduleId: 'o3', property: 'detune'},
-  {id: '7', label: 'Osc 1 Amount', moduleId: 'o1', property: 'amount'},
-  {id: '8', label: 'Osc 2 Amount', moduleId: 'o2', property: 'amount'},
-  {id: '9', label: 'Osc 3 Amount', moduleId: 'o3', property: 'amount'},
-  {id: '10', label: 'Chorus Amount', moduleId: 'effects', property: 'chorusAmount'},
-  {id: '11', label: 'Chorus Time', moduleId: 'effects', property: 'chorusTime'},
-  {id: '12', label: 'LFO 1', moduleId: 'l1', property: 'amount'},
-  {id: '13', label: 'LFO 2', moduleId: 'l2', property: 'amount'},
-  {id: '14', label: 'LFO 3', moduleId: 'l3', property: 'amount'}
+  { id: '-1', label: 'None' },
+  { id: '0', label: 'Amp', moduleId: 'amp', property: 'gain' },
+  { id: '1', label: 'Filter', moduleId: 'filter', property: 'freq' },
+  { id: '6', label: 'Osc ALL Pitch', moduleId: 'oscAll', property: 'detune' },
+  { id: '3', label: 'Osc 1 Pitch', moduleId: 'o1', property: 'detune' },
+  { id: '4', label: 'Osc 2 Pitch', moduleId: 'o2', property: 'detune' },
+  { id: '5', label: 'Osc 3 Pitch', moduleId: 'o3', property: 'detune' },
+  { id: '7', label: 'Osc 1 Amount', moduleId: 'o1', property: 'amount' },
+  { id: '8', label: 'Osc 2 Amount', moduleId: 'o2', property: 'amount' },
+  { id: '9', label: 'Osc 3 Amount', moduleId: 'o3', property: 'amount' },
+  { id: '10', label: 'Chorus Amount', moduleId: 'effects', property: 'chorusAmount' },
+  { id: '11', label: 'Chorus Time', moduleId: 'effects', property: 'chorusTime' },
+  { id: '12', label: 'LFO 1', moduleId: 'l1', property: 'amount' },
+  { id: '13', label: 'LFO 2', moduleId: 'l2', property: 'amount' },
+  { id: '14', label: 'LFO 3', moduleId: 'l3', property: 'amount' }
 ]
 
 // Converts string url values into Number values.
 // Sets a default if no url value is present.
-function urlVal (val, defaultValue) {
+function urlVal(val, defaultValue) {
   if (val === 0) {
     return 0
   } else if (!val) {
@@ -43,7 +43,7 @@ function urlVal (val, defaultValue) {
   }
 }
 
-function initializeState (URL) {
+function initializeState(URL) {
   // Master.
   Master = {
     id: 'master',
@@ -75,9 +75,9 @@ function initializeState (URL) {
   // Effects.
   Effects = {
     id: 'effects',
-    chorusAmount: urlVal(URL.ca, 50),
+    chorusAmount: urlVal(URL.ca, 0),
     chorusTime: urlVal(URL.ct, 50),
-    glide: urlVal(URL.g, 20),
+    glide: urlVal(URL.g, 0),
     arpIsOn: URL.ao === '1',   // Boolean. 1 = on, 0 = off.
     arpTempo: urlVal(URL.at, 100)
   }
@@ -124,7 +124,7 @@ function initializeState (URL) {
 }
 
 // Oscillator.
-function initOscillator (URL, name, id, color) {
+function initOscillator(URL, name, id, color) {
   return {
     name,
     id,
@@ -141,11 +141,11 @@ function initOscillator (URL, name, id, color) {
     note: 0, // The numeric keyboard note, e.g. A is 48.  Lowest C is zero.
     color,
     files: OSC_WAV_FILES,
-    glide: URL.g || 20
+    glide: URL.g || 0
   }
 }
 
-function initLFO (name, id) {
+function initLFO(name, id) {
   return {
     name,
     id,
@@ -160,7 +160,7 @@ function initLFO (name, id) {
 }
 
 // Stores the parameters in the url.
-function updateURL (paramName, value) {
+function updateURL(paramName, value) {
   let urlData = queryString.parse(window.location.hash)
   urlData[paramName] = value
   window.location.hash = queryString.stringify(urlData)
@@ -170,7 +170,7 @@ function updateURL (paramName, value) {
 let urlData = queryString.parse(window.location.hash)
 let initialState = initializeState(urlData)
 
-function MasterReducer (state, action) {
+function MasterReducer(state, action) {
   state = state || initialState.Master
   switch (action.type) {
     case 'MASTER_GAIN_CHANGED':
@@ -182,7 +182,7 @@ function MasterReducer (state, action) {
   }
 }
 
-function KeyboardReducer (state, action) {
+function KeyboardReducer(state, action) {
   state = state || initialState.Keyboard
 
   switch (action.type) {
@@ -203,7 +203,7 @@ function KeyboardReducer (state, action) {
   }
 }
 
-function AmpReducer (state, action) {
+function AmpReducer(state, action) {
   state = state || initialState.Amp
 
   switch (action.type) {
@@ -228,7 +228,7 @@ function AmpReducer (state, action) {
   }
 }
 
-function FilterReducer (state, action) {
+function FilterReducer(state, action) {
   state = state || initialState.Filter
 
   switch (action.type) {
@@ -259,7 +259,7 @@ function FilterReducer (state, action) {
   }
 }
 
-function EffectsReducer (state, action) {
+function EffectsReducer(state, action) {
   state = state || initialState.Effects
   switch (action.type) {
     case 'CHORUS_SLIDER_CHANGED':
@@ -289,8 +289,9 @@ function EffectsReducer (state, action) {
   }
 }
 
-function LFOsReducer (state, action) {
+function LFOsReducer(state, action) {
   state = state || initialState.LFOs
+  let lfo;
   switch (action.type) {
     case 'LFO_SHAPE_CHANGED':
       state = state.map(function (lfo) {
@@ -303,7 +304,7 @@ function LFOsReducer (state, action) {
       return [...state]
 
     case 'LFO_RATE_CHANGED':
-      let lfo = state.find((l) => l.id === action.id)
+      lfo = state.find((l) => l.id === action.id)
       lfo.rate = action.rate
       updateURL(lfo.id + 'r', action.rate)
       return [...state]
@@ -329,7 +330,7 @@ function LFOsReducer (state, action) {
 }
 
 // Update the computed waveform based on the current algorithm.
-function computeWaveform (channelDataA, channelDataB, algorithm, cycles) {
+function computeWaveform(channelDataA, channelDataB, algorithm, cycles) {
   if (!channelDataA || !channelDataB || !algorithm) {
     return []
   }
@@ -355,7 +356,7 @@ function computeWaveform (channelDataA, channelDataB, algorithm, cycles) {
 
 // Modified lerp function based on algorithm chosen.
 // The 'minus' algorithm uses the normal lerp function.
-function slerp (v0, v1, t, algorithm) {
+function slerp(v0, v1, t, algorithm) {
   if (algorithm === 'p') {
     return limit(-1, 1, v0 * (1 - t) + v1 * t) || 0.00001 // Normal lerp function.
   } else if (algorithm === 'm') {
@@ -370,7 +371,7 @@ function slerp (v0, v1, t, algorithm) {
   }
 }
 
-function OscillatorsReducer (state, action) {
+function OscillatorsReducer(state, action) {
   state = state || initialState.Oscillators
 
   switch (action.type) {
@@ -378,7 +379,7 @@ function OscillatorsReducer (state, action) {
       state = state.map(function (osc) {
         OSC_WAV_FILES = action.files
         let hasLoaded = Object.keys(osc.files).length > 0
-         // Only set the wavetable data once per page load.
+        // Only set the wavetable data once per page load.
         if (!hasLoaded) {
           osc.files = Object.assign({}, action.files)
         }
