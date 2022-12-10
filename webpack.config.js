@@ -9,13 +9,9 @@ module.exports = {
   output: {
     path: resolve('dist'),
     filename: 'bundle.js',
-    // change this to './dist/' for production build, '/dist/' for local host.
     publicPath: ''
   },
   devServer: {
-    // static: {
-    //   directory: path.join(__dirname, 'dist'),
-    // },
     compress: true,
     port: 9000,
   },
