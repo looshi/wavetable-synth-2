@@ -3,7 +3,8 @@ AmpView
 ADSR faders for amplitude.
 */
 import React from 'react'
-import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import VerticalSlider from '../Components/VerticalSlider.js'
 import Actions from '../../data/Actions.js'
 
@@ -12,20 +13,20 @@ import Actions from '../../data/Actions.js'
 
 class EffectsView extends React.Component {
 
-  onChorusChange (event) {
-    const {id} = this.props
+  onChorusChange(event) {
+    const { id } = this.props
     const name = event.target.getAttribute('data-name')
     const value = Number(event.target.value)
     const action = Actions.chorusSliderChanged(id, value, name)
     this.props.dispatch(action)
   }
 
-  onGlideChange (event) {
+  onGlideChange(event) {
     const action = Actions.glideChanged(Number(event.target.value))
     this.props.dispatch(action)
   }
 
-  render () {
+  render() {
     return (
       <div className='module'>
         <h1>Effects</h1>
@@ -67,11 +68,11 @@ class EffectsView extends React.Component {
 }
 
 EffectsView.propTypes = {
-  arpTempo: React.PropTypes.number,
-  arpIsOn: React.PropTypes.bool,
-  glide: React.PropTypes.number,
-  chorusTime: React.PropTypes.number,
-  chorusAmount: React.PropTypes.number
+  arpTempo: PropTypes.number,
+  arpIsOn: PropTypes.bool,
+  glide: PropTypes.number,
+  chorusTime: PropTypes.number,
+  chorusAmount: PropTypes.number
 }
 
 export default connect()(EffectsView)

@@ -5,20 +5,21 @@ Nodes are connected in this order :
 Oscillators -> Osc Bus -> Distortion (subtle) -> Filter -> VCA -> Master
 */
 import React from 'react'
-import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import Oscillator from './Oscillator.js'
 import Chorus from './Chorus.js'
 import Filter from './Filter.js'
 import LFO from './LFO.js'
 import Arpeggiator from './Arpeggiator/Arpeggiator.js'
 import observeStore from '../data/ObserveStore'
-import {limit} from '../helpers/helpers.js'
+import { limit } from '../helpers/helpers.js'
 import Actions from '../data/Actions.js'
 
 class Synth extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
-    let {audioContext, eventEmitter} = this.props
+    let { audioContext, eventEmitter } = this.props
 
     // Amp
     this.masterGain = audioContext.createGain()
@@ -82,7 +83,7 @@ class Synth extends React.Component {
     this.startListeners(eventEmitter, props.store)
   }
 
-  initOscillators (props) {
+  initOscillators(props) {
     props.Oscillators.map((o, index) => {
       let options = {
         id: o.id,
@@ -116,7 +117,7 @@ class Synth extends React.Component {
     })
   }
 
-  initLFOs (props) {
+  initLFOs(props) {
     props.LFOs.map((l, index) => {
       let options = {
         name: l.name,
@@ -158,7 +159,7 @@ class Synth extends React.Component {
   }
 
   // Route LFOs to targets.
-  routeLFO (lfo, destination) {
+  routeLFO(lfo, destination) {
     lfo.disconnect()
     // Disconnect the LFO from any oscillators ( if it was set to any ).
     this.oscillators.map((osc) => {
@@ -215,17 +216,17 @@ class Synth extends React.Component {
   // Stores the notes played in the last few seconds from the last note played.
   // The notes will played in the order recieved by the arpeggiator.
   // Modeled after how the Akai Ax60 collects notes for its arpeggiator.
-  collectArpNotes (noteNumber) {
+  collectArpNotes(noteNumber) {
     this.ArpNotes = this.ArpNotes.filter((note) => {
       return note.time > Date.now() - 5000
     })
-    this.ArpNotes.push({noteNumber, time: Date.now()})
+    this.ArpNotes.push({ noteNumber, time: Date.now() })
 
     let notes = this.ArpNotes.map((n) => n.noteNumber)
     this.Arpeggiator.notes = notes
   }
 
-  startListeners (eventEmitter, store) {
+  startListeners(eventEmitter, store) {
     // Keyboard note on / off events.  These should happen "now" = currentTime.
     eventEmitter.on('NOTE_ON', (noteNumber) => {
       this.ampEnvelopeOn(this.props.audioContext.currentTime)
@@ -252,15 +253,15 @@ class Synth extends React.Component {
       this.Arpeggiator.tempo = tempo
     })
     observeStore(store, 'Amp.decay', (decay) => {
-      let {attack, sustain} = this.props.Amp
+      let { attack, sustain } = this.props.Amp
       this.Arpeggiator.noteLength = attack + decay + sustain
     })
     observeStore(store, 'Amp.attack', (attack) => {
-      let {decay, sustain} = this.props.Amp
+      let { decay, sustain } = this.props.Amp
       this.Arpeggiator.noteLength = attack + decay + sustain
     })
     observeStore(store, 'Amp.sustain', (sustain) => {
-      let {attack, decay} = this.props.Amp
+      let { attack, decay } = this.props.Amp
       this.Arpeggiator.noteLength = attack + decay + sustain
     })
     // Arpeggiator events.  These notes are scheduled in the near future.
@@ -285,8 +286,8 @@ class Synth extends React.Component {
     })
   }
 
-  filterEnvelopeOn (now) {
-    let {attack, decay, sustain, freq} = this.props.Filter
+  filterEnvelopeOn(now) {
+    let { attack, decay, sustain, freq } = this.props.Filter
     attack = limit(0.001, 1, attack / 100)
     decay = limit(0.001, 1, decay / 100)
     sustain = (sustain / 100) * freq // Sustain is a percentage of freq.
@@ -298,17 +299,17 @@ class Synth extends React.Component {
     this.biquadFilter.setTargetAtTime(sustain, now + attack, decay)
   }
 
-  filterEnvelopeOff (now) {
-    let {release} = this.props.Filter
+  filterEnvelopeOff(now) {
+    let { release } = this.props.Filter
     release = limit(0.02, 1, release / 50)
 
     this.biquadFilter.cancelScheduledValues(now)
     this.biquadFilter.setTargetAtTime(60, now, release)
   }
 
-  ampEnvelopeOn (now) {
-    let {gain} = this.vcaGain
-    let {attack, decay, sustain} = this.props.Amp
+  ampEnvelopeOn(now) {
+    let { gain } = this.vcaGain
+    let { attack, decay, sustain } = this.props.Amp
     attack = limit(0.003, 1, attack / 100)
     decay = limit(0.001, 1, decay / 100)
     sustain = limit(0.001, 1, sustain / 100)
@@ -318,16 +319,16 @@ class Synth extends React.Component {
     gain.setTargetAtTime(sustain, now + attack, decay)
   }
 
-  ampEnvelopeOff (now) {
-    let {gain} = this.vcaGain
-    let {release} = this.props.Amp
+  ampEnvelopeOff(now) {
+    let { gain } = this.vcaGain
+    let { release } = this.props.Amp
     release = limit(0.02, 1, release / 100)
 
     gain.cancelScheduledValues(now)
     gain.setTargetAtTime(0, now, release)
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     // Amp
     this.masterGain.gain.value = limit(0, 1, this.props.Master.volume / 100)
 
@@ -335,13 +336,13 @@ class Synth extends React.Component {
     this.biquadFilter.Q = this.props.Filter.res
   }
 
-  render () {
+  render() {
     return null
   }
 
   // http://www.carbon111.com/waveshaping1.html
   // f(x)=(arctan x)/pi
-  makeDistortionCurve (amount) {
+  makeDistortionCurve(amount) {
     let nSamples = 44100
     let curve = new Float32Array(nSamples)
     let x

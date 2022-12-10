@@ -3,20 +3,21 @@ AmpView
 ADSR faders for amplitude.
 */
 import React from 'react'
-import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import VerticalSlider from '../Components/VerticalSlider.js'
 import Actions from '../../data/Actions.js'
 
 class AmpView extends React.Component {
 
-  onSliderChange (event) {
-    const {id} = this.props
+  onSliderChange(event) {
+    const { id } = this.props
     const name = event.target.getAttribute('data-name')
     const action = Actions.ampSliderChanged(id, Number(event.target.value), name)
     this.props.dispatch(action)
   }
 
-  render () {
+  render() {
     return (
       <div className='module'>
         <h1>Amp</h1>
@@ -62,10 +63,10 @@ class AmpView extends React.Component {
 }
 
 AmpView.propTypes = {
-  attack: React.PropTypes.number,
-  decay: React.PropTypes.number,
-  sustain: React.PropTypes.number,
-  release: React.PropTypes.number
+  attack: PropTypes.number,
+  decay: PropTypes.number,
+  sustain: PropTypes.number,
+  release: PropTypes.number
 }
 
 export default connect()(AmpView)

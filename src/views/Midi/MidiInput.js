@@ -3,12 +3,13 @@ MidiInput
 Selects a device from available MIDI input devices.
 */
 import React from 'react'
+import PropTypes from 'prop-types'
 import Select from 'react-select'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import Actions from '../../data/Actions.js'
 
 class MidiInput extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     if (navigator.requestMIDIAccess) {
       navigator.requestMIDIAccess().then(this.onMidiInit.bind(this), this.onMidiError)
@@ -25,13 +26,13 @@ class MidiInput extends React.Component {
     this.notesOn = []
   }
 
-  onMidiInit (midiAccess) {
+  onMidiInit(midiAccess) {
     let options = this.state.options
     let inputs = midiAccess.inputs.values()
     let hasSelectedInput = false
     for (var input of inputs) {
       input.onmidimessage = this.onMidiMessage.bind(this)
-      options.push({label: input.name, value: input.id})
+      options.push({ label: input.name, value: input.id })
       // Select the first MIDI input found by default.
       if (!hasSelectedInput) {
         this.setState({ selectedInput: input.id })
@@ -41,14 +42,14 @@ class MidiInput extends React.Component {
     this.setState({ options })
   }
 
-  onMidiError () {
+  onMidiError() {
 
   }
-  onInputChanged (e) {
+  onInputChanged(e) {
     this.setState({ selectedInput: e.value })
   }
 
-  handleKeyDown (noteNumber) {
+  handleKeyDown(noteNumber) {
     // Change pitch.
     this.props.dispatch(Actions.noteOn(noteNumber))
 
@@ -61,7 +62,7 @@ class MidiInput extends React.Component {
     this.notesOn.push(noteNumber)
   }
 
-  handleKeyUp (noteNumber) {
+  handleKeyUp(noteNumber) {
     this.props.dispatch(Actions.noteOff(noteNumber))
 
     this.notesOn = this.notesOn.filter((note) => {
@@ -76,7 +77,7 @@ class MidiInput extends React.Component {
     }
   }
 
-  onMidiMessage (e) {
+  onMidiMessage(e) {
     // Only listen to the selected MIDI device.
     if (e.target.id !== this.state.selectedInput) {
       return
@@ -109,7 +110,7 @@ class MidiInput extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <div className='midi-input-container'>
         <Select
@@ -125,7 +126,7 @@ class MidiInput extends React.Component {
 }
 
 MidiInput.propTypes = {
-  eventEmitter: React.PropTypes.object
+  eventEmitter: PropTypes.object
 }
 
 export default connect()(MidiInput)

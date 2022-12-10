@@ -1,18 +1,18 @@
 /* global AudioContext */
 import axios from 'axios'
 import React from 'react'
+import PropTypes from 'prop-types'
 import Actions from './data/Actions'
 import OscillatorView from './views/Oscillator/OscillatorView.js'
 import FilterView from './views/Filter/FilterView.js'
 import EffectsView from './views/Effects/EffectsView.js'
 import AmpView from './views/Filter/AmpView.js'
 import LFOView from './views/LFO/LFOView.js'
-import ShareButtonRow from './views/ShareButtons/ShareButtonRow.js'
 import Presets from './views/Presets/Presets.js'
 import MidiInput from './views/Midi/MidiInput.js'
 import SavePatchModal from './views/Modals/SavePatchModal.js'
 import AboutModal from './views/Modals/AboutModal.js'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 
 import Synth from './audio/Synth.js'
 import HorizontalSlider from './views/Components/HorizontalSlider.js'
@@ -20,15 +20,15 @@ import ArpeggiatorSwitch from './views/Effects/ArpeggiatorSwitch'
 import Keyboard from './views/Keyboard/Keyboard.js'
 import EventEmitter from 'event-emitter'
 
-import WaveTableData from './data/WaveTableData.json'
+const WaveTableDataUrl = './data/WaveTableData.json'
 
 
 const eventEmitter = new EventEmitter()
 
 class App extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
-    axios.get(WaveTableData).then(function (response) {
+    axios.get(WaveTableDataUrl).then(function (response) {
       let action = Actions.waveFileListLoaded(response.data)
       props.dispatch(action)
     })
@@ -38,34 +38,34 @@ class App extends React.Component {
     }
   }
 
-  onOpenSavePatchModal () {
-    this.setState({isSavePatchModalOpen: true})
+  onOpenSavePatchModal() {
+    this.setState({ isSavePatchModalOpen: true })
   }
-  onCloseSavePatchModal () {
-    this.setState({isSavePatchModalOpen: false})
+  onCloseSavePatchModal() {
+    this.setState({ isSavePatchModalOpen: false })
   }
-  onOpenAboutModal () {
-    this.setState({isAboutModalOpen: true})
+  onOpenAboutModal() {
+    this.setState({ isAboutModalOpen: true })
   }
-  onCloseAboutModal () {
-    this.setState({isAboutModalOpen: false})
+  onCloseAboutModal() {
+    this.setState({ isAboutModalOpen: false })
   }
-  onMasterGainChanged (e) {
+  onMasterGainChanged(e) {
     let action = Actions.masterGainChanged(e.target.value)
     this.props.dispatch(action)
   }
-  onArpTempoChange (event) {
+  onArpTempoChange(event) {
     let action = Actions.arpTempoChanged(Number(event.target.value))
     this.props.dispatch(action)
   }
 
-  render () {
+  render() {
     // Shows a message if no audio support in the browser.
     if (!window.AudioContext) {
       return (
         <div>
-          <h1 style={{textAlign: 'center'}}>Bummer, this browser doesn't support audio.</h1>
-          <h1 style={{textAlign: 'center'}}>Try this synth in Chrome.</h1>
+          <h1 style={{ textAlign: 'center' }}>Bummer, this browser doesn't support audio.</h1>
+          <h1 style={{ textAlign: 'center' }}>Try this synth in Chrome.</h1>
         </div>
       )
     }
@@ -148,7 +148,6 @@ class App extends React.Component {
             <div className='footer-info'>
               <a onClick={this.onOpenAboutModal.bind(this)}>About</a>
               <a onClick={this.onOpenSavePatchModal.bind(this)}>Save Patch</a>
-              <ShareButtonRow />
               <p>
                 <a href='https://github.com/looshi/wavetable-synth-2'>
                   View Source Code on Github
@@ -181,7 +180,7 @@ class App extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     Master: state.Master,
     Filter: state.Filter,

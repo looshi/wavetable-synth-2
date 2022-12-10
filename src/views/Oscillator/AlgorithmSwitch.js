@@ -3,13 +3,14 @@ AlgorithmSwitch
 Switches between multiply, divide, minus, and plus.
 */
 import React from 'react'
-import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import Actions from '../../data/Actions.js'
 
 class AlgorithmSwitch extends React.Component {
 
-  onAlgorithmChanged (event) {
-    const {id, dispatch} = this.props
+  onAlgorithmChanged(event) {
+    const { id, dispatch } = this.props
     const algo = event.target.getAttribute('data-algo')
     if (!algo) {
       return
@@ -18,7 +19,7 @@ class AlgorithmSwitch extends React.Component {
     dispatch(action)
   }
 
-  buttonClassName (type, selected) {
+  buttonClassName(type, selected) {
     let typeClass = ''
     switch (type) {
       case 'p':
@@ -42,7 +43,7 @@ class AlgorithmSwitch extends React.Component {
     return className
   }
 
-  render () {
+  render() {
     let selected = this.props.algorithm
     const textStyle = {
       color: this.props.color
@@ -61,9 +62,9 @@ class AlgorithmSwitch extends React.Component {
 }
 
 AlgorithmSwitch.propTypes = {
-  algorithm: React.PropTypes.string,
-  id: React.PropTypes.string,
-  color: React.PropTypes.string
+  algorithm: PropTypes.string,
+  id: PropTypes.string,
+  color: PropTypes.string
 }
 
 export default connect()(AlgorithmSwitch)

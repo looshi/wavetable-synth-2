@@ -3,20 +3,21 @@ HorizontalSlider
 Label, slider, and number value.
 */
 import React from 'react'
-import {connect} from 'react-redux'
-import {lerp} from '../../helpers/helpers.js'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { lerp } from '../../helpers/helpers.js'
 
 class HorizontalSlider extends React.Component {
 
-  componentDidMount () {
+  componentDidMount() {
     this.animate(this.sliderInput.value, this.props.value, this)
   }
 
-  handleChange (e) {
+  handleChange(e) {
     this.props.onChange(e)
   }
 
-  sliderClassName () {
+  sliderClassName() {
     let className = 'fader horizontal '
     if (this.props.color) {
       className += this.props.color.split('#').join('color-')
@@ -24,7 +25,7 @@ class HorizontalSlider extends React.Component {
     return className
   }
 
-  componentWillUpdate (nextProps, nextState) {
+  componentWillUpdate(nextProps, nextState) {
     if (this.sliderInput.value !== nextProps.value) {
       // This happens only when something external has updated this value.
       // Internal changes will always have equal values as the redux store.
@@ -32,9 +33,9 @@ class HorizontalSlider extends React.Component {
     }
   }
 
-  animate (start, end, self) {
+  animate(start, end, self) {
     let time = 0
-    function step () {
+    function step() {
       if (time < 1) {
         self.sliderInput.value = lerp(start, end, time)
         time += 0.05
@@ -44,7 +45,7 @@ class HorizontalSlider extends React.Component {
     window.requestAnimationFrame(step)
   }
 
-  render () {
+  render() {
     const textStyle = {
       color: this.props.color
     }
@@ -66,11 +67,11 @@ class HorizontalSlider extends React.Component {
 }
 
 HorizontalSlider.propTypes = {
-  min: React.PropTypes.number,
-  max: React.PropTypes.number,
-  value: React.PropTypes.number,
-  onChange: React.PropTypes.func,
-  label: React.PropTypes.string
+  min: PropTypes.number,
+  max: PropTypes.number,
+  value: PropTypes.number,
+  onChange: PropTypes.func,
+  label: PropTypes.string
 }
 
 export default connect()(HorizontalSlider)
