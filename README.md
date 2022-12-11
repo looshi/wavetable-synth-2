@@ -1,5 +1,7 @@
 # Wavetable Synth
 
+Try it here: https://looshi.github.io/wavetable/
+
 Web audio synthesizer using wavetable synthesis.  Features 3 oscillators, LFO, chorus, glide, and an arpeggiator!  Suitable for retro-synth music productions.
 
 ![screenshot of synth](https://github.com/looshi/wavetable-synth-2/blob/main/images/wavetable-screenshot.png)
