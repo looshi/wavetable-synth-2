@@ -26,9 +26,9 @@ One of the first wavetable synthesizers was the PPG Wave https://en.wikipedia.or
 The storage of each table is a small memory footprint, and the interpolation algorithms are simple arithmetic, however combining different tables over time allows for a very complex sound.
 
 ## How this synth was built
-This uses the web audio api for mixing and effects.  The sound generation itself is done by looping short sample of wavetables, this wavetable data collected from various internet sources and stored as json data.
+This uses the web audio api for mixing and effects.  The sound generation itself is done by looping short samples of wavetable data.
 
-This data is loaded and fed to an oscillator, these oscillators are then combined with each other using interplolation.  The combination is an interpolation from one table to the next, if you increase the "cycles" slide you can hear the sound changing over time due to this interpolation done here: https://github.com/looshi/wavetable-synth-2/blob/e3a89d6a932a86288366989e3f1ab2c53c855918/src/data/Reducers.js#L357
+This wavetable data is loaded into an oscillator, pairs of oscillators are then combined with each other using interplolation.  The combination is an interpolation from one table to the next, if you increase the "cycles" slide you can hear the sound changing over time due to this interpolation done here: https://github.com/looshi/wavetable-synth-2/blob/e3a89d6a932a86288366989e3f1ab2c53c855918/src/data/Reducers.js#L357
 
 Three pairs of these wavetables are then mixed together and sent to an filter and amp envelope and LFOs provide further processing.
 
